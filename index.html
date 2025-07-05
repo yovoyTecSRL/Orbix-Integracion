@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORBIX - Validación Financiera</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background: linear-gradient(135deg, #DC143C 0%, #FFFFFF 50%, #003893 100%);
+            min-height: 100vh;
+        }
+        .header {
+            background: rgba(255,255,255,0.95);
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 0 20px;
+        }
+        h1 { 
+            color: #DC143C; 
+            text-align: center; 
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            text-align: center;
+            color: #003893;
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        .service-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+        .service-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        .service-title {
+            color: #DC143C;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+        .service-desc {
+            color: #666;
+            line-height: 1.6;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #003893;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 15px;
+            transition: background 0.3s ease;
+        }
+        .btn:hover {
+            background: #DC143C;
+        }
+        .status-bar {
+            background: #228B22;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>🏛️ ORBIX</h1>
+            <div class="subtitle">Validación Financiera Inteligente 🇨🇷</div>
+            <div class="status-bar">
+                ✅ Todos los Sistemas Operativos
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="services">
+            <div class="service-card">
+                <div class="service-icon">🤖</div>
+                <div class="service-title">Asistente IA</div>
+                <div class="service-desc">Asistente inteligente para consultas financieras</div>
+                <a href="//assistant.sistemasorbix.com" class="btn">Acceder</a>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">📊</div>
+                <div class="service-title">Dashboard</div>
+                <div class="service-desc">Panel de control y métricas del sistema</div>
+                <a href="//dashboard.sistemasorbix.com" class="btn">Ver Dashboard</a>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🔧</div>
+                <div class="service-title">Babel Tools</div>
+                <div class="service-desc">Herramientas de desarrollo y configuración</div>
+                <a href="//babel.sistemasorbix.com" class="btn">Herramientas</a>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🔗</div>
+                <div class="service-title">API</div>
+                <div class="service-desc">Interfaz de programación de aplicaciones</div>
+                <a href="//api.sistemasorbix.com" class="btn">Documentación</a>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🏢</div>
+                <div class="service-title">ERP</div>
+                <div class="service-desc">Sistema de planificación empresarial</div>
+                <a href="//erp.sistemasorbix.com" class="btn">ERP</a>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🧪</div>
+                <div class="service-title">Demo Clientes</div>
+                <div class="service-desc">Demostraciones para clientes potenciales</div>
+                <a href="//demo-clientes.sistemasorbix.com" class="btn">Ver Demo</a>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🚀</div>
+                <div class="service-title">Staging</div>
+                <div class="service-desc">Entorno de pruebas y desarrollo</div>
+                <a href="//staging.sistemasorbix.com" class="btn">Staging</a>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🏥</div>
+                <div class="service-title">Validación</div>
+                <div class="service-desc">Sistema de validación financiera</div>
+                <a href=":8001" class="btn">Sistema</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-refresh status every 30 seconds
+        setInterval(() => {
+            fetch('/health')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'ok') {
+                        document.querySelector('.status-bar').innerHTML = '✅ Todos los Sistemas Operativos';
+                    }
+                })
+                .catch(() => {
+                    document.querySelector('.status-bar').innerHTML = '⚠️ Verificando Sistemas...';
+                });
+        }, 30000);
+    </script>
+</body>
+</html>

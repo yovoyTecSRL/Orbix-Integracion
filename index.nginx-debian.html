@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistemas Orbix - Portal Principal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+            max-width: 800px;
+            width: 90%;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #333;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-button:hover:before {
+            left: 100%;
+        }
+
+        .nav-button h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .nav-button p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        .nav-button.coming-soon {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            cursor: not-allowed;
+        }
+
+        .nav-button.coming-soon:hover {
+            transform: none;
+            box-shadow: 0 8px 20px rgba(149, 165, 166, 0.3);
+        }
+
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+            background: #27ae60;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(39, 174, 96, 0.1);
+            color: #27ae60;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 10px 5px;
+            border: 1px solid rgba(39, 174, 96, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            .logo h1 {
+                font-size: 2rem;
+            }
+
+            .nav-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-button {
+                padding: 20px;
+            }
+        }
+
+        /* Loading animation for future use */
+        .loading {
+            display: none;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>🚀 Sistemas Orbix</h1>
+            <p>Portal de Gestión y Administración de Sistemas</p>
+        </div>
+
+        <div class="nav-grid">
+            <a href="#" class="nav-button coming-soon" onclick="showComingSoon('Sentinel')">
+                <h3>🛡️ Sentinel</h3>
+                <p>Sistema de monitoreo y seguridad avanzado</p>
+            </a>
+
+            <a href="#" class="nav-button coming-soon" onclick="showComingSoon('Validaciones')">
+                <h3>✅ Validaciones</h3>
+                <p>Centro de validación y verificación de datos</p>
+            </a>
+
+            <a href="#" class="nav-button coming-soon" onclick="showComingSoon('Dashboard')">
+                <h3>📊 Dashboard</h3>
+                <p>Panel de control y métricas principales</p>
+            </a>
+
+            <a href="#" class="nav-button coming-soon" onclick="showComingSoon('Administración')">
+                <h3>⚙️ Administración</h3>
+                <p>Gestión de usuarios y configuraciones</p>
+            </a>
+
+            <a href="#" class="nav-button coming-soon" onclick="showComingSoon('Reportes')">
+                <h3>📈 Reportes</h3>
+                <p>Generación y análisis de reportes</p>
+            </a>
+
+            <a href="#" class="nav-button coming-soon" onclick="showComingSoon('API')">
+                <h3>🔌 API</h3>
+                <p>Documentación y endpoints de la API</p>
+            </a>
+        </div>
+
+        <div class="footer">
+            <div class="security-badge">
+                <span class="status-indicator"></span>
+                Sistema Seguro
+            </div>
+            <div class="security-badge">
+                🔐 SSL Activo
+            </div>
+            <div class="security-badge">
+                🚀 Nginx Optimizado
+            </div>
+            <br><br>
+            <p>&copy; 2025 Sistemas Orbix. Todos los derechos reservados.</p>
+        </div>
+    </div>
+
+    <script>
+        // Función temporal para mostrar que las páginas están en construcción
+        function showComingSoon(module) {
+            alert(`El módulo ${module} estará disponible próximamente.\n\nPor favor, proporciona la URL correspondiente para completar la integración.`);
+        }
+
+        // Función para actualizar enlaces (para usar cuando recibas las URLs)
+        function updateLinks(links) {
+            // Esta función se usará para actualizar los enlaces cuando estén disponibles
+            console.log('Enlaces a actualizar:', links);
+        }
+
+        // Animación de entrada
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('.container');
+            container.style.opacity = '0';
+            container.style.transform = 'translateY(50px)';
+            
+            setTimeout(() => {
+                container.style.transition = 'all 0.8s ease';
+                container.style.opacity = '1';
+                container.style.transform = 'translateY(0)';
+            }, 100);
+        });
+
+        // Función para validar acceso (preparada para Sentinel)
+        function validateAccess() {
+            // Aquí se integrará con Sentinel para validación de acceso
+            return true;
+        }
+
+        // Event listeners para seguridad
+        document.addEventListener('contextmenu', function(e) {
+            // e.preventDefault(); // Descomenta para deshabilitar click derecho
+        });
+    </script>
+</body>
+</html>

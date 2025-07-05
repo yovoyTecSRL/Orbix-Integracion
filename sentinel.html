@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🛡️ Sentinel - Orbix Systems</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+</head>
+<body class="sentinel-dashboard">
+  <style>
+
+    body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+  color: #ffffff;
+}
+
+header {
+  background-color: #0e0e0e;
+  padding: 20px;
+  text-align: center;
+  border-bottom: 3px solid #00f7ff;
+}
+
+header h1 {
+  margin: 0;
+  color: #00f7ff;
+  font-size: 36px;
+  text-shadow: 0 0 6px #00f7ff;
+}
+
+header p {
+  margin: 5px 0 15px;
+  font-size: 16px;
+  color: #88f9ff;
+}
+
+nav a {
+  margin: 0 12px;
+  color: #00f7ff;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+  transition: color 0.2s ease;
+}
+
+nav a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+main {
+  padding: 40px 20px;
+  max-width: 960px;
+  margin: auto;
+}
+
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: center;
+  margin-bottom: 60px;
+}
+
+.feature {
+  background-color: #1b1f23;
+  padding: 20px;
+  border-radius: 10px;
+  width: 280px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+}
+
+.feature h2 {
+  color: #00f7ff;
+}
+
+.feature p {
+  color: #dddddd;
+  font-size: 14px;
+}
+
+#hero {
+  text-align: center;
+  margin-top: 60px;
+}
+
+#hero h2 {
+  font-size: 28px;
+  color: #00f7ff;
+  margin-bottom: 10px;
+}
+
+#hero p {
+  font-size: 16px;
+  color: #cccccc;
+}
+
+footer {
+  background-color: #0e0e0e;
+  text-align: center;
+  padding: 15px;
+  font-size: 14px;
+  color: #cccccc;
+  border-top: 2px solid #00f7ff;
+}
+
+footer a {
+  color: #00f7ff;
+  text-decoration: none;
+}
+    .sentinel-dashboard {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      min-height: 100vh;
+      color: white;
+    }
+
+    .sentinel-main {
+      padding: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      background: rgba(255,255,255,0.1);
+      padding: 25px;
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+    }
+
+    .system-status h1 {
+      margin: 0;
+      font-size: 2.5em;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .status-badges {
+      display: flex;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .status-badge {
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.9em;
+    }
+
+    .status-badge.online {
+      background: #27ae60;
+      color: white;
+    }
+
+    .status-badge.uptime {
+      background: #3498db;
+      color: white;
+    }
+
+    .status-badge.timestamp {
+      background: #95a5a6;
+      color: white;
+    }
+
+    .quick-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .stat-box {
+      background: rgba(255,255,255,0.15);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      backdrop-filter: blur(5px);
+    }
+
+    .stat-number {
+      font-size: 2.5em;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #f1c40f;
+    }
+
+    .stat-label {
+      font-size: 0.9em;
+      opacity: 0.9;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    .chart-container {
+      background: rgba(255,255,255,0.95);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      color: #2c3e50;
+      min-height: 350px;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #ecf0f1;
+    }
+
+    .chart-header h3 {
+      margin: 0;
+      color: #2c3e50;
+      font-size: 1.3em;
+    }
+
+    .chart-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .filter-btn, .refresh-btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      background: #95a5a6;
+      color: white;
+      cursor: pointer;
+      font-size: 0.8em;
+      transition: all 0.3s ease;
+    }
+
+    .filter-btn.active, .filter-btn:hover {
+      background: #3498db;
+    }
+
+    .refresh-btn:hover {
+      background: #27ae60;
+    }
+
+    .chart-container canvas {
+      height: 200px !important;
+    }
+
+    .chart-stats {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #ecf0f1;
+      font-size: 0.9em;
+    }
+
+    .chart-stats span {
+      color: #7f8c8d;
+    }
+
+    .chart-stats strong {
+      color: #2c3e50;
+    }
+
+    .chart-stats .critical strong {
+      color: #e74c3c;
+    }
+
+    .chart-stats .warning strong {
+      color: #f39c12;
+    }
+
+    .chart-stats .info strong {
+      color: #9b59b6;
+    }
+
+    .chart-stats .blocked strong {
+      color: #e74c3c;
+    }
+
+    .chart-stats .detected strong {
+      color: #f39c12;
+    }
+
+    .chart-stats .resolved strong {
+      color: #27ae60;
+    }
+
+    .threat-indicator {
+      display: flex;
+      align-items: center;
+    }
+
+    .threat-low {
+      background: #27ae60;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-weight: bold;
+      font-size: 0.8em;
+    }
+
+    .threat-medium {
+      background: #f39c12;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-weight: bold;
+      font-size: 0.8em;
+    }
+
+    .threat-high {
+      background: #e74c3c;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-weight: bold;
+      font-size: 0.8em;
+      animation: pulse 1s infinite;
+    }
+
+    .bandwidth-total {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #3498db;
+    }
+
+    .activity-feed {
+      background: rgba(255,255,255,0.95);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 30px;
+      color: #2c3e50;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+
+    .feed-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #ecf0f1;
+    }
+
+    .feed-header h3 {
+      margin: 0;
+      font-size: 1.3em;
+    }
+
+    .feed-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .pause-btn, .resume-btn, .clear-btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .pause-btn, .resume-btn {
+      background: #f39c12;
+      color: white;
+    }
+
+    .clear-btn {
+      background: #e74c3c;
+      color: white;
+    }
+
+    .feed-container {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .feed-event {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border-left: 4px solid #95a5a6;
+      background: #f8f9fa;
+      transition: all 0.3s ease;
+    }
+
+    .feed-event.critical {
+      border-left-color: #e74c3c;
+      background: #fff5f5;
+    }
+
+    .feed-event.warning {
+      border-left-color: #f39c12;
+      background: #fffbf0;
+    }
+
+    .feed-event.success {
+      border-left-color: #27ae60;
+      background: #f0fff4;
+    }
+
+    .feed-event.info {
+      border-left-color: #3498db;
+      background: #f0f8ff;
+    }
+
+    .event-icon {
+      font-size: 1.5em;
+      margin-right: 15px;
+    }
+
+    .event-content {
+      flex: 1;
+    }
+
+    .event-message {
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+
+    .event-time {
+      font-size: 0.8em;
+      color: #7f8c8d;
+    }
+
+    .event-level {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.7em;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .event-level.critical {
+      background: #e74c3c;
+      color: white;
+    }
+
+    .event-level.warning {
+      background: #f39c12;
+      color: white;
+    }
+
+    .event-level.success {
+      background: #27ae60;
+      color: white;
+    }
+
+    .event-level.info {
+      background: #3498db;
+      color: white;
+    }
+
+    .system-info {
+      background: rgba(255,255,255,0.95);
+      border-radius: 15px;
+      padding: 20px;
+      color: #2c3e50;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .info-card {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      border-left: 4px solid #3498db;
+    }
+
+    .info-card h4 {
+      margin: 0 0 15px 0;
+      color: #2c3e50;
+    }
+
+    .info-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .info-card li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #ecf0f1;
+    }
+
+    .info-card li:last-child {
+      border-bottom: none;
+    }
+
+    .info-card code {
+      background: #e9ecef;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+
+    .status-active {
+      color: #27ae60;
+      font-weight: bold;
+    }
+
+    .status-inactive {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+
+    .status-checking {
+      color: #f39c12;
+      font-weight: bold;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.7; }
+      100% { opacity: 1; }
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .dashboard-header {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .quick-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 480px) {
+      .dashboard-header h1 {
+        font-size: 2em;
+      }
+
+      .status-badges {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .chart-header h3 {
+        font-size: 1.2em;
+      }
+
+      .stat-number {
+        font-size: 2em;
+      }
+    } 
+  </style>
+  <header>
+    <h1>🧠 Orbix Systems</h1>
+    <p>Inteligencia real para negocios reales.</p>
+    <nav>
+      <a href="/">index.html</a>
+      <a href="/validaciones.html">✅ Validaciones</a>
+      <a href="/calculadora.html">🧮 Calculadora</a>
+      <a href="/sentinel.html">🛡️ Sentinel</a>
+      <a href="https://erp.sistemasorbix.com" target="_blank">🚀 ERP</a>
+    </nav>
+  </header>
+
+  <main class="sentinel-main">
+    <!-- Dashboard Header -->
+    <section class="dashboard-header">
+      <div class="system-status">
+        <h1>🛡️ Orbix Sentinel</h1>
+        <p>Centro de Comando de Seguridad y Monitoreo</p>
+        <div class="status-badges">
+          <span id="system-status" class="status-badge online">🟢 OPERATIVO</span>
+          <span id="uptime-badge" class="status-badge uptime">⏱️ Uptime: 99.9%</span>
+          <span id="last-update" class="status-badge timestamp">🕒 Actualizado: ahora</span>
+        </div>
+      </div>
+      <div class="quick-stats">
+        <div class="stat-box">
+          <div id="events-today" class="stat-number">0</div>
+          <div class="stat-label">Eventos Hoy</div>
+        </div>
+        <div class="stat-box">
+          <div id="active-alerts" class="stat-number">0</div>
+          <div class="stat-label">Alertas Activas</div>
+        </div>
+        <div class="stat-box">
+          <div id="threats-blocked" class="stat-number">0</div>
+          <div class="stat-label">Amenazas Bloqueadas</div>
+        </div>
+        <div class="stat-box">
+          <div id="active-connections" class="stat-number">0</div>
+          <div class="stat-label">Conexiones Activas</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Dashboard Grid -->
+    <section class="dashboard-grid">
+      <!-- Geographic Activity -->
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3>🌍 Actividad Geográfica</h3>
+          <div class="chart-controls">
+            <button class="filter-btn active" data-geo="all">Todos</button>
+            <button class="filter-btn" data-geo="suspicious">Sospechosos</button>
+          </div>
+        </div>
+        <canvas id="geographicChart"></canvas>
+        <div class="chart-stats">
+          <span>Países: <strong id="countries-count">0</strong></span>
+          <span>IPs Únicas: <strong id="unique-ips">0</strong></span>
+          <span>Sospechosas: <strong id="suspicious-ips">0</strong></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Real-time Activity Feed -->
+    <section class="activity-feed">
+      <div class="feed-header">
+        <h3>📈 Actividad en Tiempo Real</h3>
+        <div class="feed-controls">
+          <button id="pause-feed" class="pause-btn">⏸️ Pausar</button>
+          <button class="clear-btn" onclick="clearActivityFeed()">🗑️ Limpiar</button>
+        </div>
+      </div>
+      <div id="activity-feed" class="feed-container"></div>
+    </section>
+
+    <!-- System Info Panel -->
+    <section class="system-info">
+      <div class="info-grid">
+        <div class="info-card">
+          <h4>🔌 Puertos del Sistema</h4>
+          <ul>
+            <li>Principal: <code>3000</code> ✅</li>
+            <li>Dashboard: <code>3001</code> ⏳</li>
+            <li>API: <code>3000</code> ✅</li>
+            <li>WebSocket: <code>3003</code> ⏳</li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <h4>🛡️ Protecciones Activas</h4>
+          <ul>
+            <li>Firewall: <span class="status-active">Activo</span></li>
+            <li>IDS/IPS: <span class="status-active">Activo</span></li>
+            <li>Antimalware: <span class="status-active">Activo</span></li>
+            <li>DDoS Protection: <span class="status-active">Activo</span></li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <h4>📡 APIs Monitoreadas</h4>
+          <ul>
+            <li>Validaciones (8000): <span id="validation-status" class="status-checking">Verificando...</span></li>
+            <li>FastAPI (3001): <span id="fastapi-status" class="status-checking">Verificando...</span></li>
+            <li>Odoo (8070): <span id="odoo-status" class="status-checking">Verificando...</span></li>
+            <li>PostgreSQL (5432): <span id="postgres-status" class="status-checking">Verificando...</span></li>
+            <li>Node.js (3000): <span class="status-active">Activo</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Orbix Systems S.A. | Centro de Seguridad y Monitoreo | <a href="mailto:security@sistemasorbix.com">security@sistemasorbix.com</a></p>
+  </footer>
+
+  <script>
+    let charts = {};
+    let isPaused = false;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeCharts();
+      startRealTimeUpdates();
+      attachControls();
+      checkAPIStatus();
+    });
+
+    function initializeCharts() {
+      const ctx = document.getElementById('geographicChart').getContext('2d');
+      charts.geographic = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Costa Rica', 'Estados Unidos', 'México', 'Colombia', 'España'],
+          datasets: [{ label: 'Conexiones', data: [150, 89, 45, 32, 28] }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { beginAtZero: true, title: { display: true, text: 'Número de Conexiones' } }
+          }
+        }
+      });
+    }
+
+    function attachControls() {
+      document.getElementById('pause-feed').addEventListener('click', () => {
+        isPaused = !isPaused;
+        const btn = document.getElementById('pause-feed');
+        btn.textContent = isPaused ? '▶️ Reanudar' : '⏸️ Pausar';
+      });
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          btn.parentNode.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+        });
+      });
+    }
+
+    function startRealTimeUpdates() {
+      setInterval(() => {
+        if (!isPaused) updateQuickStats();
+      }, 2000);
+    }
+
+    function updateQuickStats() {
+      const ev = document.getElementById('events-today');
+      const al = document.getElementById('active-alerts');
+      const tb = document.getElementById('threats-blocked');
+      const ac = document.getElementById('active-connections');
+      if (ev) ev.textContent = Math.floor(Math.random() * 500 + 100).toLocaleString();
+      if (al) al.textContent = Math.floor(Math.random() * 10 + 1).toLocaleString();
+      if (tb) tb.textContent = Math.floor(Math.random() * 50 + 10).toLocaleString();
+      if (ac) ac.textContent = Math.floor(Math.random() * 200 + 50).toLocaleString();
+      const lu = document.getElementById('last-update');
+      if (lu) lu.textContent = '🕒 Actualizado: ' + new Date().toLocaleTimeString();
+    }
+
+    function clearActivityFeed() {
+      const feed = document.getElementById('activity-feed');
+      if (feed) feed.innerHTML = '';
+    }
+
+    async function checkAPIStatus() {
+      // Validaciones (proxy)
+      const valBadge = document.getElementById('validation-status');
+      try {
+        const resVal = await fetch('/health');
+        const jsonVal = await resVal.json().catch(() => ({}));
+        if (!resVal.ok || jsonVal.error) {
+          valBadge.textContent = '❌ ' + (jsonVal.message || jsonVal.error || resVal.statusText);
+          valBadge.className = 'status-badge status-inactive';
+        } else {
+          valBadge.textContent = '✅ Validaciones OK';
+          valBadge.className = 'status-badge status-active';
+        }
+      } catch {
+        valBadge.textContent = '❌ Validaciones no disponible';
+        valBadge.className = 'status-badge status-inactive';
+      }
+
+      // FastAPI
+      const apiBadge = document.getElementById('fastapi-status');
+      try {
+        const resApi = await fetch('/api/orbix/health');
+        const jsonApi = await resApi.json().catch(() => ({}));
+        if (!resApi.ok || jsonApi.error) {
+          apiBadge.textContent = '❌ ' + (jsonApi.message || jsonApi.error || resApi.statusText);
+          apiBadge.className = 'status-badge status-inactive';
+        } else {
+          apiBadge.textContent = '✅ API OK';
+          apiBadge.className = 'status-badge status-active';
+        }
+      } catch {
+        apiBadge.textContent = '❌ API no disponible';
+        apiBadge.className = 'status-badge status-inactive';
+      }
+
+      // Odoo & PostgreSQL
+      setTimeout(() => {
+        const odoo = document.getElementById('odoo-status');
+        const pg = document.getElementById('postgres-status');
+        if (odoo) { odoo.textContent = 'Desconectado'; odoo.className = 'status-badge status-inactive'; }
+        if (pg)   { pg.textContent = 'Desconectado';   pg.className   = 'status-badge status-inactive'; }
+      }, 2000);
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+
+

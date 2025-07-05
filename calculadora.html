@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🧮 Calculadora - Orbix Systems</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header>
+    <h1>🧠 Orbix Systems</h1>
+    <p>Inteligencia real para negocios reales.</p>
+   
+    <nav>
+      <a href="/">index.html</a>
+      <a href="/validaciones.html">✅ Validaciones</a>
+      <a href="/calculadora.html">🧮 Calculadora</a>
+      <a href="/sentinel.html">🛡️ Sentinel</a>
+      <a href="https://erp.sistemasorbix.com" target="_blank">🚀 ERP</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-header">
+      <h1>🧮 Calculadora Financiera Inteligente</h1>
+      <p>Herramienta financiera inteligente para clientes y asesores de crédito.</p>
+    </section>
+
+    <section class="calculator-tools">
+      <div class="calc-grid">
+        <div class="calc-card">
+          <h3>💰 Calculadora de Préstamos</h3>
+          <div class="calc-form">
+            <label>Monto del préstamo:</label>
+            <input type="number" id="loan-amount" placeholder="₡1,000,000">
+            
+            <label>Tasa de interés anual (%):</label>
+            <input type="number" id="interest-rate" placeholder="12.5" step="0.1">
+            
+            <label>Plazo (meses):</label>
+            <input type="number" id="loan-term" placeholder="60">
+            
+            <button class="btn-primary" onclick="calculateLoan()">Calcular Cuota</button>
+            
+            <div id="loan-result" class="result-box">
+              <h4>Resultado:</h4>
+              <p id="monthly-payment">Cuota mensual: -</p>
+              <p id="total-interest">Intereses totales: -</p>
+              <p id="total-payment">Total a pagar: -</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="calc-card">
+          <h3>📊 Análisis de Capacidad de Pago</h3>
+          <div class="calc-form">
+            <label>Ingresos mensuales:</label>
+            <input type="number" id="monthly-income" placeholder="₡500,000">
+            
+            <label>Gastos fijos mensuales:</label>
+            <input type="number" id="monthly-expenses" placeholder="₡300,000">
+            
+            <label>Otras deudas mensuales:</label>
+            <input type="number" id="other-debts" placeholder="₡50,000">
+            
+            <button class="btn-primary" onclick="analyzeCapacity()">Analizar Capacidad</button>
+            
+            <div id="capacity-result" class="result-box">
+              <h4>Análisis:</h4>
+              <p id="available-income">Ingreso disponible: -</p>
+              <p id="max-payment">Cuota máxima recomendada: -</p>
+              <p id="debt-ratio">Ratio de endeudamiento: -</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="calc-card">
+          <h3>🎯 Simulador de Inversiones</h3>
+          <div class="calc-form">
+            <label>Capital inicial:</label>
+            <input type="number" id="initial-capital" placeholder="₡100,000">
+            
+            <label>Aporte mensual:</label>
+            <input type="number" id="monthly-contribution" placeholder="₡10,000">
+            
+            <label>Rendimiento anual esperado (%):</label>
+            <input type="number" id="annual-return" placeholder="8" step="0.1">
+            
+            <label>Años de inversión:</label>
+            <input type="number" id="investment-years" placeholder="5">
+            
+            <button class="btn-primary" onclick="calculateInvestment()">Simular Inversión</button>
+            
+            <div id="investment-result" class="result-box">
+              <h4>Proyección:</h4>
+              <p id="final-amount">Monto final: -</p>
+              <p id="total-contributions">Total aportado: -</p>
+              <p id="earnings">Ganancias: -</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ai-features">
+      <h2>🤖 Funciones de IA</h2>
+      <div class="ai-grid">
+        <div class="ai-feature">
+          <h3>📈 Análisis Predictivo</h3>
+          <p>Predicción de riesgos crediticios basada en patrones históricos.</p>
+        </div>
+        <div class="ai-feature">
+          <h3>🎯 Recomendaciones Personalizadas</h3>
+          <p>Sugerencias de productos financieros según el perfil del cliente.</p>
+        </div>
+        <div class="ai-feature">
+          <h3>📊 Scoring Automático</h3>
+          <p>Calificación crediticia automatizada con machine learning.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Orbix Systems S.A. | Contacto: <a href="mailto:info@sistemasorbix.com">info@sistemasorbix.com</a></p>
+  </footer>
+
+  <script>
+    function calculateLoan() {
+      const amount = parseFloat(document.getElementById('loan-amount').value);
+      const rate = parseFloat(document.getElementById('interest-rate').value) / 100 / 12;
+      const term = parseInt(document.getElementById('loan-term').value);
+      
+      if (amount && rate && term) {
+        const monthlyPayment = (amount * rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1);
+        const totalPayment = monthlyPayment * term;
+        const totalInterest = totalPayment - amount;
+        
+        document.getElementById('monthly-payment').textContent = `Cuota mensual: ₡${monthlyPayment.toLocaleString('es-CR')}`;
+        document.getElementById('total-interest').textContent = `Intereses totales: ₡${totalInterest.toLocaleString('es-CR')}`;
+        document.getElementById('total-payment').textContent = `Total a pagar: ₡${totalPayment.toLocaleString('es-CR')}`;
+      }
+    }
+
+    function analyzeCapacity() {
+      const income = parseFloat(document.getElementById('monthly-income').value);
+      const expenses = parseFloat(document.getElementById('monthly-expenses').value);
+      const debts = parseFloat(document.getElementById('other-debts').value) || 0;
+      
+      if (income && expenses) {
+        const availableIncome = income - expenses - debts;
+        const maxPayment = availableIncome * 0.3; // 30% del ingreso disponible
+        const debtRatio = ((debts / income) * 100).toFixed(1);
+        
+        document.getElementById('available-income').textContent = `Ingreso disponible: ₡${availableIncome.toLocaleString('es-CR')}`;
+        document.getElementById('max-payment').textContent = `Cuota máxima recomendada: ₡${maxPayment.toLocaleString('es-CR')}`;
+        document.getElementById('debt-ratio').textContent = `Ratio de endeudamiento: ${debtRatio}%`;
+      }
+    }
+
+    function calculateInvestment() {
+      const initial = parseFloat(document.getElementById('initial-capital').value);
+      const monthly = parseFloat(document.getElementById('monthly-contribution').value);
+      const rate = parseFloat(document.getElementById('annual-return').value) / 100 / 12;
+      const years = parseInt(document.getElementById('investment-years').value);
+      const months = years * 12;
+      
+      if (initial && monthly && rate && years) {
+        const futureValue = initial * Math.pow(1 + rate, months) + 
+                           monthly * ((Math.pow(1 + rate, months) - 1) / rate);
+        const totalContributions = initial + (monthly * months);
+        const earnings = futureValue - totalContributions;
+        
+        document.getElementById('final-amount').textContent = `Monto final: ₡${futureValue.toLocaleString('es-CR')}`;
+        document.getElementById('total-contributions').textContent = `Total aportado: ₡${totalContributions.toLocaleString('es-CR')}`;
+        document.getElementById('earnings').textContent = `Ganancias: ₡${earnings.toLocaleString('es-CR')}`;
+      }
+    }
+  </script>
+</body>
+</html>
