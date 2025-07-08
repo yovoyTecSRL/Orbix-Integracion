@@ -1,0 +1,11 @@
+{
+  "name": "Zoile",
+  "model": "/avatars/brunette.glb",
+  "enableMovement": true,
+  "enableBlinking": true,
+  "enableBreathing": true,
+  "enableLipSync": true,
+  "animationSpeed": 1.0,
+  "version": "1.0.0",
+  "lastUpdated": "2024-01-15T00:00:00Z"
+}

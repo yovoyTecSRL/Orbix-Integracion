@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🧠 Orbix Systems</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/css/talkinghead-avatar.css" />
+  <link rel="stylesheet" href="/css/avatar-settings.css" />
+  <link rel="stylesheet" href="/css/orbix-ui-overlays.css" />
+</head>
+<body>
+  <style>
+    /* === RESET Y BASE === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* === HEADER MEJORADO === */
+    header {
+      background: linear-gradient(135deg, #000000 0%, #1a1a2e 50%, #16213e 100%);
+      padding: 25px 20px;
+      text-align: center;
+      border-bottom: 3px solid #00f7ff;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 247, 255, 0.1), transparent);
+      animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    .header-top {
+      position: relative;
+      z-index: 2;
+      margin-bottom: 25px;
+    }
+
+    header h1 {
+      margin: 0 0 10px 0;
+      color: #00f7ff;
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 700;
+      text-shadow: 
+        0 0 20px rgba(0, 247, 255, 0.5),
+        0 0 40px rgba(0, 247, 255, 0.3);
+      letter-spacing: 1px;
+    }
+
+    header p {
+      margin: 0 0 20px 0;
+      font-size: clamp(14px, 2.5vw, 18px);
+      color: #88f9ff;
+      font-weight: 400;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    /* === BOTONES DE CONTROL === */
+    .control-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 2;
+    }
+
+    .control-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 15px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      text-decoration: none;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+      min-width: 120px;
+      justify-content: center;
+    }
+
+    .control-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .control-btn:hover::before {
+      left: 100%;
+    }
+
+    .control-btn.primary {
+      background: linear-gradient(135deg, #00f7ff, #0099cc);
+      color: #000000;
+      border: 2px solid transparent;
+    }
+
+    .control-btn.primary:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 15px 35px rgba(0, 247, 255, 0.4);
+    }
+
+    .control-btn.primary.active {
+      background: linear-gradient(135deg, #ffaa00, #ff6600);
+      animation: pulse 2s infinite;
+    }
+
+    .control-btn.secondary {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+      color: #ffffff;
+      border: 2px solid rgba(0, 247, 255, 0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    .control-btn.secondary:hover {
+      background: linear-gradient(135deg, rgba(0, 247, 255, 0.2), rgba(0, 153, 204, 0.1));
+      border-color: #00f7ff;
+      transform: translateY(-2px);
+    }
+
+    .control-btn.tertiary {
+      background: linear-gradient(135deg, rgba(136, 249, 255, 0.1), rgba(0, 247, 255, 0.05));
+      color: #88f9ff;
+      border: 2px solid rgba(136, 249, 255, 0.3);
+    }
+
+    .control-btn.tertiary:hover {
+      background: linear-gradient(135deg, rgba(136, 249, 255, 0.2), rgba(136, 249, 255, 0.1));
+      border-color: #88f9ff;
+      transform: translateY(-2px);
+      color: #ffffff;
+    }
+
+    .control-btn .icon {
+      font-size: 18px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
+
+    .control-btn .text {
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    /* === NAVEGACIÓN PRINCIPAL === */
+    .main-nav {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 2;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 16px;
+      color: #88f9ff;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 14px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      border: 1px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-item::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #00f7ff, #88f9ff);
+      transition: width 0.3s ease;
+    }
+
+    .nav-item:hover::after {
+      width: 100%;
+    }
+
+    .nav-item:hover {
+      color: #ffffff;
+      background: rgba(0, 247, 255, 0.1);
+      border-color: rgba(0, 247, 255, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .nav-item.active {
+      color: #00f7ff;
+      background: rgba(0, 247, 255, 0.15);
+      border-color: rgba(0, 247, 255, 0.4);
+    }
+
+    .nav-item.external::after {
+      content: '↗';
+      margin-left: 4px;
+      font-size: 10px;
+    }
+
+    .nav-icon {
+      font-size: 16px;
+    }
+
+    .nav-text {
+      font-weight: 600;
+    }
+
+    /* === MAIN CONTENT === */
+    main {
+      padding: 40px 20px;
+      max-width: 1200px;
+      margin: auto;
+      position: relative;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      justify-content: center;
+      margin-bottom: 60px;
+    }
+
+    .feature {
+      background: linear-gradient(135deg, rgba(26, 31, 35, 0.8), rgba(22, 33, 62, 0.6));
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.3),
+        0 5px 15px rgba(0, 247, 255, 0.1);
+      border: 1px solid rgba(0, 247, 255, 0.2);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .feature::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #00f7ff, #88f9ff, #00f7ff);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .feature:hover::before {
+      opacity: 1;
+    }
+
+    .feature:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.4),
+        0 10px 30px rgba(0, 247, 255, 0.3);
+      border-color: rgba(0, 247, 255, 0.5);
+    }
+
+    .feature h2 {
+      color: #00f7ff;
+      margin-bottom: 15px;
+      font-size: 22px;
+      font-weight: 600;
+      text-shadow: 0 0 10px rgba(0, 247, 255, 0.3);
+    }
+
+    .feature p {
+      color: #dddddd;
+      font-size: 15px;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    #hero {
+      text-align: center;
+      margin-top: 60px;
+      padding: 40px 20px;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(26, 31, 35, 0.2));
+      border-radius: 25px;
+      border: 1px solid rgba(0, 247, 255, 0.1);
+    }
+
+    #hero h2 {
+      font-size: clamp(24px, 4vw, 32px);
+      color: #00f7ff;
+      margin-bottom: 15px;
+      font-weight: 700;
+      text-shadow: 0 0 15px rgba(0, 247, 255, 0.4);
+    }
+
+    #hero p {
+      font-size: clamp(16px, 2.5vw, 20px);
+      color: #cccccc;
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    footer {
+      background: linear-gradient(135deg, #000000, #1a1a2e);
+      text-align: center;
+      padding: 25px;
+      font-size: 14px;
+      color: #cccccc;
+      border-top: 2px solid #00f7ff;
+      margin-top: 40px;
+    }
+
+    footer a {
+      color: #00f7ff;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    footer a:hover {
+      color: #88f9ff;
+    }
+
+    /* === OVERLAYS === */
+    .avatar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .avatar-overlay.show {
+      display: flex;
+    }
+
+    .dashboard-overlay {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 100%;
+      max-width: 400px;
+      height: 100%;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border-left: 2px solid #00f7ff;
+      z-index: 9998;
+      transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow-y: auto;
+    }
+
+    .dashboard-overlay.show {
+      right: 0;
+    }
+
+    .editor-overlay {
+      position: fixed;
+      bottom: -100%;
+      left: 0;
+      width: 100%;
+      height: 60%;
+      background: linear-gradient(135deg, #16213e, #1a1a2e);
+      border-top: 2px solid #00f7ff;
+      z-index: 9997;
+      transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow-y: auto;
+    }
+
+    .editor-overlay.show {
+      bottom: 0;
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
+      .control-buttons {
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      
+      .control-btn {
+        min-width: 100px;
+        padding: 10px 16px;
+        font-size: 13px;
+      }
+      
+      .main-nav {
+        gap: 12px;
+      }
+      
+      .nav-item {
+        padding: 8px 12px;
+        font-size: 13px;
+      }
+      
+      .features {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      
+      .feature {
+        padding: 25px;
+      }
+      
+      .dashboard-overlay,
+      .editor-overlay {
+        max-width: 100%;
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header {
+        padding: 20px 15px;
+      }
+      
+      .control-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .control-btn {
+        width: 100%;
+        max-width: 200px;
+      }
+      
+      .main-nav {
+        justify-content: center;
+        gap: 8px;
+      }
+      
+      .nav-item .nav-text {
+        display: none;
+      }
+      
+      main {
+        padding: 30px 15px;
+      }
+    }
+  </style>
+  <header>
+    <div class="header-top">
+      <h1>🧠 Orbix Systems</h1>
+      <p>Inteligencia real para negocios reales.</p>
+    </div>
+    
+    <!-- Botones de Control Principal -->
+    <div class="control-buttons">
+      <button id="avatar-toggle" class="control-btn primary" title="Activar/Desactivar Avatar AI">
+        <span class="icon">🎭</span>
+        <span class="text">Avatar AI</span>
+      </button>
+      
+      <button id="avatar-editor-toggle" class="control-btn secondary" title="Editor de Avatar">
+        <span class="icon">✏️</span>
+        <span class="text">Editor</span>
+      </button>
+      
+      <button id="dashboard-toggle" class="control-btn tertiary" title="Dashboard Orbix">
+        <span class="icon">📊</span>
+        <span class="text">Dashboard</span>
+      </button>
+    </div>
+    
+    <!-- Navegación Principal -->
+    <nav class="main-nav">
+      <a href="/" class="nav-item active">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-text">Inicio</span>
+      </a>
+      <a href="/validaciones" class="nav-item">
+        <span class="nav-icon">✅</span>
+        <span class="nav-text">Validaciones</span>
+      </a>
+      <a href="/calculadora" class="nav-item">
+        <span class="nav-icon">🧮</span>
+        <span class="nav-text">Calculadora</span>
+      </a>
+      <a href="/sentinel" class="nav-item">
+        <span class="nav-icon">🛡️</span>
+        <span class="nav-text">Sentinel</span>
+      </a>
+      <a href="https://erp.sistemasorbix.com" target="_blank" class="nav-item external">
+        <span class="nav-icon">🚀</span>
+        <span class="nav-text">ERP</span>
+      </a>
+    </nav>
+  </header>
+
+  <!-- 🎭 AVATAR ORBIX AI INTEGRATION -->
+  <div id="avatar-container" class="orbix-avatar-container">
+    <!-- El avatar se inicializará automáticamente aquí -->
+  </div>
+
+  <!-- 🎨 OVERLAYS CONTAINERS - Se crearán dinámicamente por JS -->
+  <!-- Los overlays se generan automáticamente por orbix-ui-controls.js -->
+
+  <main>
+    <section class="features">
+      <div class="feature">
+        <h2>✅ Validaciones</h2>
+        <p>Procesamos validaciones como CCSS, SUGEF y más. IA + Odoo para decisiones inteligentes.</p>
+      </div>
+      <div class="feature">
+        <h2>🧮 Calculadora</h2>
+        <p>Herramienta financiera inteligente para clientes y asesores de crédito.</p>
+      </div>
+      <div class="feature">
+        <h2>🛡️ Sentinel</h2>
+        <p>Monitoreo continuo, detección de amenazas y visualización en tiempo real.</p>
+      </div>
+    </section>
+
+    <section id="hero">
+      <h2>🚀 La nueva era Orbix</h2>
+      <p>Automatización, inteligencia artificial y seguridad para todo tipo de empresas.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Orbix Systems S.A. | Contacto: <a href="mailto:info@sistemasorbix.com">info@sistemasorbix.com</a></p>
+  </footer>
+
+  <!-- 🛡️ Scripts de seguridad DOM para prevenir errores querySelector -->
+  <script src="/js/dom-safety.js"></script>
+  <script src="/js/orbix-patches.js"></script>
+  <script src="/js/orbix-modules.js"></script>
+  
+  <!-- 🎭 TalkingHead Avatar Integration -->
+  <script src="/js/avatar-config.js"></script>
+  <script src="/js/talkinghead-avatar.js"></script>
+  <script src="/js/avatar-settings.js"></script>
+  
+  <!-- 🎨 Orbix UI Controls - Manejo de overlays -->
+  <script src="/js/orbix-ui-controls.js"></script>
+</body>
+</html>
