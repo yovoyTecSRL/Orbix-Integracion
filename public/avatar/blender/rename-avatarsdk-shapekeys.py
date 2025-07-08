@@ -1,6 +1,4 @@
-import bpy
-
-# Zoile shape key renaming script
+import bpy  # Zoile shape key renaming script
 
 # Shape key maps for Avatar SDK
 shapekeyMap = [

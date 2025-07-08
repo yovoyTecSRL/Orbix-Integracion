@@ -1,225 +1,1110 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🧠 Orbix Systems</title>
-  <link rel="stylesheet" href="/styles.css" />
-  <link rel="stylesheet" href="/css/talkinghead-avatar.css" />
-  <link rel="stylesheet" href="/css/avatar-settings.css" />
-  <style>
-    body {
-  font-family: 'Segoe UI', sans-serif;
-  margin: 0;
-  background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
-  color: #ffffff;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orbix AI Systems - Inteligencia Real para Negocios Reales</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="icon" type="image/jpg" href="/static/avatar/favicon.jpg">
+<style>
+
+  
+  /* ===== VARIABLES CSS ===== */
+:root {
+    /* Colores principales */
+    --primary-color: #00ffcc;
+    --secondary-color: #ff6347;
+    --accent-color: #0066ff;
+    --dark-bg: #0a0a0a;
+    --darker-bg: #050505;
+    --light-text: #ffffff;
+    --muted-text: #b0b0b0;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    
+    /* Fuentes */
+    --font-primary: 'Orbitron', monospace;
+    --font-secondary: 'Inter', sans-serif;
+    --font-code: 'Fira Code', monospace;
+    
+    /* Sombras y efectos */
+    --glow-primary: 0 0 20px var(--primary-color);
+    --glow-secondary: 0 0 20px var(--secondary-color);
+    --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.3);
+    --shadow-floating: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
-header {
-  background-color: #0e0e0e;
-  padding: 20px;
-  text-align: center;
-  border-bottom: 3px solid #00f7ff;
+/* ===== RESET Y BASE ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-header h1 {
-  margin: 0;
-  color: #00f7ff;
-  font-size: 36px;
-  text-shadow: 0 0 6px #00f7ff;
+html {
+    scroll-behavior: smooth;
 }
 
-header p {
-  margin: 5px 0 15px;
-  font-size: 16px;
-  color: #88f9ff;
+body {
+    font-family: var(--font-secondary);
+    background: linear-gradient(135deg, 
+        var(--darker-bg) 0%, 
+        var(--dark-bg) 50%, 
+        #1a1a2e 100%);
+    color: var(--light-text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
 }
 
-nav a {
-  margin: 0 12px;
-  color: #00f7ff;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 16px;
-  transition: color 0.2s ease;
+/* ===== LOADING SCREEN ===== */
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--darker-bg);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeOut 2s ease-in-out 3s forwards;
 }
 
-nav a:hover {
-  color: #ffffff;
-  text-decoration: underline;
+.loading-content {
+    text-align: center;
 }
 
-main {
-  padding: 40px 20px;
-  max-width: 960px;
-  margin: auto;
+.loading-logo {
+    font-family: var(--font-primary);
+    font-size: 4rem;
+    font-weight: 900;
+    color: var(--primary-color);
+    text-shadow: var(--glow-primary);
+    margin-bottom: 2rem;
+    animation: pulse 2s infinite;
 }
 
-.features {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 30px;
-  justify-content: center;
-  margin-bottom: 60px;
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 3px solid rgba(0, 255, 204, 0.1);
+    border-top: 3px solid var(--primary-color);
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    animation: spin 1s linear infinite;
 }
 
-.feature {
-  background-color: #1b1f23;
-  padding: 20px;
-  border-radius: 10px;
-  width: 280px;
-  text-align: center;
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+.loading-text {
+    color: var(--muted-text);
+    font-size: 1.1rem;
+    animation: fadeInOut 2s infinite;
 }
 
-.feature h2 {
-  color: #00f7ff;
+@keyframes fadeOut {
+    to { opacity: 0; visibility: hidden; }
 }
 
-.feature p {
-  color: #dddddd;
-  font-size: 14px;
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
 }
 
-#hero {
-  text-align: center;
-  margin-top: 60px;
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
-#hero h2 {
-  font-size: 28px;
-  color: #00f7ff;
-  margin-bottom: 10px;
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
 }
 
-#hero p {
-  font-size: 16px;
-  color: #cccccc;
+/* ===== HEADER ===== */
+.main-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--glass-border);
+    z-index: 1000;
+    transition: all 0.3s ease;
 }
 
-footer {
-  background-color: #0e0e0e;
-  text-align: center;
-  padding: 15px;
-  font-size: 14px;
-  color: #cccccc;
-  border-top: 2px solid #00f7ff;
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
 }
 
-footer a {
-  color: #00f7ff;
-  text-decoration: none;
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+.logo {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+}
+
+.logo-text {
+    font-family: var(--font-primary);
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--primary-color);
+    text-shadow: var(--glow-primary);
+    line-height: 1;
+}
+
+.logo-subtitle {
+    font-family: var(--font-code);
+    font-size: 0.8rem;
+    color: var(--muted-text);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.main-nav {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-link {
+    color: var(--light-text);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 0.5rem 0;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary-color);
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* ===== HERO SECTION ===== */
+.hero {
+    padding: 8rem 0 4rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 20%, rgba(0, 255, 204, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 99, 71, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.hero-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.avatar-section {
+    text-align: center;
+    order: 2;
 }
 
 .avatar-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 20px;
-        }
-        .avatar-preview {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 3px solid #4F46E5;
-            object-fit: cover;
-            margin-bottom: 20px;
-        }
-        .upload-form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-width: 300px;
-        }
-  </style>
-  <header>
-    <h1>🧠 Orbix Systems</h1>
-    <p>Inteligencia real para negocios reales.</p>
-    <nav>
-      <a href="/">Inicio</a>
-      <a href="/validaciones">✅ Validaciones</a>
-      <a href="/calculadora">🧮 Calculadora</a>
-      <a href="/sentinel">🛡️ Sentinel</a>
-      <a href="https://erp.sistemasorbix.com" target="_blank">🚀 ERP</a>
-    </nav>
-  </header>
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
 
-  <!-- 🎭 AVATAR ORBIX AI INTEGRATION -->
-  <div id="avatar-container" class="orbix-avatar-container">
-    <!-- El avatar se inicializará automáticamente aquí -->
-  </div>
+#avatar-frame {
+    border-radius: 20px;
+    background: var(--glass-bg);
+    border: 2px solid var(--glass-border);
+    box-shadow: var(--shadow-floating);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
 
-  <main>
-    <section class="features">
-      <div class="feature">
-        <h2>✅ Validaciones</h2>
-        <p>Procesamos validaciones como CCSS, SUGEF y más. IA + Odoo para decisiones inteligentes.</p>
-      </div>
-      <div class="feature">
-        <h2>🧮 Calculadora</h2>
-        <p>Herramienta financiera inteligente para clientes y asesores de crédito.</p>
-      </div>
-      <div class="feature">
-        <h2>🛡️ Sentinel</h2>
-        <p>Monitoreo continuo, detección de amenazas y visualización en tiempo real.</p>
-      </div>
-    </section>
+#avatar-frame:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px rgba(0, 255, 204, 0.2);
+}
 
-    <section id="hero">
-      <h2>🚀 La nueva era Orbix</h2>
-      <p>Automatización, inteligencia artificial y seguridad para todo tipo de empresas.</p>
-    </section>
+.edit-avatar-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
 
-    <div class="avatar-container">
-        <h1>Orbix AI Systems</h1>
-        <img id="avatarPreview" class="avatar-preview" src="/api/avatar/default" alt="Avatar">
-        
-        <form class="upload-form" id="avatarForm" enctype="multipart/form-data">
-            <input type="file" id="avatarInput" name="avatar" accept="image/*" required>
-            <button type="submit">Subir Avatar</button>
-        </form>
+.edit-avatar-btn:hover {
+    background: var(--primary-color);
+    color: var(--dark-bg);
+    box-shadow: var(--glow-primary);
+    transform: scale(1.1);
+}
+
+.avatar-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: var(--muted-text);
+    font-size: 0.9rem;
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    animation: pulse 2s infinite;
+}
+
+.status-indicator.active {
+    box-shadow: 0 0 10px var(--primary-color);
+}
+
+.intro-section {
+    order: 1;
+}
+
+.hero-title {
+    font-family: var(--font-primary);
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, var(--light-text) 0%, var(--primary-color) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.highlight {
+    color: var(--primary-color);
+    text-shadow: var(--glow-primary);
+    -webkit-text-fill-color: var(--primary-color);
+}
+
+.hero-description {
+    font-size: 1.2rem;
+    color: var(--muted-text);
+    margin-bottom: 2.5rem;
+    line-height: 1.8;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* ===== BOTONES ===== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    border: none;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    color: var(--dark-bg);
+    box-shadow: 0 10px 30px rgba(0, 255, 204, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(0, 255, 204, 0.4);
+}
+
+.btn-secondary {
+    background: var(--glass-bg);
+    color: var(--light-text);
+    border: 2px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: translateY(-3px);
+}
+
+.btn-test {
+    background: var(--secondary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+.btn-test:hover {
+    background: #ff4500;
+    transform: translateY(-2px);
+}
+
+/* ===== FEATURES SECTION ===== */
+.features {
+    padding: 6rem 0;
+    position: relative;
+}
+
+.section-title {
+    font-family: var(--font-primary);
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 3rem;
+    color: var(--primary-color);
+    text-shadow: var(--glow-primary);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.feature-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0, 255, 204, 0.05) 0%, rgba(255, 99, 71, 0.05) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.feature-card:hover::before {
+    opacity: 1;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--primary-color);
+    box-shadow: 0 20px 40px rgba(0, 255, 204, 0.2);
+}
+
+.feature-icon {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.feature-card h4 {
+    font-family: var(--font-primary);
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: var(--light-text);
+}
+
+.feature-card p {
+    color: var(--muted-text);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.feature-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.feature-link:hover {
+    color: var(--light-text);
+    text-shadow: var(--glow-primary);
+}
+
+/* ===== MODAL ===== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: var(--dark-bg);
+    border: 2px solid var(--glass-border);
+    border-radius: 20px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.modal-header h3 {
+    font-family: var(--font-primary);
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--muted-text);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+    color: var(--primary-color);
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.editor-section {
+    margin-bottom: 1.5rem;
+}
+
+.editor-label {
+    display: block;
+    color: var(--light-text);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.editor-input,
+.editor-select,
+.editor-file {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    color: var(--light-text);
+    font-family: var(--font-secondary);
+    transition: all 0.3s ease;
+}
+
+.editor-input:focus,
+.editor-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
+}
+
+.checkbox-group {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin-right: 0.5rem;
+    width: auto;
+}
+
+.checkmark {
+    margin-left: 0.5rem;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 1.5rem 2rem;
+    border-top: 1px solid var(--glass-border);
+}
+
+/* ===== FOOTER ===== */
+.main-footer {
+    background: var(--darker-bg);
+    border-top: 1px solid var(--glass-border);
+    padding: 2rem 0;
+    margin-top: 4rem;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.footer-logo .logo-text {
+    font-family: var(--font-primary);
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.footer-logo .logo-subtitle {
+    font-family: var(--font-code);
+    font-size: 0.7rem;
+    color: var(--muted-text);
+}
+
+.footer-text {
+    color: var(--muted-text);
+    font-size: 0.9rem;
+}
+
+.footer-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.footer-links a {
+    color: var(--muted-text);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: var(--primary-color);
+}
+
+.footer-links a:hover {
+    color: var(--primary-color);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+    .hero-content {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+        text-align: center;
+    }
+    
+    .avatar-section {
+        order: 1;
+    }
+    
+    .intro-section {
+        order: 2;
+    }
+    
+    .hero-title {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 1rem;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .main-nav {
+        gap: 1rem;
+    }
+    
+    .hero {
+        padding: 6rem 0 3rem;
+    }
+    
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+        max-width: 300px;
+    }
+    
+    #avatar-frame {
+        width: 300px;
+        height: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-text {
+        font-size: 1.5rem;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-description {
+        font-size: 1rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 1rem;
+    }
+    
+    .modal-body,
+    .modal-header,
+    .modal-footer {
+        padding: 1rem;
+    }
+    
+    #avatar-frame {
+        width: 250px;
+        height: 250px;
+    }
+}
+
+/* ===== ANIMACIONES ADICIONALES ===== */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.feature-card[data-aos="fade-up"] {
+    animation: slideInUp 0.6s ease forwards;
+}
+
+.intro-section {
+    animation: slideInLeft 0.8s ease 0.2s forwards;
+    opacity: 0;
+}
+
+.avatar-section {
+    animation: slideInRight 0.8s ease 0.4s forwards;
+    opacity: 0;
+}
+
+/* ===== EFECTOS HOVER ADICIONALES ===== */
+.feature-card:hover .feature-icon svg {
+    transform: scale(1.1) rotate(5deg);
+    transition: transform 0.3s ease;
+}
+
+.btn svg {
+    transition: transform 0.3s ease;
+}
+
+.btn:hover svg {
+    transform: translateX(5px);
+}
+
+/* ===== PERSONALIZACIÓN DEL SCROLLBAR ===== */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-color);
+}
+
+
+</style>
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">ORBIX</div>
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Iniciando sistemas de IA...</div>
+        </div>
     </div>
-  </main>
 
-  <footer>
-    <p>© 2025 Orbix Systems S.A. | Contacto: <a href="mailto:info@sistemasorbix.com">info@sistemasorbix.com</a></p>
-  </footer>
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">
+                    <span class="logo-text">ORBIX</span>
+                    <span class="logo-subtitle">AI Systems</span>
+                </h1>
+                <nav class="main-nav">
+                    <a href="#sistemas" class="nav-link">Sistemas</a>
+                    <a href="#servicios" class="nav-link">Servicios</a>
+                    <a href="#contacto" class="nav-link">Contacto</a>
+                </nav>
+            </div>
+        </div>
+    </header>
 
-  <!-- 🛡️ Scripts de seguridad DOM para prevenir errores querySelector -->
-  <script src="/js/dom-safety.js"></script>
-  <script src="/js/orbix-patches.js"></script>
-  <script src="/js/orbix-modules.js"></script>
-  
-  <!-- 🎭 TalkingHead Avatar Integration -->
-  <script src="/js/avatar-config.js"></script>
-  <script src="/js/talkinghead-avatar.js"></script>
-  <script src="/js/avatar-settings.js"></script>
-  <script>
-        document.getElementById('avatarForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData();
-            const fileInput = document.getElementById('avatarInput');
-            formData.append('avatar', fileInput.files[0]);
-            
-            try {
-                const response = await fetch('/upload-avatar', {
-                    method: 'POST',
-                    body: formData
-                });
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="avatar-section">
+                        <div class="avatar-container">
+                            <iframe id="avatar-frame" 
+                                    src="/static/avatar/index.html" 
+                                    width="400" 
+                                    height="400"
+                                    frameborder="0"
+                                    allow="microphone">
+                            </iframe>
+                            <button id="edit-avatar-btn" class="edit-avatar-btn" title="Configurar Avatar">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.82,11.69,4.82,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="avatar-status">
+                            <div class="status-indicator active"></div>
+                            <span id="avatar-name">EVA</span> está lista
+                        </div>
+                    </div>
+                    <div class="intro-section">
+                        <h2 class="hero-title">
+                            Transformamos tu negocio con 
+                            <span class="highlight">IA aplicada</span>
+                        </h2>
+                        <p class="hero-description">
+                            Soluciones integradas, análisis automatizado y sistemas inteligentes 
+                            que revolucionan la manera de hacer negocios.
+                        </p>
+                        <div class="cta-buttons">
+                            <a href="validaciones.html" class="btn btn-primary">
+                                <span>Ver Validaciones</span>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                                </svg>
+                            </a>
+                            <a href="sentinel.html" class="btn btn-secondary">
+                                <span>Dashboard Sentinel</span>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features" id="sistemas">
+            <div class="container">
+                <h3 class="section-title">Nuestros Sistemas IA</h3>
+                <div class="features-grid">
+                    <div class="feature-card" data-aos="fade-up">
+                        <div class="feature-icon">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 7.5V8.5C15 9.88 13.88 11 12.5 11C11.12 11 10 9.88 10 8.5V7.5L4 7V9C4 10.1 4.9 11 6 11V21C6 22.1 6.9 23 8 23H16C17.1 23 18 22.1 18 21V11C19.1 11 20 10.1 20 9Z"/>
+                            </svg>
+                        </div>
+                        <h4>Validación Financiera</h4>
+                        <p>Análisis automatizado de riesgos y validación de datos financieros en tiempo real.</p>
+                        <a href="validaciones.html" class="feature-link">Explorar →</a>
+                    </div>
+
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="feature-icon">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z"/>
+                            </svg>
+                        </div>
+                        <h4>Sistema Sentinel</h4>
+                        <p>Monitoreo inteligente y alertas automatizadas para proteger tu negocio 24/7.</p>
+                        <a href="sentinel.html" class="feature-link">Explorar →</a>
+                    </div>
+
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="feature-icon">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19,3H5C3.9,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M13,13H18V16H13V13M13,9H18V12H13V9M13,5H18V8H13V5M10,7H6V10H10V7M12,7V10H11V7H12M10,5H12V6H10V5M6,5H9V6H6V5M12,11V17H11V11H12M10,11H6V17H10V11M6,19V18H18V19H6Z"/>
+                            </svg>
+                        </div>
+                        <h4>Calculadora IA</h4>
+                        <p>Cálculos complejos y proyecciones financieras con inteligencia artificial avanzada.</p>
+                        <a href="calculadora.html" class="feature-link">Explorar →</a>
+                    </div>
+
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                        <div class="feature-icon">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.22,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.22,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"/>
+                            </svg>
+                        </div>
+                        <h4>Integración Personalizada</h4>
+                        <p>Conectamos nuestros sistemas con tu infraestructura existente de manera fluida.</p>
+                        <a href="#contacto" class="feature-link">Contactar →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Avatar Editor Modal -->
+    <div id="avatar-editor" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Configurar Avatar</h3>
+                <button class="modal-close" id="close-editor">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="editor-section">
+                    <label class="editor-label">
+                        <span>Nombre del Avatar:</span>
+                        <input type="text" id="avatar-name-input" value="EVA" class="editor-input">
+                    </label>
+                </div>
                 
-                const result = await response.json();
-                
-                if (response.ok) {
-                    document.getElementById('avatarPreview').src = result.avatarUrl;
-                    alert('Avatar subido exitosamente');
-                } else {
-                    alert('Error: ' + result.error);
-                }
-            } catch (error) {
-                alert('Error al subir el avatar');
-            }
-        });
-    </script>
+                <div class="editor-section">
+                    <label class="editor-label">
+                        <span>Modelo de Avatar:</span>
+                        <select id="avatar-model-select" class="editor-select">
+                            <option value="brunette">Brunette (Predeterminado)</option>
+                            <option value="custom">URL Personalizada</option>
+                        </select>
+                    </label>
+                    <input type="text" id="avatar-custom-url" class="editor-input" placeholder="URL del modelo personalizado" style="display: none;">
+                </div>
+
+                <div class="editor-section">
+                    <label class="editor-label">
+                        <span>Imagen de Fondo:</span>
+                        <input type="file" id="avatar-background" accept="image/*" class="editor-file">
+                    </label>
+                </div>
+
+                <div class="editor-section">
+                    <span class="editor-label">Animaciones:</span>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="toggle-blink" checked>
+                            <span class="checkmark"></span>
+                            Parpadeo Natural
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="toggle-breathing" checked>
+                            <span class="checkmark"></span>
+                            Respiración
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="toggle-head-movement" checked>
+                            <span class="checkmark"></span>
+                            Movimiento de Cabeza
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="toggle-lip-sync" checked>
+                            <span class="checkmark"></span>
+                            Sincronización Labial
+                        </label>
+                    </div>
+                </div>
+
+                <div class="editor-section">
+                    <label class="editor-label">
+                        <span>Voz (TTS):</span>
+                        <select id="avatar-voice-select" class="editor-select">
+                            <option value="es-ES-ElviraNeural">Elvira (Español)</option>
+                            <option value="es-ES-AlvaroNeural">Alvaro (Español)</option>
+                            <option value="en-US-AriaNeural">Aria (English)</option>
+                            <option value="en-US-GuyNeural">Guy (English)</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="editor-section">
+                    <button id="test-avatar-voice" class="btn btn-test">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8,5.14V19.14L19,12.14L8,5.14Z"/>
+                        </svg>
+                        Probar Voz
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="reset-avatar-config" class="btn btn-secondary">Restaurar</button>
+                <button id="save-avatar-config" class="btn btn-primary">Guardar Configuración</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-text">ORBIX</span>
+                    <span class="logo-subtitle">AI Systems</span>
+                </div>
+                <div class="footer-text">
+                    &copy; 2025 Orbix AI Systems — Inteligencia Real para Negocios Reales
+                </div>
+                <div class="footer-links">
+                    <a href="#privacidad">Privacidad</a>
+                    <a href="#terminos">Términos</a>
+                    <a href="#soporte">Soporte</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/static/js/avatar-manager.js"></script>
+    <script src="/static/js/main.js"></script>
 </body>
 </html>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const loadingScreen = document.getElementById('loading-screen');
+        setTimeout(() => {
+            loadingScreen.style.display = 'none';
+        }, 3000); // Simula un tiempo de carga de 3 segundos
+    }); 

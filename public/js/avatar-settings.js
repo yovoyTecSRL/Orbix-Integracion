@@ -398,6 +398,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 export default AvatarSettings;
+
+class AvatarSettingsPanel {
+    constructor() {
+        this.settings = {};
+        this.panel = null;
+        this.overlay = null;
     }
 
     applyGlobalSettings() {

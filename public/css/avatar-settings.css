@@ -503,8 +503,6 @@ body.settings-open {
 .avatar-settings-panel.active .settings-content {
     animation: fadeInScale 0.5s ease 0.2s both;
 }
-    transition: all 0.3s ease;
-}
 
 /* === ANIMACIONES DE ENTRADA === */
 .settings-section {
