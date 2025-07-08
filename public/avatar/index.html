@@ -49,7 +49,7 @@
     overflow: hidden; text-align: left; touch-action: manipulation;
     font-family: "SansRegular", sans-serif; font-size: 1.4rem;
     line-height: 1.4rem; scrollbar-color: var(--colorToolbarPassive) transparent;
-    scrollbar-width: 20px; scrollbar-height: 20px;
+    scrollbar-width: thin;
   }
 
   ::-webkit-scrollbar { width: 20px; height: 20px; }
@@ -306,7 +306,7 @@
   }
   .nodrag {
     -webkit-user-drag: none; -khtml-user-drag: none; -moz-user-drag: none;
-    -o-user-drag: none; -ms-user-drag: none; user-drag: none;
+    -o-user-drag: none; -ms-user-drag: none;
   }
   .disabled { opacity: 0.5; cursor: default; pointer-events: none; }
   .hidden { display: none; }

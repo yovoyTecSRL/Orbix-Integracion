@@ -12,7 +12,7 @@ const port = 3000;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
 
 app.use(bodyParser.json());
-app.use(express.static("public")); // sirve index.html y otros assets
+app.use(express.static(path.join(__dirname, "public"))); // sirve archivos desde el directorio public
 
 
 // Ruta principal
@@ -40,7 +40,12 @@ app.post("/gtts/", (req, res) => {
 
 
 app.get("/siteconfig.js", (req, res) => {
-  res.sendFile(path.join(__dirname, "config", "siteconfig.js")); // si lo tenés en /config/
+  res.sendFile(path.join(__dirname, "public", "siteconfig.js")); // archivo en el directorio public
+});
+
+// Servir archivo de configuración
+app.get("/config/config.js", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "config", "config.js"));
 });
 
 // Ruta simulada: /openai/v1/moderations
