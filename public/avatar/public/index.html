@@ -2181,16 +2181,11 @@ function addMessage(user = false) {
 
   message.append('p');
 
-  const nodeSessions = d3.select("#right-sessions").node();
-  nodeSessions.scrollTop = nodeSessions.scrollHeight;
-
   return message.node();
 }
 
 // Add text to session
 function addText(node,s) {
-  const nodeSessions = d3.select("#right-sessions").node();
-  const onbottom = Math.abs( nodeSessions.scrollHeight - nodeSessions.scrollTop - nodeSessions.clientHeight) < 20;
   let last = node.lastElementChild;
   let markdown = (last.dataset.markdown || '') + s;
   let ndx = markdown.lastIndexOf('\n\n');
@@ -3628,13 +3623,6 @@ document.addEventListener('DOMContentLoaded', async function(e) {
       d3.select('#'+show)
         .classed("hidden", false)
         .selectAll("textarea").dispatch("keyup");
-      if ( parts[0] === 'right' ) {
-        d3.select("#right-sessions").classed("hidden", true);
-      }
-    } else {
-      if ( parts[0] === 'right' ) {
-        d3.select("#right-sessions").classed("hidden", false);
-      }
     }
   });
 
@@ -4210,14 +4198,6 @@ document.addEventListener('DOMContentLoaded', async function(e) {
 
         <div class="row noselect nodrag">
 
-          <div class="command starttransparent" data-i18n-title="Session" data-show="right-session">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M2 6C2 5.44772 2.44772 5 3 5H21C21.5523 5 22 5.44772 22 6C22 6.55228 21.5523 7 21 7H3C2.44772 7 2 6.55228 2 6Z" fill="currentColor" />
-              <path d="M2 12.0322C2 11.4799 2.44772 11.0322 3 11.0322H21C21.5523 11.0322 22 11.4799 22 12.0322C22 12.5845 21.5523 13.0322 21 13.0322H3C2.44772 13.0322 2 12.5845 2 12.0322Z" fill="currentColor" />
-              <path d="M3 17.0645C2.44772 17.0645 2 17.5122 2 18.0645C2 18.6167 2.44772 19.0645 3 19.0645H21C21.5523 19.0645 22 18.6167 22 18.0645C22 17.5122 21.5523 17.0645 21 17.0645H3Z" fill="currentColor" />
-            </svg>
-          </div>
-
           <div id="name" class="text starttransparent">
             Nimet&ouml;n
           </div>
@@ -4729,57 +4709,6 @@ document.addEventListener('DOMContentLoaded', async function(e) {
             </div>
           </div>
 
-        </div>
-        <div id="right-sessions" class="page">
-          <div id="sessions">
-            <div id="session-0" class="session selected"></div>
-            <div id="session-1" class="session"></div>
-          </div>
-        </div>
-
-        <div id="right-session" class="page noselect nodrag hidden">
-
-          <div class="vbar"></div>
-
-          <div class="row">
-            <div class="text label" data-i18n-text="Session"></div>
-            <div id="directory" class="column fill">
-              <div id="entry-0" class="entry row">
-                <div class="command fill selected" data-session="0">Nimet&ouml;n</div>
-                <div class="command" data-entry-move="up">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M17.6569 16.2427L19.0711 14.8285L12.0001 7.75739L4.92896 14.8285L6.34317 16.2427L12.0001 10.5858L17.6569 16.2427Z" fill="currentColor" />
-                  </svg>
-                </div>
-                <div class="command" data-entry-move="down">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M6.34317 7.75732L4.92896 9.17154L12 16.2426L19.0711 9.17157L17.6569 7.75735L12 13.4142L6.34317 7.75732Z" fill="currentColor" />
-                  </svg>
-                </div>
-              </div>
-              <div id="entry-1" class="entry row">
-                <div class="command fill" data-session="1">Nimet&ouml;n</div>
-                <div class="command" data-entry-move="up">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M17.6569 16.2427L19.0711 14.8285L12.0001 7.75739L4.92896 14.8285L6.34317 16.2427L12.0001 10.5858L17.6569 16.2427Z" fill="currentColor" />
-                  </svg>
-                </div>
-                <div class="command" data-entry-move="down">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M6.34317 7.75732L4.92896 9.17154L12 16.2426L19.0711 9.17157L17.6569 7.75735L12 13.4142L6.34317 7.75732Z" fill="currentColor" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-
-          <div class="vbar"></div>
-
-          <div class="row">
-            <div class="text">Note: API keys are not stored for security reasons.</div>
-          </div>
         </div>
 
       </div>
