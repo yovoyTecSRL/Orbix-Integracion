@@ -69,3 +69,10 @@ Thumbs.db
 
 # Carpetas no deseadas del proyecto anterior
 Sistemas-Orbix-SA-Dev-Orbix/
+
+# Docker y secretos
+.env
+.env.local
+.env.production
+logs/
+ssl/
