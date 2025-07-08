@@ -891,11 +891,31 @@ class TalkingHead {
       this.audioCtx.close();
     }
 
-    // Create a new context
-    if (sampleRate) {
-      this.audioCtx = new AudioContext({ sampleRate });
-    } else {
-      this.audioCtx = new AudioContext();
+    // Create a new context - defer creation until user interaction
+    try {
+      if (sampleRate) {
+        this.audioCtx = new AudioContext({ sampleRate });
+      } else {
+        this.audioCtx = new AudioContext();
+      }
+      
+      // Check if context needs to be resumed (due to autoplay policy)
+      if (this.audioCtx.state === 'suspended') {
+        console.warn('AudioContext is suspended. Will resume on first user interaction.');
+        // Store the resume function to be called later
+        this._resumeAudioContext = () => {
+          if (this.audioCtx && this.audioCtx.state === 'suspended') {
+            this.audioCtx.resume().then(() => {
+              console.log('AudioContext resumed successfully');
+            }).catch(err => {
+              console.error('Failed to resume AudioContext:', err);
+            });
+          }
+        };
+      }
+    } catch (error) {
+      console.error('Failed to create AudioContext:', error);
+      return;
     }
     
     // Create audio nodes
@@ -3044,6 +3064,13 @@ class TalkingHead {
   */
   async startSpeaking( force = false ) {
     if ( !this.armature || (this.isSpeaking && !force) ) return;
+    
+    // Resume AudioContext if suspended (handles autoplay policy)
+    if (this._resumeAudioContext) {
+      this._resumeAudioContext();
+      this._resumeAudioContext = null; // Only call once
+    }
+    
     this.stateName = 'speaking';
     this.isSpeaking = true;
     if ( this.speechQueue.length ) {
@@ -3864,6 +3891,23 @@ class TalkingHead {
   */
   stopListening() {
     this.isListening = false;
+  }
+
+  /**
+   * Resume the AudioContext if it's suspended due to autoplay policy
+   * This should be called after a user interaction (click, touch, etc.)
+   */
+  resumeAudioContext() {
+    if (this.audioCtx && this.audioCtx.state === 'suspended') {
+      return this.audioCtx.resume().then(() => {
+        console.log('AudioContext resumed successfully after user interaction');
+        return true;
+      }).catch(err => {
+        console.error('Failed to resume AudioContext:', err);
+        return false;
+      });
+    }
+    return Promise.resolve(true);
   }
 
   /**
