@@ -1,5 +1,7 @@
 import bpy
 
+# Zoile shape key renaming script
+
 # Shape key maps for Avatar SDK
 shapekeyMap = [
     [ "sil", "viseme_sil" ], [ "PP", "viseme_PP" ], [ "FF", "viseme_FF" ],
@@ -31,6 +33,5 @@ for r in bpy.context.scene.objects:
         if hasShapekeys(o):
             keys = o.data.shape_keys.key_blocks
             for m in shapekeyMap:
-                idx = keys.find(m[0])
-                if idx != -1:
-                    keys[idx].name = m[1]
+                if m[0] in keys:
+                    keys[m[0]].name = m[1]
