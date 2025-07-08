@@ -3,134 +3,451 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🧠 Orbix Systems</title>
+  <title>🧠 Orbix Systems - Avatar IA Interactivo</title>
+  
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Estilos -->
   <link rel="stylesheet" href="/styles.css" />
   <link rel="stylesheet" href="/css/talkinghead-avatar.css" />
   <link rel="stylesheet" href="/css/avatar-settings.css" />
+  <link rel="stylesheet" href="/css/orbix-ui-overlays.css" />
+  
+  <!-- TalkingHead.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.155.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/talkinghead@1.1.0/dist/talkinghead.min.js"></script>
+  
   <style>
+    :root {
+      --orbix-primary: #00f7ff;
+      --orbix-secondary: #4F46E5;
+      --orbix-dark: #0f0f23;
+      --orbix-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+      --orbix-glow: 0 0 20px rgba(0, 247, 255, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-  font-family: 'Segoe UI', sans-serif;
-  margin: 0;
-  background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
-  color: #ffffff;
-}
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      background: var(--orbix-gradient);
+      color: #ffffff;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
 
-header {
-  background-color: #0e0e0e;
-  padding: 20px;
-  text-align: center;
-  border-bottom: 3px solid #00f7ff;
-}
+    /* Header futurista */
+    .orbix-header {
+      background: rgba(15, 15, 35, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 20px 0;
+      border-bottom: 2px solid var(--orbix-primary);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-header h1 {
-  margin: 0;
-  color: #00f7ff;
-  font-size: 36px;
-  text-shadow: 0 0 6px #00f7ff;
-}
+    .orbix-header .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-header p {
-  margin: 5px 0 15px;
-  font-size: 16px;
-  color: #88f9ff;
-}
+    .orbix-logo {
+      font-family: 'Orbitron', monospace;
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--orbix-primary);
+      text-shadow: var(--orbix-glow);
+      letter-spacing: 2px;
+    }
 
-nav a {
-  margin: 0 12px;
-  color: #00f7ff;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 16px;
-  transition: color 0.2s ease;
-}
+    .orbix-nav {
+      display: flex;
+      gap: 30px;
+    }
 
-nav a:hover {
-  color: #ffffff;
-  text-decoration: underline;
-}
+    .orbix-nav a {
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      padding: 8px 16px;
+      border-radius: 8px;
+    }
 
-main {
-  padding: 40px 20px;
-  max-width: 960px;
-  margin: auto;
-}
+    .orbix-nav a:hover {
+      color: var(--orbix-primary);
+      background: rgba(0, 247, 255, 0.1);
+      transform: translateY(-2px);
+    }
 
-.features {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 30px;
-  justify-content: center;
-  margin-bottom: 60px;
-}
+    /* Contenedor principal del avatar */
+    .orbix-avatar-main {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 80vh;
+      padding: 40px 20px;
+      position: relative;
+    }
 
-.feature {
-  background-color: #1b1f23;
-  padding: 20px;
-  border-radius: 10px;
-  width: 280px;
-  text-align: center;
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
-}
+    .avatar-stage {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 40px;
+      border: 1px solid rgba(0, 247, 255, 0.2);
+      box-shadow: var(--orbix-glow);
+      position: relative;
+      overflow: hidden;
+    }
 
-.feature h2 {
-  color: #00f7ff;
-}
+    .avatar-stage::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(transparent, rgba(0, 247, 255, 0.1), transparent);
+      animation: rotate 10s linear infinite;
+      z-index: -1;
+    }
 
-.feature p {
-  color: #dddddd;
-  font-size: 14px;
-}
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
 
-#hero {
-  text-align: center;
-  margin-top: 60px;
-}
+    #avatarCanvas {
+      border-radius: 15px;
+      background: linear-gradient(45deg, rgba(0, 0, 0, 0.2), rgba(0, 247, 255, 0.1));
+      border: 2px solid rgba(0, 247, 255, 0.3);
+      box-shadow: inset 0 0 20px rgba(0, 247, 255, 0.1);
+    }
 
-#hero h2 {
-  font-size: 28px;
-  color: #00f7ff;
-  margin-bottom: 10px;
-}
+    .avatar-info {
+      text-align: center;
+      margin-top: 20px;
+    }
 
-#hero p {
-  font-size: 16px;
-  color: #cccccc;
-}
+    .avatar-name {
+      font-family: 'Orbitron', monospace;
+      font-size: 24px;
+      color: var(--orbix-primary);
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(0, 247, 255, 0.5);
+    }
 
-footer {
-  background-color: #0e0e0e;
-  text-align: center;
-  padding: 15px;
-  font-size: 14px;
-  color: #cccccc;
-  border-top: 2px solid #00f7ff;
-}
+    .avatar-status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #88f9ff;
+      font-size: 14px;
+    }
 
-footer a {
-  color: #00f7ff;
-  text-decoration: none;
-}
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #00ff00;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
 
-.avatar-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 20px;
-        }
-        .avatar-preview {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 3px solid #4F46E5;
-            object-fit: cover;
-            margin-bottom: 20px;
-        }
-        .upload-form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-width: 300px;
-        }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .avatar-controls {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 25px;
+      flex-wrap: wrap;
+    }
+
+    .orbix-btn {
+      background: linear-gradient(45deg, var(--orbix-secondary), var(--orbix-primary));
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 14px;
+      box-shadow: 0 4px 15px rgba(0, 247, 255, 0.3);
+    }
+
+    .orbix-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 247, 255, 0.5);
+    }
+
+    .orbix-btn.secondary {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(0, 247, 255, 0.3);
+    }
+
+    /* Panel de configuración del avatar */
+    .avatar-editor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .editor-panel {
+      background: var(--orbix-dark);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+      border: 1px solid var(--orbix-primary);
+      box-shadow: var(--orbix-glow);
+      position: relative;
+    }
+
+    .editor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(0, 247, 255, 0.2);
+    }
+
+    .editor-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 20px;
+      color: var(--orbix-primary);
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: #999;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .close-btn:hover {
+      color: var(--orbix-primary);
+      background: rgba(0, 247, 255, 0.1);
+    }
+
+    .editor-section {
+      margin-bottom: 20px;
+    }
+
+    .editor-label {
+      display: block;
+      color: #88f9ff;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .editor-input, .editor-select {
+      width: 100%;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(0, 247, 255, 0.3);
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+    }
+
+    .editor-input:focus, .editor-select:focus {
+      outline: none;
+      border-color: var(--orbix-primary);
+      box-shadow: 0 0 10px rgba(0, 247, 255, 0.3);
+    }
+
+    /* Features section */
+    .features-section {
+      padding: 60px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 30px;
+      border: 1px solid rgba(0, 247, 255, 0.2);
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--orbix-glow);
+      border-color: var(--orbix-primary);
+    }
+
+    .feature-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(45deg, var(--orbix-secondary), var(--orbix-primary));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 24px;
+    }
+
+    .feature-title {
+      font-size: 20px;
+      color: var(--orbix-primary);
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    .feature-desc {
+      color: #cccccc;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .feature-link {
+      color: var(--orbix-primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .feature-link:hover {
+      text-shadow: 0 0 5px rgba(0, 247, 255, 0.5);
+    }
+
+    /* Footer */
+    .orbix-footer {
+      background: rgba(15, 15, 35, 0.95);
+      padding: 30px 20px;
+      text-align: center;
+      border-top: 1px solid var(--orbix-primary);
+      margin-top: 60px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .orbix-header .container {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .orbix-nav {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .avatar-stage {
+        padding: 20px;
+      }
+
+      #avatarCanvas {
+        width: 100% !important;
+        max-width: 320px;
+        height: auto !important;
+      }
+
+      .avatar-controls {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
+    /* Animaciones de carga */
+    .fade-in {
+      animation: fadeIn 1s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Loading screen */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--orbix-gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-content {
+      text-align: center;
+    }
+
+    .loading-logo {
+      font-family: 'Orbitron', monospace;
+      font-size: 48px;
+      color: var(--orbix-primary);
+      text-shadow: var(--orbix-glow);
+      margin-bottom: 30px;
+      animation: pulse 2s infinite;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(0, 247, 255, 0.3);
+      border-top: 3px solid var(--orbix-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      color: #88f9ff;
+      font-size: 16px;
+    }
   </style>
   <header>
     <h1>🧠 Orbix Systems</h1>
@@ -142,84 +459,495 @@ footer a {
       <a href="/sentinel">🛡️ Sentinel</a>
       <a href="https://erp.sistemasorbix.com" target="_blank">🚀 ERP</a>
     </nav>
-  </header>
-
-  <!-- 🎭 AVATAR ORBIX AI INTEGRATION -->
-  <div id="avatar-container" class="orbix-avatar-container">
-    <!-- El avatar se inicializará automáticamente aquí -->
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loadingScreen" class="loading-overlay">
+    <div class="loading-content">
+      <div class="loading-logo">ORBIX</div>
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Inicializando Avatar IA...</div>
+    </div>
   </div>
 
-  <main>
-    <section class="features">
-      <div class="feature">
-        <h2>✅ Validaciones</h2>
-        <p>Procesamos validaciones como CCSS, SUGEF y más. IA + Odoo para decisiones inteligentes.</p>
-      </div>
-      <div class="feature">
-        <h2>🧮 Calculadora</h2>
-        <p>Herramienta financiera inteligente para clientes y asesores de crédito.</p>
-      </div>
-      <div class="feature">
-        <h2>🛡️ Sentinel</h2>
-        <p>Monitoreo continuo, detección de amenazas y visualización en tiempo real.</p>
-      </div>
-    </section>
+  <!-- Header -->
+  <header class="orbix-header">
+    <div class="container">
+      <div class="orbix-logo">ORBIX</div>
+      <nav class="orbix-nav">
+        <a href="/">🏠 Inicio</a>
+        <a href="/validaciones">✅ Validaciones</a>
+        <a href="/calculadora">🧮 Calculadora</a>
+        <a href="/sentinel">🛡️ Sentinel</a>
+        <a href="https://erp.sistemasorbix.com" target="_blank">🚀 ERP</a>
+      </nav>
+    </div>
+  </header>
 
-    <section id="hero">
-      <h2>🚀 La nueva era Orbix</h2>
-      <p>Automatización, inteligencia artificial y seguridad para todo tipo de empresas.</p>
-    </section>
+  <!-- Avatar Principal -->
+  <main class="orbix-avatar-main">
+    <div class="avatar-stage fade-in">
+      <!-- Canvas donde se renderiza el avatar 3D -->
+      <canvas id="avatarCanvas" width="400" height="300"></canvas>
+      
+      <!-- Información del avatar -->
+      <div class="avatar-info">
+        <div class="avatar-name" id="avatarName">EVA</div>
+        <div class="avatar-status">
+          <div class="status-dot"></div>
+          <span id="avatarStatus">Avatar listo para interactuar</span>
+        </div>
+      </div>
 
-    <div class="avatar-container">
-        <h1>Orbix AI Systems</h1>
-        <img id="avatarPreview" class="avatar-preview" src="/api/avatar/default" alt="Avatar">
-        
-        <form class="upload-form" id="avatarForm" enctype="multipart/form-data">
-            <input type="file" id="avatarInput" name="avatar" accept="image/*" required>
-            <button type="submit">Subir Avatar</button>
-        </form>
+      <!-- Controles del avatar -->
+      <div class="avatar-controls">
+        <button class="orbix-btn" onclick="speakWelcome()">
+          🎤 Saludo
+        </button>
+        <button class="orbix-btn" onclick="speakDemo()">
+          💬 Demo
+        </button>
+        <button class="orbix-btn secondary" onclick="openAvatarEditor()">
+          ⚙️ Configurar
+        </button>
+        <button class="orbix-btn secondary" onclick="resetAvatar()">
+          🔄 Reiniciar
+        </button>
+      </div>
     </div>
   </main>
+  <!-- Features Section -->
+  <section class="features-section">
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">✅</div>
+        <div class="feature-title">Validaciones IA</div>
+        <div class="feature-desc">
+          Procesamiento inteligente de validaciones CCSS, SUGEF y más. 
+          Integración completa con Odoo para decisiones automatizadas.
+        </div>
+        <a href="/validaciones" class="feature-link">Explorar →</a>
+      </div>
 
-  <footer>
-    <p>© 2025 Orbix Systems S.A. | Contacto: <a href="mailto:info@sistemasorbix.com">info@sistemasorbix.com</a></p>
+      <div class="feature-card">
+        <div class="feature-icon">🧮</div>
+        <div class="feature-title">Calculadora Financiera</div>
+        <div class="feature-desc">
+          Herramienta avanzada para cálculos crediticios y proyecciones. 
+          Diseñada para asesores y clientes con IA predictiva.
+        </div>
+        <a href="/calculadora" class="feature-link">Explorar →</a>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <div class="feature-title">Sistema Sentinel</div>
+        <div class="feature-desc">
+          Monitoreo continuo, detección de amenazas y análisis en tiempo real. 
+          Protección 24/7 para tu infraestructura.
+        </div>
+        <a href="/sentinel" class="feature-link">Explorar →</a>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🚀</div>
+        <div class="feature-title">ERP Integrado</div>
+        <div class="feature-desc">
+          Sistema completo de gestión empresarial con IA. 
+          Automatización inteligente de procesos de negocio.
+        </div>
+        <a href="https://erp.sistemasorbix.com" target="_blank" class="feature-link">Acceder →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Avatar Editor Modal -->
+  <div id="avatarEditor" class="avatar-editor">
+    <div class="editor-panel">
+      <div class="editor-header">
+        <div class="editor-title">Configuración del Avatar</div>
+        <button class="close-btn" onclick="closeAvatarEditor()">&times;</button>
+      </div>
+
+      <div class="editor-section">
+        <label class="editor-label">Nombre del Avatar:</label>
+        <input type="text" id="avatarNameInput" class="editor-input" value="EVA" placeholder="Introduce un nombre...">
+      </div>
+
+      <div class="editor-section">
+        <label class="editor-label">Modelo de Avatar:</label>
+        <select id="avatarModelSelect" class="editor-select">
+          <option value="brunette">Brunette (Predeterminado)</option>
+          <option value="custom">URL Personalizada</option>
+        </select>
+        <input type="text" id="avatarCustomURL" class="editor-input" placeholder="https://ejemplo.com/avatar.glb" style="display: none; margin-top: 10px;">
+      </div>
+
+      <div class="editor-section">
+        <label class="editor-label">Voz del Avatar:</label>
+        <select id="avatarVoiceSelect" class="editor-select">
+          <option value="es-ES-ElviraNeural">Elvira (Español - Femenino)</option>
+          <option value="es-ES-AlvaroNeural">Álvaro (Español - Masculino)</option>
+          <option value="en-US-AriaNeural">Aria (English - Female)</option>
+          <option value="en-US-GuyNeural">Guy (English - Male)</option>
+        </select>
+      </div>
+
+      <div class="editor-section">
+        <label class="editor-label">Personalidad:</label>
+        <select id="avatarPersonalitySelect" class="editor-select">
+          <option value="professional">Profesional</option>
+          <option value="friendly">Amigable</option>
+          <option value="enthusiastic">Entusiasta</option>
+          <option value="calm">Calmado</option>
+        </select>
+      </div>
+
+      <div class="avatar-controls" style="margin-top: 25px;">
+        <button class="orbix-btn" onclick="testAvatarVoice()">🎵 Probar Voz</button>
+        <button class="orbix-btn" onclick="saveAvatarConfig()">💾 Guardar</button>
+        <button class="orbix-btn secondary" onclick="resetAvatarConfig()">🔄 Restaurar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="orbix-footer">
+    <p>© 2025 Orbix AI Systems S.A. | Inteligencia Real para Negocios Reales</p>
+    <p>Contacto: <a href="mailto:info@sistemasorbix.com">info@sistemasorbix.com</a></p>
   </footer>
 
-  <!-- 🛡️ Scripts de seguridad DOM para prevenir errores querySelector -->
+  <!-- Scripts -->
+  <!-- DOM Safety y Patches -->
   <script src="/js/dom-safety.js"></script>
   <script src="/js/orbix-patches.js"></script>
   <script src="/js/orbix-modules.js"></script>
   
-  <!-- 🎭 TalkingHead Avatar Integration -->
+  <!-- Avatar Scripts -->
   <script src="/js/avatar-config.js"></script>
   <script src="/js/talkinghead-avatar.js"></script>
   <script src="/js/avatar-settings.js"></script>
+
+  <!-- Avatar Integration Script -->
   <script>
-        document.getElementById('avatarForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData();
-            const fileInput = document.getElementById('avatarInput');
-            formData.append('avatar', fileInput.files[0]);
-            
-            try {
-                const response = await fetch('/upload-avatar', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const result = await response.json();
-                
-                if (response.ok) {
-                    document.getElementById('avatarPreview').src = result.avatarUrl;
-                    alert('Avatar subido exitosamente');
-                } else {
-                    alert('Error: ' + result.error);
-                }
-            } catch (error) {
-                alert('Error al subir el avatar');
-            }
+    let avatarHead = null;
+    let isAvatarLoaded = false;
+    let currentConfig = {
+      name: 'EVA',
+      model: '/avatars/brunette.glb',
+      voice: 'es-ES-ElviraNeural',
+      personality: 'professional'
+    };
+
+    // Cargar configuración desde localStorage
+    function loadAvatarConfig() {
+      const saved = localStorage.getItem('orbix-avatar-config');
+      if (saved) {
+        try {
+          currentConfig = { ...currentConfig, ...JSON.parse(saved) };
+        } catch (e) {
+          console.warn('Error loading avatar config:', e);
+        }
+      }
+      updateUI();
+    }
+
+    // Guardar configuración en localStorage
+    function saveAvatarConfig() {
+      const config = {
+        name: document.getElementById('avatarNameInput').value,
+        model: document.getElementById('avatarModelSelect').value === 'custom' 
+          ? document.getElementById('avatarCustomURL').value 
+          : '/avatars/brunette.glb',
+        voice: document.getElementById('avatarVoiceSelect').value,
+        personality: document.getElementById('avatarPersonalitySelect').value
+      };
+
+      currentConfig = config;
+      localStorage.setItem('orbix-avatar-config', JSON.stringify(config));
+      updateUI();
+      closeAvatarEditor();
+      
+      // Reinicializar avatar con nueva configuración
+      if (isAvatarLoaded) {
+        initializeAvatar();
+      }
+
+      showNotification('✅ Configuración guardada exitosamente');
+    }
+
+    // Actualizar UI con configuración actual
+    function updateUI() {
+      document.getElementById('avatarName').textContent = currentConfig.name;
+      document.getElementById('avatarNameInput').value = currentConfig.name;
+      
+      // Actualizar selects
+      if (currentConfig.model === '/avatars/brunette.glb') {
+        document.getElementById('avatarModelSelect').value = 'brunette';
+      } else {
+        document.getElementById('avatarModelSelect').value = 'custom';
+        document.getElementById('avatarCustomURL').value = currentConfig.model;
+        document.getElementById('avatarCustomURL').style.display = 'block';
+      }
+      
+      document.getElementById('avatarVoiceSelect').value = currentConfig.voice;
+      document.getElementById('avatarPersonalitySelect').value = currentConfig.personality;
+    }
+
+    // Inicializar Avatar 3D
+    async function initializeAvatar() {
+      try {
+        updateStatus('Cargando avatar 3D...');
+        
+        const canvas = document.getElementById('avatarCanvas');
+        
+        // Verificar si TalkingHead está disponible
+        if (typeof TalkingHead === 'undefined') {
+          console.warn('TalkingHead no disponible, usando placeholder');
+          showAvatarPlaceholder();
+          return;
+        }
+
+        // Configurar TalkingHead
+        avatarHead = new TalkingHead(canvas, {
+          ttsEndpoint: "https://api.openai.com/v1/audio/speech", // Fallback TTS
+          avatarUrl: currentConfig.model,
+          voice: currentConfig.voice,
+          modelPixelRatio: 2,
+          speakingIndicatorThreshold: 0.3,
+          cameraX: 0,
+          cameraY: 0,
+          cameraDistance: 1,
+          kiosk: false,
+          avatarMood: currentConfig.personality === 'happy' ? 1 : 0
         });
-    </script>
+
+        // Eventos del avatar
+        avatarHead.onAvatarLoaded = () => {
+          console.log('✅ Avatar cargado exitosamente');
+          isAvatarLoaded = true;
+          updateStatus('Avatar listo para interactuar');
+          hideLoadingScreen();
+          
+          // Animaciones naturales
+          startIdleAnimations();
+        };
+
+        avatarHead.onAvatarLoadError = (error) => {
+          console.error('❌ Error cargando avatar:', error);
+          showAvatarPlaceholder();
+          updateStatus('Error al cargar avatar');
+          hideLoadingScreen();
+        };
+
+        avatarHead.onSpeechStart = () => {
+          updateStatus('Hablando...');
+        };
+
+        avatarHead.onSpeechEnd = () => {
+          updateStatus('Avatar listo para interactuar');
+        };
+
+        // Cargar el avatar
+        await avatarHead.load();
+
+      } catch (error) {
+        console.error('Error inicializando avatar:', error);
+        showAvatarPlaceholder();
+        updateStatus('Usando avatar placeholder');
+        hideLoadingScreen();
+      }
+    }
+
+    // Mostrar placeholder si TalkingHead no está disponible
+    function showAvatarPlaceholder() {
+      const canvas = document.getElementById('avatarCanvas');
+      const ctx = canvas.getContext('2d');
+      
+      // Fondo gradiente
+      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      gradient.addColorStop(0, 'rgba(0, 247, 255, 0.2)');
+      gradient.addColorStop(1, 'rgba(79, 70, 229, 0.2)');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Avatar placeholder
+      ctx.fillStyle = '#00f7ff';
+      ctx.font = 'bold 48px Orbitron';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('🤖', canvas.width / 2, canvas.height / 2 - 20);
+      
+      ctx.fillStyle = '#88f9ff';
+      ctx.font = '16px Inter';
+      ctx.fillText(currentConfig.name, canvas.width / 2, canvas.height / 2 + 30);
+      
+      isAvatarLoaded = true;
+    }
+
+    // Animaciones idle
+    function startIdleAnimations() {
+      if (!avatarHead || !isAvatarLoaded) return;
+
+      // Parpadeo natural
+      setInterval(() => {
+        if (Math.random() < 0.3) {
+          avatarHead.lookAt(
+            (Math.random() - 0.5) * 0.3,
+            (Math.random() - 0.5) * 0.2
+          );
+        }
+      }, 3000);
+
+      // Respiración sutil
+      setInterval(() => {
+        if (avatarHead.animateIdle) {
+          avatarHead.animateIdle();
+        }
+      }, 4000);
+    }
+
+    // Funciones de control del avatar
+    function speakWelcome() {
+      const messages = [
+        `¡Hola! Soy ${currentConfig.name}, tu asistente de IA de Orbix Systems.`,
+        `Bienvenido a Orbix Systems. Estoy aquí para ayudarte con nuestros sistemas de inteligencia artificial.`,
+        `¡Saludos! Soy ${currentConfig.name} y represento la innovación en IA de Orbix Systems.`
+      ];
+      
+      const message = messages[Math.floor(Math.random() * messages.length)];
+      speakText(message);
+    }
+
+    function speakDemo() {
+      const message = `Nuestros sistemas incluyen validaciones financieras automatizadas, el sistema Sentinel de monitoreo, calculadora IA avanzada y ERP integrado. ¿Te gustaría conocer más detalles?`;
+      speakText(message);
+    }
+
+    function speakText(text) {
+      if (avatarHead && isAvatarLoaded && avatarHead.speakText) {
+        updateStatus('Hablando...');
+        avatarHead.speakText(text);
+      } else {
+        // Fallback sin TTS
+        updateStatus('Simulando habla...');
+        setTimeout(() => {
+          updateStatus('Avatar listo para interactuar');
+        }, 3000);
+        showNotification(`💬 ${text}`);
+      }
+    }
+
+    function resetAvatar() {
+      if (avatarHead && avatarHead.stopSpeaking) {
+        avatarHead.stopSpeaking();
+      }
+      updateStatus('Avatar reiniciado');
+      if (isAvatarLoaded) {
+        startIdleAnimations();
+      }
+    }
+
+    // Funciones del editor
+    function openAvatarEditor() {
+      document.getElementById('avatarEditor').style.display = 'flex';
+      updateUI();
+    }
+
+    function closeAvatarEditor() {
+      document.getElementById('avatarEditor').style.display = 'none';
+    }
+
+    function testAvatarVoice() {
+      const voice = document.getElementById('avatarVoiceSelect').value;
+      const name = document.getElementById('avatarNameInput').value || 'Avatar';
+      speakText(`Hola, soy ${name}. Esta es mi voz configurada.`);
+    }
+
+    function resetAvatarConfig() {
+      currentConfig = {
+        name: 'EVA',
+        model: '/avatars/brunette.glb',
+        voice: 'es-ES-ElviraNeural',
+        personality: 'professional'
+      };
+      localStorage.removeItem('orbix-avatar-config');
+      updateUI();
+      showNotification('🔄 Configuración restaurada');
+    }
+
+    // Funciones de utilidad
+    function updateStatus(message) {
+      document.getElementById('avatarStatus').textContent = message;
+    }
+
+    function hideLoadingScreen() {
+      const loadingScreen = document.getElementById('loadingScreen');
+      if (loadingScreen) {
+        loadingScreen.style.opacity = '0';
+        setTimeout(() => {
+          loadingScreen.style.display = 'none';
+        }, 500);
+      }
+    }
+
+    function showNotification(message) {
+      // Crear notificación temporal
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(0, 247, 255, 0.9);
+        color: #000;
+        padding: 15px 20px;
+        border-radius: 10px;
+        z-index: 10000;
+        font-weight: 600;
+        box-shadow: 0 4px 20px rgba(0, 247, 255, 0.3);
+      `;
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+
+    // Event Listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      loadAvatarConfig();
+      
+      // Inicializar avatar después de un pequeño delay
+      setTimeout(() => {
+        initializeAvatar();
+      }, 1000);
+
+      // Manejar cambio de modelo
+      document.getElementById('avatarModelSelect').addEventListener('change', function() {
+        const customURL = document.getElementById('avatarCustomURL');
+        if (this.value === 'custom') {
+          customURL.style.display = 'block';
+        } else {
+          customURL.style.display = 'none';
+        }
+      });
+
+      // Cerrar editor con ESC
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeAvatarEditor();
+        }
+      });
+    });
+
+    // Manejar resize de ventana
+    window.addEventListener('resize', function() {
+      if (avatarHead && avatarHead.renderer) {
+        const canvas = document.getElementById('avatarCanvas');
+        avatarHead.renderer.setSize(canvas.width, canvas.height);
+      }
+    });
+  </script>
 </body>
 </html>
