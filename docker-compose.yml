@@ -12,6 +12,7 @@ services:
     env_file:
       - .env
     volumes:
+      - ./public:/app/public
       - ./logs:/app/logs
     restart: unless-stopped
     healthcheck:
@@ -23,7 +24,7 @@ services:
     networks:
       - orbix-network
 
-  # Nginx para HTTPS y load balancing (opcional)
+  # Nginx para HTTPS y load balancing
   nginx:
     image: nginx:alpine
     container_name: orbix-nginx
@@ -32,6 +33,7 @@ services:
       - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./public:/usr/share/nginx/html:ro
       - ./ssl:/etc/nginx/ssl:ro
     depends_on:
       - orbix-ai
@@ -39,10 +41,25 @@ services:
     networks:
       - orbix-network
 
+  # Redis para caché y sesiones
+  redis:
+    image: redis:7-alpine
+    container_name: orbix-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - orbix-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
 networks:
   orbix-network:
     driver: bridge
 
 volumes:
   logs:
+    driver: local
+  redis_data:
     driver: local
