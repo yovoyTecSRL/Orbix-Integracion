@@ -21,6 +21,10 @@ app.mount("/static", StaticFiles(directory="public"), name="static")
 async def root():
     return FileResponse('index.html')
 
+@app.get("/styles.css")
+async def styles():
+    return FileResponse('styles.css')
+
 @app.get("/health")
 async def health():
     return {"status": "ok", "service": "validacion-financiera"}
