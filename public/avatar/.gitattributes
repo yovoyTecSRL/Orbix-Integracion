@@ -13,3 +13,4 @@ poses export-ignore
 views export-ignore
 images export-ignore
 blender export-ignore
+* text=auto
