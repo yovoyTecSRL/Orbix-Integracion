@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 Verificación de API Keys - TalkingHead</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #fff;
+            line-height: 1.6;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .api-card {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            backdrop-filter: blur(10px);
+        }
+        
+        .api-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .api-name {
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        
+        .status-configured {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+            border: 1px solid #4caf50;
+        }
+        
+        .status-placeholder {
+            background: rgba(255, 152, 0, 0.2);
+            color: #ff9800;
+            border: 1px solid #ff9800;
+        }
+        
+        .status-real {
+            background: rgba(33, 150, 243, 0.2);
+            color: #2196f3;
+            border: 1px solid #2196f3;
+        }
+        
+        .api-details {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 12px;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+        
+        .verification-result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .result-success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4caf50;
+            color: #4caf50;
+        }
+        
+        .result-warning {
+            background: rgba(255, 152, 0, 0.2);
+            border: 1px solid #ff9800;
+            color: #ff9800;
+        }
+        
+        .result-info {
+            background: rgba(33, 150, 243, 0.2);
+            border: 1px solid #2196f3;
+            color: #2196f3;
+        }
+        
+        .summary-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+        
+        .icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            margin: 10px 0;
+            width: 100%;
+        }
+        
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔍 Verificación de API Keys</h1>
+        <p>Análisis del estado actual de las claves API configuradas en TalkingHead</p>
+    </div>
+
+    <div id="api-keys-container">
+        <!-- Se llenará dinámicamente -->
+    </div>
+
+    <div class="summary-card">
+        <h2>📊 Resumen General</h2>
+        <div id="summary-content">
+            <button onclick="analyzeApiKeys()">🔄 Analizar API Keys</button>
+        </div>
+    </div>
+
+    <script type="module">
+        // Importar configuración
+        import { CONFIG, I18N } from '/config/config.js';
+        
+        window.CONFIG = CONFIG;
+        
+        function analyzeKeyStatus(serviceName, apiKey) {
+            // Analizar el tipo de clave
+            if (!apiKey || apiKey.trim() === '') {
+                return {
+                    status: 'empty',
+                    type: 'Vacía',
+                    description: 'No hay clave configurada',
+                    recommendation: 'Configura una clave API válida'
+                };
+            }
+            
+            // Detectar placeholders
+            if (apiKey.includes('YOUR_') || apiKey.includes('_HERE') || 
+                apiKey.includes('REPLACE_WITH') || apiKey === 'tu-' + serviceName.toLowerCase() + '-api-key-aqui') {
+                return {
+                    status: 'placeholder',
+                    type: 'Placeholder',
+                    description: 'Clave de ejemplo/placeholder',
+                    recommendation: 'Reemplaza con tu clave API real'
+                };
+            }
+            
+            // Verificar formato de claves conocidas
+            const keyFormats = {
+                openai: { 
+                    pattern: /^sk-(proj-)?[A-Za-z0-9]{20,}/, 
+                    example: 'sk-proj-... o sk-...' 
+                },
+                elevenLabs: { 
+                    pattern: /^sk_[A-Za-z0-9]{64}/, 
+                    example: 'sk_...' 
+                },
+                google: { 
+                    pattern: /^AIzaSy[A-Za-z0-9_-]{33}/, 
+                    example: 'AIzaSy...' 
+                },
+                gemini: { 
+                    pattern: /^AIzaSy[A-Za-z0-9_-]{33}/, 
+                    example: 'AIzaSy...' 
+                },
+                microsoft: { 
+                    pattern: /^[A-Za-z0-9]{32}$/, 
+                    example: '32 caracteres alfanuméricos' 
+                },
+                grok: { 
+                    pattern: /^xai-[A-Za-z0-9]{20,}/, 
+                    example: 'xai-...' 
+                }
+            };
+            
+            const format = keyFormats[serviceName.toLowerCase()];
+            if (format && format.pattern.test(apiKey)) {
+                return {
+                    status: 'valid',
+                    type: 'Válida',
+                    description: 'Formato de clave correcto',
+                    recommendation: 'Clave parece ser válida - ¡Lista para usar!'
+                };
+            } else if (format) {
+                return {
+                    status: 'invalid',
+                    type: 'Formato Incorrecto',
+                    description: `Formato esperado: ${format.example}`,
+                    recommendation: 'Verifica que la clave tenga el formato correcto'
+                };
+            } else {
+                return {
+                    status: 'configured',
+                    type: 'Configurada',
+                    description: 'Clave configurada (formato desconocido)',
+                    recommendation: 'Verifica que la clave sea correcta'
+                };
+            }
+        }
+        
+        function getStatusBadgeClass(status) {
+            switch (status) {
+                case 'valid': return 'status-configured';
+                case 'configured': return 'status-real';
+                case 'placeholder': return 'status-placeholder';
+                default: return 'status-placeholder';
+            }
+        }
+        
+        function getResultClass(status) {
+            switch (status) {
+                case 'valid': return 'result-success';
+                case 'configured': return 'result-info';
+                case 'placeholder': return 'result-warning';
+                default: return 'result-warning';
+            }
+        }
+        
+        window.analyzeApiKeys = function() {
+            const container = document.getElementById('api-keys-container');
+            const summaryContent = document.getElementById('summary-content');
+            
+            try {
+                const apiKeys = CONFIG.apiKeys;
+                let analysis = [];
+                let stats = {
+                    total: 0,
+                    valid: 0,
+                    configured: 0,
+                    placeholder: 0,
+                    empty: 0
+                };
+                
+                // Analizar cada clave
+                Object.entries(apiKeys).forEach(([service, key]) => {
+                    const result = analyzeKeyStatus(service, key);
+                    analysis.push({
+                        service,
+                        key,
+                        ...result
+                    });
+                    
+                    stats.total++;
+                    stats[result.status]++;
+                });
+                
+                // Mostrar análisis individual
+                container.innerHTML = analysis.map(item => `
+                    <div class="api-card">
+                        <div class="api-header">
+                            <div class="api-name">
+                                <span class="icon">${getServiceIcon(item.service)}</span>
+                                ${item.service.toUpperCase()}
+                            </div>
+                            <span class="status-badge ${getStatusBadgeClass(item.status)}">
+                                ${item.type}
+                            </span>
+                        </div>
+                        
+                        <div class="api-details">
+                            Clave: ${item.key.substring(0, 20)}${item.key.length > 20 ? '...' : ''}
+                            <br>Longitud: ${item.key.length} caracteres
+                        </div>
+                        
+                        <div class="verification-result ${getResultClass(item.status)}">
+                            <strong>${item.description}</strong><br>
+                            💡 ${item.recommendation}
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Mostrar resumen
+                const validPercentage = Math.round((stats.valid / stats.total) * 100);
+                const configuredPercentage = Math.round(((stats.valid + stats.configured) / stats.total) * 100);
+                
+                summaryContent.innerHTML = `
+                    <div class="verification-result ${validPercentage > 50 ? 'result-success' : configuredPercentage > 50 ? 'result-info' : 'result-warning'}">
+                        <h3>📈 Estado General de API Keys</h3>
+                        <p><strong>Total de servicios:</strong> ${stats.total}</p>
+                        <p><strong>Claves válidas:</strong> ${stats.valid} (${validPercentage}%)</p>
+                        <p><strong>Claves configuradas:</strong> ${stats.configured}</p>
+                        <p><strong>Placeholders:</strong> ${stats.placeholder}</p>
+                        <p><strong>Vacías:</strong> ${stats.empty}</p>
+                        
+                        <hr style="margin: 15px 0; border: 1px solid rgba(255,255,255,0.1);">
+                        
+                        ${validPercentage > 80 ? 
+                            '🎉 <strong>Excelente!</strong> La mayoría de tus API keys están configuradas correctamente.' :
+                            configuredPercentage > 50 ?
+                            '⚠️ <strong>Bueno!</strong> Tienes varias keys configuradas. Verifica que sean válidas.' :
+                            '❌ <strong>Atención!</strong> Necesitas configurar más API keys para usar todas las funciones.'
+                        }
+                    </div>
+                    
+                    <button onclick="window.location.reload()">🔄 Actualizar Análisis</button>
+                `;
+                
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="api-card">
+                        <div class="verification-result result-warning">
+                            <strong>❌ Error al analizar API Keys:</strong><br>
+                            ${error.message}
+                        </div>
+                    </div>
+                `;
+            }
+        };
+        
+        function getServiceIcon(service) {
+            const icons = {
+                openai: '🤖',
+                elevenLabs: '🎤',
+                microsoft: '🔵',
+                google: '🟢',
+                gemini: '💎',
+                grok: '🚀'
+            };
+            return icons[service.toLowerCase()] || '🔑';
+        }
+        
+        // Auto-ejecutar análisis al cargar
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                analyzeApiKeys();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

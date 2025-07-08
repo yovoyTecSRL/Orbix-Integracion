@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 Debug de Errores - TalkingHead</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+            line-height: 1.6;
+        }
+        
+        .error-card {
+            background: rgba(244, 67, 54, 0.1);
+            border: 1px solid #f44336;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .warning-card {
+            background: rgba(255, 152, 0, 0.1);
+            border: 1px solid #ff9800;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .success-card {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid #4caf50;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .info-card {
+            background: rgba(33, 150, 243, 0.1);
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        pre {
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        button {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        
+        button:hover { background: #45a049; }
+        
+        .test-results {
+            margin-top: 20px;
+        }
+        
+        h1, h2 { color: #4caf50; }
+        
+        .console-output {
+            background: #000;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 15px 0;
+        }
+        
+        .step {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Debug de Errores TalkingHead</h1>
+    
+    <div class="info-card">
+        <h2>🎯 Errores Detectados en la Consola</h2>
+        <p>Basado en la imagen proporcionada, estos son los errores que necesitamos resolver:</p>
+        <ul>
+            <li><strong>ReferenceError: h4k is not defined</strong></li>
+            <li><strong>Failed to load resource (404 errors)</strong></li>
+            <li><strong>AudioContext not allowed to start</strong></li>
+            <li><strong>Error 500 en moderations API</strong></li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <h3>🔍 Paso 1: Verificar Carga de Módulos</h3>
+        <button onclick="testModuleLoading()">Probar Carga de Módulos</button>
+        <div id="module-test-result"></div>
+    </div>
+
+    <div class="step">
+        <h3>🎵 Paso 2: Verificar AudioContext</h3>
+        <button onclick="testAudioContext()">Probar AudioContext</button>
+        <div id="audio-test-result"></div>
+    </div>
+
+    <div class="step">
+        <h3>🌐 Paso 3: Verificar Endpoints del Servidor</h3>
+        <button onclick="testServerEndpoints()">Probar Endpoints</button>
+        <div id="server-test-result"></div>
+    </div>
+
+    <div class="step">
+        <h3>🔑 Paso 4: Verificar API Keys</h3>
+        <button onclick="testApiKeys()">Probar API Keys</button>
+        <div id="api-test-result"></div>
+    </div>
+
+    <div class="step">
+        <h3>🔄 Paso 5: Test Completo</h3>
+        <button onclick="runCompleteTest()">Ejecutar Test Completo</button>
+        <div id="complete-test-result"></div>
+    </div>
+
+    <div class="console-output" id="console-log">
+        Iniciando debug...<br>
+    </div>
+
+    <script>
+        function addLog(message, type = 'info') {
+            const logDiv = document.getElementById('console-log');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#f44336' : type === 'success' ? '#4caf50' : type === 'warning' ? '#ff9800' : '#0f0';
+            logDiv.innerHTML += `<span style="color: ${color}">[${timestamp}] ${message}</span><br>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function setResult(elementId, content, type = 'info') {
+            const element = document.getElementById(elementId);
+            const className = type === 'error' ? 'error-card' : type === 'success' ? 'success-card' : type === 'warning' ? 'warning-card' : 'info-card';
+            element.innerHTML = `<div class="${className}">${content}</div>`;
+        }
+
+        async function testModuleLoading() {
+            addLog('🔍 Iniciando test de carga de módulos...');
+            
+            try {
+                // Test 1: Cargar configuración
+                addLog('Cargando configuración...');
+                const { CONFIG, I18N } = await import('/config/config.js');
+                addLog('✅ CONFIG cargado exitosamente', 'success');
+                
+                // Test 2: Cargar siteconfig
+                addLog('Cargando siteconfig...');
+                const { site } = await import('./siteconfig.js');
+                addLog('✅ siteconfig cargado exitosamente', 'success');
+                
+                // Test 3: Intentar cargar TalkingHead
+                addLog('Cargando TalkingHead module...');
+                const { TalkingHead } = await import('./modules/talkinghead.mjs');
+                addLog('✅ TalkingHead module cargado exitosamente', 'success');
+                
+                setResult('module-test-result', 
+                    '<strong>✅ Todos los módulos cargados correctamente</strong><br>' +
+                    '• CONFIG: OK<br>' +
+                    '• siteconfig: OK<br>' +
+                    '• TalkingHead: OK', 'success');
+                
+                // Guardar referencias globales
+                window.testData = { CONFIG, I18N, site, TalkingHead };
+                
+            } catch (error) {
+                addLog(`❌ Error cargando módulos: ${error.message}`, 'error');
+                setResult('module-test-result', 
+                    `<strong>❌ Error en carga de módulos</strong><br>` +
+                    `Error: ${error.message}<br>` +
+                    `Stack: <pre>${error.stack}</pre>`, 'error');
+            }
+        }
+
+        async function testAudioContext() {
+            addLog('🎵 Iniciando test de AudioContext...');
+            
+            try {
+                // Verificar soporte de AudioContext
+                if (!window.AudioContext && !window.webkitAudioContext) {
+                    throw new Error('AudioContext no soportado en este navegador');
+                }
+                
+                addLog('✅ AudioContext soportado', 'success');
+                
+                // Intentar crear AudioContext
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                const audioContext = new AudioContextClass();
+                
+                addLog(`Estado inicial del AudioContext: ${audioContext.state}`, 'info');
+                
+                if (audioContext.state === 'suspended') {
+                    addLog('⚠️ AudioContext está suspendido. Requiere interacción del usuario.', 'warning');
+                    
+                    // Crear botón para activar audio
+                    setResult('audio-test-result', 
+                        '<strong>⚠️ AudioContext Suspendido</strong><br>' +
+                        'El AudioContext requiere interacción del usuario para activarse.<br>' +
+                        '<button onclick="resumeAudioContext()">🔊 Activar Audio</button>', 'warning');
+                } else {
+                    addLog('✅ AudioContext activo', 'success');
+                    setResult('audio-test-result', 
+                        '<strong>✅ AudioContext funcionando</strong><br>' +
+                        `Estado: ${audioContext.state}<br>` +
+                        `Sample Rate: ${audioContext.sampleRate} Hz`, 'success');
+                }
+                
+                window.testAudioContext = audioContext;
+                
+            } catch (error) {
+                addLog(`❌ Error con AudioContext: ${error.message}`, 'error');
+                setResult('audio-test-result', 
+                    `<strong>❌ Error AudioContext</strong><br>` +
+                    `Error: ${error.message}`, 'error');
+            }
+        }
+
+        window.resumeAudioContext = async function() {
+            try {
+                if (window.testAudioContext) {
+                    await window.testAudioContext.resume();
+                    addLog('✅ AudioContext reanudado exitosamente', 'success');
+                    setResult('audio-test-result', 
+                        '<strong>✅ AudioContext Activado</strong><br>' +
+                        `Estado: ${window.testAudioContext.state}`, 'success');
+                }
+            } catch (error) {
+                addLog(`❌ Error reanudando AudioContext: ${error.message}`, 'error');
+            }
+        };
+
+        async function testServerEndpoints() {
+            addLog('🌐 Iniciando test de endpoints del servidor...');
+            
+            const endpoints = [
+                { url: '/config/config.js', name: 'Configuración' },
+                { url: './siteconfig.js', name: 'Site Config' },
+                { url: './modules/talkinghead.mjs', name: 'TalkingHead Module' },
+                { url: './css/main.css', name: 'CSS Principal' },
+                { url: '/app/jwt/get', name: 'JWT Token' },
+                { url: '/openai/v1/moderations', name: 'OpenAI Moderations (POST)', method: 'POST' }
+            ];
+            
+            let results = [];
+            
+            for (let endpoint of endpoints) {
+                try {
+                    addLog(`Probando: ${endpoint.name}`);
+                    
+                    const options = {
+                        method: endpoint.method || 'GET'
+                    };
+                    
+                    if (endpoint.method === 'POST') {
+                        options.headers = { 'Content-Type': 'application/json' };
+                        options.body = JSON.stringify({ input: "test" });
+                    }
+                    
+                    const response = await fetch(endpoint.url, options);
+                    
+                    if (response.ok) {
+                        results.push(`✅ ${endpoint.name}: OK (${response.status})`);
+                        addLog(`✅ ${endpoint.name}: OK`, 'success');
+                    } else {
+                        results.push(`❌ ${endpoint.name}: ${response.status} ${response.statusText}`);
+                        addLog(`❌ ${endpoint.name}: ${response.status}`, 'error');
+                    }
+                } catch (error) {
+                    results.push(`❌ ${endpoint.name}: ${error.message}`);
+                    addLog(`❌ ${endpoint.name}: ${error.message}`, 'error');
+                }
+            }
+            
+            const allOk = results.every(r => r.includes('✅'));
+            setResult('server-test-result', 
+                `<strong>Resultados de Endpoints:</strong><br>${results.join('<br>')}`, 
+                allOk ? 'success' : 'warning');
+        }
+
+        async function testApiKeys() {
+            addLog('🔑 Iniciando test de API keys...');
+            
+            if (!window.testData || !window.testData.CONFIG) {
+                setResult('api-test-result', 
+                    '<strong>⚠️ Ejecuta primero el test de módulos</strong>', 'warning');
+                return;
+            }
+            
+            const keys = window.testData.CONFIG.apiKeys;
+            let keyResults = [];
+            
+            Object.entries(keys).forEach(([service, key]) => {
+                if (key && !key.includes('YOUR_') && !key.includes('_HERE')) {
+                    keyResults.push(`✅ ${service}: Configurada`);
+                    addLog(`✅ ${service}: Clave configurada`, 'success');
+                } else {
+                    keyResults.push(`⚠️ ${service}: Placeholder`);
+                    addLog(`⚠️ ${service}: Usando placeholder`, 'warning');
+                }
+            });
+            
+            setResult('api-test-result', 
+                `<strong>Estado de API Keys:</strong><br>${keyResults.join('<br>')}`, 'info');
+        }
+
+        async function runCompleteTest() {
+            addLog('🔄 Ejecutando test completo...', 'info');
+            
+            await testModuleLoading();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            await testAudioContext();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            await testServerEndpoints();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            await testApiKeys();
+            
+            addLog('🎉 Test completo finalizado', 'success');
+            setResult('complete-test-result', 
+                '<strong>✅ Diagnóstico completo ejecutado</strong><br>' +
+                'Revisa los resultados de cada sección arriba.', 'success');
+        }
+
+        // Capturar errores de consola
+        window.addEventListener('error', function(e) {
+            addLog(`❌ JavaScript Error: ${e.message} en ${e.filename}:${e.lineno}`, 'error');
+        });
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            addLog('🚀 Debug de errores iniciado');
+            addLog('Ejecuta los tests paso a paso para diagnosticar los problemas');
+        });
+    </script>
+</body>
+</html>

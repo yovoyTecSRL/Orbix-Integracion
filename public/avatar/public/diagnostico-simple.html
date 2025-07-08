@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 Diagnóstico de Carga - TalkingHead</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+            line-height: 1.6;
+        }
+        .status {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+        .success { background: #1b4332; border-color: #40916c; }
+        .error { background: #541e1e; border-color: #d32f2f; }
+        .warning { background: #4a3424; border-color: #ff9800; }
+        .info { background: #1e3a8a; border-color: #3b82f6; }
+        
+        pre {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            border: 1px solid #444;
+        }
+        
+        button {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px;
+            font-size: 14px;
+        }
+        
+        button:hover { background: #45a049; }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .test-card {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+        
+        h1, h2 { color: #4caf50; }
+        
+        .console-output {
+            background: #000;
+            color: #0f0;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Diagnóstico de Carga TalkingHead</h1>
+    
+    <div class="test-grid">
+        <div class="test-card">
+            <h3>📦 Test de Módulos</h3>
+            <button onclick="testModules()">Probar Imports</button>
+            <div id="modules-result"></div>
+        </div>
+        
+        <div class="test-card">
+            <h3>🌐 Test de Red</h3>
+            <button onclick="testNetwork()">Verificar URLs</button>
+            <div id="network-result"></div>
+        </div>
+        
+        <div class="test-card">
+            <h3>🔧 Test de API</h3>
+            <button onclick="testAPI()">Probar Endpoints</button>
+            <div id="api-result"></div>
+        </div>
+        
+        <div class="test-card">
+            <h3>🎯 Test Completo</h3>
+            <button onclick="runAllTests()">Ejecutar Todo</button>
+            <div id="complete-result"></div>
+        </div>
+    </div>
+    
+    <h2>📝 Log de Consola</h2>
+    <div id="console-log" class="console-output">
+        Iniciando diagnóstico...<br>
+    </div>
+    
+    <h2>🔍 Información del Sistema</h2>
+    <div id="system-info" class="status info">
+        <strong>Cargando información del sistema...</strong>
+    </div>
+
+    <script>
+        // Función para añadir logs
+        function addLog(message, type = 'info') {
+            const logDiv = document.getElementById('console-log');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#f44336' : type === 'success' ? '#4caf50' : '#0f0';
+            logDiv.innerHTML += `<span style="color: ${color}">[${timestamp}] ${message}</span><br>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(`[${timestamp}] ${message}`);
+        }
+        
+        // Test de módulos
+        async function testModules() {
+            const resultDiv = document.getElementById('modules-result');
+            addLog('🔍 Iniciando test de módulos...');
+            
+            try {
+                addLog('Intentando importar configuración...');
+                const { CONFIG, I18N } = await import('/config/config.js');
+                
+                addLog('✅ CONFIG importado exitosamente', 'success');
+                addLog('✅ I18N importado exitosamente', 'success');
+                
+                const { site } = await import('./siteconfig.js');
+                addLog('✅ siteconfig importado exitosamente', 'success');
+                
+                resultDiv.innerHTML = `
+                    <div class="status success">
+                        <strong>✅ Todos los módulos cargados</strong><br>
+                        • CONFIG: ${Object.keys(CONFIG).length} secciones<br>
+                        • I18N: ${Object.keys(I18N).length} idiomas<br>
+                        • site: ${Object.keys(site).length} categorías
+                    </div>
+                `;
+                
+                // Guardar para otros tests
+                window.testConfig = { CONFIG, I18N, site };
+                
+            } catch (error) {
+                addLog(`❌ Error al importar módulos: ${error.message}`, 'error');
+                resultDiv.innerHTML = `
+                    <div class="status error">
+                        <strong>❌ Error en módulos</strong><br>
+                        ${error.message}<br>
+                        <pre>${error.stack}</pre>
+                    </div>
+                `;
+            }
+        }
+        
+        // Test de red
+        async function testNetwork() {
+            const resultDiv = document.getElementById('network-result');
+            addLog('🌐 Iniciando test de red...');
+            
+            const urls = [
+                '/config/config.js',
+                './siteconfig.js',
+                './modules/talkinghead.mjs',
+                './css/main.css'
+            ];
+            
+            let results = [];
+            
+            for (let url of urls) {
+                try {
+                    addLog(`Verificando: ${url}`);
+                    const response = await fetch(url, { method: 'HEAD' });
+                    if (response.ok) {
+                        results.push(`✅ ${url}: OK (${response.status})`);
+                        addLog(`✅ ${url}: OK`, 'success');
+                    } else {
+                        results.push(`❌ ${url}: ${response.status}`);
+                        addLog(`❌ ${url}: ${response.status}`, 'error');
+                    }
+                } catch (error) {
+                    results.push(`❌ ${url}: ${error.message}`);
+                    addLog(`❌ ${url}: ${error.message}`, 'error');
+                }
+            }
+            
+            resultDiv.innerHTML = `
+                <div class="status ${results.every(r => r.includes('✅')) ? 'success' : 'warning'}">
+                    <strong>Resultados de Red:</strong><br>
+                    ${results.join('<br>')}
+                </div>
+            `;
+        }
+        
+        // Test de API
+        async function testAPI() {
+            const resultDiv = document.getElementById('api-result');
+            addLog('🔧 Iniciando test de API...');
+            
+            if (!window.testConfig) {
+                resultDiv.innerHTML = `
+                    <div class="status warning">
+                        <strong>⚠️ Ejecuta primero el test de módulos</strong>
+                    </div>
+                `;
+                return;
+            }
+            
+            const { CONFIG } = window.testConfig;
+            
+            try {
+                addLog('Verificando configuración de API...');
+                
+                const apiInfo = {
+                    keys: Object.keys(CONFIG.apiKeys).length,
+                    proxies: Object.keys(CONFIG.api.proxies).length,
+                    endpoints: Object.keys(CONFIG.api.endpoints).length,
+                    voices: {
+                        elevenlabs: Object.keys(CONFIG.elevenLabs.voices).length,
+                        microsoft: Object.keys(CONFIG.microsoft.voices).length,
+                        google: Object.keys(CONFIG.googleTTS.voices).length
+                    }
+                };
+                
+                addLog('✅ Configuración API verificada', 'success');
+                
+                resultDiv.innerHTML = `
+                    <div class="status success">
+                        <strong>✅ API Configurada</strong><br>
+                        • Keys: ${apiInfo.keys} servicios<br>
+                        • Proxies: ${apiInfo.proxies} endpoints<br>
+                        • Endpoints: ${apiInfo.endpoints} directos<br>
+                        • Voces: ${apiInfo.voices.elevenlabs + apiInfo.voices.microsoft + apiInfo.voices.google} total
+                    </div>
+                `;
+                
+            } catch (error) {
+                addLog(`❌ Error en test de API: ${error.message}`, 'error');
+                resultDiv.innerHTML = `
+                    <div class="status error">
+                        <strong>❌ Error API</strong><br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+        
+        // Ejecutar todos los tests
+        async function runAllTests() {
+            addLog('🎯 Ejecutando diagnóstico completo...');
+            
+            await testModules();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testNetwork();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testAPI();
+            
+            const resultDiv = document.getElementById('complete-result');
+            resultDiv.innerHTML = `
+                <div class="status success">
+                    <strong>✅ Diagnóstico Completo</strong><br>
+                    Revisa los resultados individuales arriba
+                </div>
+            `;
+            
+            addLog('🎉 Diagnóstico completo finalizado', 'success');
+        }
+        
+        // Información del sistema
+        function updateSystemInfo() {
+            const info = {
+                userAgent: navigator.userAgent.split(' ')[0] + '...',
+                language: navigator.language,
+                platform: navigator.platform,
+                cookiesEnabled: navigator.cookieEnabled,
+                onLine: navigator.onLine,
+                webgl: !!window.WebGLRenderingContext,
+                audioContext: !!(window.AudioContext || window.webkitAudioContext),
+                mediaRecorder: !!window.MediaRecorder,
+                localStorage: !!window.localStorage,
+                modules: 'noModule' in HTMLScriptElement.prototype
+            };
+            
+            document.getElementById('system-info').innerHTML = `
+                <strong>💻 Información del Sistema:</strong><br>
+                • Navegador: ${info.userAgent}<br>
+                • Idioma: ${info.language}<br>
+                • Plataforma: ${info.platform}<br>
+                • Online: ${info.onLine ? '✅' : '❌'}<br>
+                • WebGL: ${info.webgl ? '✅' : '❌'}<br>
+                • AudioContext: ${info.audioContext ? '✅' : '❌'}<br>
+                • MediaRecorder: ${info.mediaRecorder ? '✅' : '❌'}<br>
+                • LocalStorage: ${info.localStorage ? '✅' : '❌'}<br>
+                • ES Modules: ${info.modules ? '✅' : '❌'}
+            `;
+        }
+        
+        // Capturar errores de la consola
+        window.addEventListener('error', function(e) {
+            addLog(`❌ JavaScript Error: ${e.message} en ${e.filename}:${e.lineno}`, 'error');
+        });
+        
+        window.addEventListener('unhandledrejection', function(e) {
+            addLog(`❌ Promise Rejection: ${e.reason}`, 'error');
+        });
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            addLog('🚀 Página de diagnóstico cargada');
+            updateSystemInfo();
+            
+            // Auto-ejecutar test básico
+            setTimeout(() => {
+                addLog('🔄 Ejecutando test automático...');
+                testModules();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

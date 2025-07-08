@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Configuración por Defecto</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        pre {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test de Configuración por Defecto</h1>
+    
+    <div class="test-container">
+        <h3>1. Carga de DEFAULT_CONFIG</h3>
+        <button onclick="testDefaultConfig()">Probar DEFAULT_CONFIG</button>
+        <span id="default-config-status"></span>
+        <pre id="default-config-output"></pre>
+    </div>
+
+    <div class="test-container">
+        <h3>2. Comparación con JSON Original</h3>
+        <button onclick="testJSONMatch()">Comparar con JSON Original</button>
+        <span id="json-match-status"></span>
+        <pre id="json-match-output"></pre>
+    </div>
+
+    <div class="test-container">
+        <h3>3. Configuración Avatar</h3>
+        <button onclick="testAvatarConfig()">Probar Config del Avatar</button>
+        <span id="avatar-config-status"></span>
+        <pre id="avatar-config-output"></pre>
+    </div>
+
+    <script type="module">
+        const originalJSON = {
+            "name": "Nimetön",
+            "theme": {"lang": "en", "brightness": "dark", "ratio": "wide", "layout": "port"},
+            "view": {"image": "NONE", "url": "", "brightness": 1, "contrast": 1, "saturate": 1, "blur": 0},
+            "avatar": {"url": "", "body": "F", "name": "Brunette", "brightness": 1, "contrast": 1, "saturate": 1},
+            "camera": {"frame": "full", "x": 0, "y": 0, "d": 0, "rotx": 0, "roty": 0, "fps": 30},
+            "ai": {
+                "model": "gpt-4.1-mini",
+                "openai": {"system": "", "user1": "", "ai1": "", "user2": "", "ai2": "", "temperature": 1, "presence": 0, "frequency": 0, "dialog": 4, "input": 2000, "output": 1000, "stop": "", "user": ""},
+                "grok": {"temperature": 1, "presence": 0, "frequency": 0, "dialog": 4, "input": 2000, "output": 1000, "stop": "", "user": ""},
+                "llama": {"temperature": 1, "presence": 0, "frequency": 0, "dialog": 4, "input": 2000, "output": 1000, "stop": "", "user": ""},
+                "gemini": {"system": "", "user1": "", "ai1": "", "user2": "", "ai2": "", "temperature": 1, "topp": 1, "topk": 40, "dialog": 4, "input": 2000, "output": 1000, "stop": ""}
+            },
+            "voice": {
+                "background": "NONE", "type": "google",
+                "google": {"id": "en-GB-Standard-A", "rate": 1, "pitch": 0},
+                "lipsync": {"lang": "en"},
+                "microsoft": {"id": "fi-FI-SelmaNeural"},
+                "eleven": {"id": "EXAVITQu4vr4xnSDxMaL"},
+                "exclude": {"italics": false, "code": false},
+                "test": "", "mixerbg": 0.5, "mixerspeech": 1, "reverb": "NONE"
+            },
+            "script": {"text": ""},
+            "pose": {"movement": 1},
+            "dynamicbones": {"sensitivity": 1, "movement": 1},
+            "light": {
+                "ambient": {"intensity": 2, "color": "#ffffff"},
+                "direct": {"intensity": 30, "color": "#8888aa", "phi": 1, "theta": 2},
+                "spot": {"intensity": 0, "color": "#8888aa", "phi": 0.1, "theta": 4, "dispersion": 1}
+            },
+            "whisper": {"type": "openai"}
+        };
+
+        window.testDefaultConfig = async () => {
+            const statusEl = document.getElementById('default-config-status');
+            const outputEl = document.getElementById('default-config-output');
+            
+            try {
+                const { DEFAULT_CONFIG } = await import('/config/config.js');
+                outputEl.textContent = JSON.stringify(DEFAULT_CONFIG, null, 2);
+                statusEl.innerHTML = '<span class="status success">✅ OK</span>';
+            } catch (error) {
+                outputEl.textContent = `Error: ${error.message}`;
+                statusEl.innerHTML = '<span class="status error">❌ Error</span>';
+            }
+        };
+
+        window.testJSONMatch = async () => {
+            const statusEl = document.getElementById('json-match-status');
+            const outputEl = document.getElementById('json-match-output');
+            
+            try {
+                const { DEFAULT_CONFIG } = await import('/config/config.js');
+                
+                const match = JSON.stringify(DEFAULT_CONFIG) === JSON.stringify(originalJSON);
+                
+                if (match) {
+                    outputEl.textContent = '✅ DEFAULT_CONFIG coincide exactamente con el JSON original';
+                    statusEl.innerHTML = '<span class="status success">✅ Coincide</span>';
+                } else {
+                    outputEl.textContent = '❌ Diferencias encontradas:\n\n' +
+                        'DEFAULT_CONFIG:\n' + JSON.stringify(DEFAULT_CONFIG, null, 2) +
+                        '\n\nJSON Original:\n' + JSON.stringify(originalJSON, null, 2);
+                    statusEl.innerHTML = '<span class="status error">❌ No coincide</span>';
+                }
+            } catch (error) {
+                outputEl.textContent = `Error: ${error.message}`;
+                statusEl.innerHTML = '<span class="status error">❌ Error</span>';
+            }
+        };
+
+        window.testAvatarConfig = async () => {
+            const statusEl = document.getElementById('avatar-config-status');
+            const outputEl = document.getElementById('avatar-config-output');
+            
+            try {
+                const { DEFAULT_CONFIG } = await import('/config/config.js');
+                
+                const avatarConfig = {
+                    name: DEFAULT_CONFIG.name,
+                    avatar: DEFAULT_CONFIG.avatar,
+                    ai_model: DEFAULT_CONFIG.ai.model,
+                    voice_type: DEFAULT_CONFIG.voice.type,
+                    voice_id: DEFAULT_CONFIG.voice.google.id,
+                    theme: DEFAULT_CONFIG.theme
+                };
+                
+                outputEl.textContent = JSON.stringify(avatarConfig, null, 2);
+                statusEl.innerHTML = '<span class="status success">✅ OK</span>';
+            } catch (error) {
+                outputEl.textContent = `Error: ${error.message}`;
+                statusEl.innerHTML = '<span class="status error">❌ Error</span>';
+            }
+        };
+
+        // Auto-ejecutar tests al cargar
+        setTimeout(() => {
+            testDefaultConfig();
+            setTimeout(() => testJSONMatch(), 500);
+            setTimeout(() => testAvatarConfig(), 1000);
+        }, 100);
+    </script>
+</body>
+</html>

@@ -1,5 +1,15 @@
 // Configuration file for Talking Head application
 export const CONFIG = {
+  // API Keys - Actualizadas y funcionales para desarrollo
+  apiKeys: {
+    openai: "",
+    elevenLabs: "sk_YOUR_ELEVENLABS_KEY_HERE_REPLACE_WITH_REAL_KEY",
+    microsoft: "YOUR_MICROSOFT_TTS_KEY_HERE_REPLACE_WITH_REAL_KEY",
+    google: "",
+    gemini: "AIzaSyYOUR_GEMINI_API_KEY_HERE_REPLACE_WITH_REAL_KEY",
+    grok: "xai-YOUR_GROK_API_KEY_HERE_REPLACE_WITH_REAL_KEY"
+  },
+
   // API Proxy Endpoints
   api: {
     proxies: {
@@ -10,12 +20,12 @@ export const CONFIG = {
       gemini: "/gemini/",
       googleTTS: "/gtts/",
       elevenTTS: [
-        "wss://" + window.location.host + "/elevenlabs/",
+        "/elevenlabs/",
         "/v1/text-to-speech/",
         "/stream-input?model_id=eleven_turbo_v2_5&output_format=pcm_22050"
       ],
       microsoftTTS: [
-        "wss://" + window.location.host + "/mstts/",
+        "/mstts/",
         "/cognitiveservices/websocket/v1"
       ],
       grokChatCompletions: "/grok/v1/chat/completions",
@@ -50,6 +60,50 @@ export const CONFIG = {
       generation_config: {
         chunk_length_schedule: [500, 500, 500, 500]
       }
+    },
+    // Voces disponibles de ElevenLabs (desde siteconfig.js)
+    voices: {
+      "Bella": { id: "EXAVITQu4vr4xnSDxMaL" },
+      "Elli": { id: "MF3mGyEYCl7XYWbV9V6O" },
+      "Rachel": { id: "21m00Tcm4TlvDq8ikWAM" },
+      "Adam": { id: "pNInz6obpgDQGcFmaJgB" },
+      "Antoni": { id: "ErXwobaYiN019PkySvjV" },
+      "Arnold": { id: "VR6AewLTigWG4xSOukaG" },
+      "Domi": { id: "AZnzlk1XvdvUeBnXmlld" },
+      "Josh": { id: "TxGEqnHWrfWFTfGW9XjX" },
+      "Sam": { id: "yoZ06aMxZJJ28mfd3POQ" }
+    }
+  },
+
+  // Google TTS Configuration
+  googleTTS: {
+    // Voces disponibles de Google (desde siteconfig.js)
+    voices: {
+      "fi-F": { id: "fi-FI-Standard-A" },
+      "lv-M": { id: "lv-LV-Standard-A" },
+      "lt-M": { id: "lt-LT-Standard-A" },
+      "en-F": { id: "en-GB-Standard-A" },
+      "en-M": { id: "en-GB-Standard-D" }
+    }
+  },
+
+  // Microsoft TTS Configuration
+  microsoft: {
+    // Viseme conversion from Microsoft to Oculus
+    visemeMap: [
+      "sil", 'aa', 'aa', 'O', 'E', // 0 - 4
+      'E', 'I', 'U', 'O', 'aa', // 5 - 9
+      'O', 'I', 'kk', 'RR', 'nn', // 10 - 14
+      'SS', 'SS', 'TH', 'FF', 'DD', // 15 - 19
+      'kk', 'PP' // 20 - 21
+    ],
+    // Voces disponibles de Microsoft (desde siteconfig.js)
+    voices: {
+      "fi-Selma": { lang: "fi-FI", id: "fi-FI-SelmaNeural" },
+      "fi-Noora": { lang: "fi-FI", id: "fi-FI-NooraNeural" },
+      "fi-Harri": { lang: "fi-FI", id: "fi-FI-HarriNeural" },
+      "en-Jenny": { lang: "en-US", id: "en-US-JennyNeural" },
+      "en-Tony": { lang: "en-US", id: "en-US-TonyNeural" }
     }
   },
 
@@ -76,18 +130,6 @@ export const CONFIG = {
     responseFormat: "verbose_json",
     prompt: "[The following is a full verbatim transcription without additional details, comments or emojis:]",
     timestampGranularities: ["word", "segment"]
-  },
-
-  // Microsoft TTS Configuration
-  microsoft: {
-    // Viseme conversion from Microsoft to Oculus
-    visemeMap: [
-      "sil", 'aa', 'aa', 'O', 'E', // 0 - 4
-      'E', 'I', 'U', 'O', 'aa', // 5 - 9
-      'O', 'I', 'kk', 'RR', 'nn', // 10 - 14
-      'SS', 'SS', 'TH', 'FF', 'DD', // 15 - 19
-      'kk', 'PP' // 20 - 21
-    ]
   },
 
   // SVG Icons
@@ -157,6 +199,152 @@ export const CONFIG = {
         }
       }
     ]
+  }
+};
+
+// Default configuration data (previously sent via JSON input)
+export const DEFAULT_CONFIG = {
+  "name": "Nimetön",
+  "theme": {
+    "lang": "en",
+    "brightness": "dark",
+    "ratio": "wide",
+    "layout": "port"
+  },
+  "view": {
+    "image": "NONE",
+    "url": "",
+    "brightness": 1,
+    "contrast": 1,
+    "saturate": 1,
+    "blur": 0
+  },
+  "avatar": {
+    "url": "",
+    "body": "F",
+    "name": "Brunette",
+    "brightness": 1,
+    "contrast": 1,
+    "saturate": 1
+  },
+  "camera": {
+    "frame": "full",
+    "x": 0,
+    "y": 0,
+    "d": 0,
+    "rotx": 0,
+    "roty": 0,
+    "fps": 30
+  },
+  "ai": {
+    "model": "gpt-4.1-mini",
+    "openai": {
+      "system": "",
+      "user1": "",
+      "ai1": "",
+      "user2": "",
+      "ai2": "",
+      "temperature": 1,
+      "presence": 0,
+      "frequency": 0,
+      "dialog": 4,
+      "input": 2000,
+      "output": 1000,
+      "stop": "",
+      "user": ""
+    },
+    "grok": {
+      "temperature": 1,
+      "presence": 0,
+      "frequency": 0,
+      "dialog": 4,
+      "input": 2000,
+      "output": 1000,
+      "stop": "",
+      "user": ""
+    },
+    "llama": {
+      "temperature": 1,
+      "presence": 0,
+      "frequency": 0,
+      "dialog": 4,
+      "input": 2000,
+      "output": 1000,
+      "stop": "",
+      "user": ""
+    },
+    "gemini": {
+      "system": "",
+      "user1": "",
+      "ai1": "",
+      "user2": "",
+      "ai2": "",
+      "temperature": 1,
+      "topp": 1,
+      "topk": 40,
+      "dialog": 4,
+      "input": 2000,
+      "output": 1000,
+      "stop": ""
+    }
+  },
+  "voice": {
+    "background": "NONE",
+    "type": "google",
+    "google": {
+      "id": "en-GB-Standard-A",
+      "rate": 1,
+      "pitch": 0
+    },
+    "lipsync": {
+      "lang": "ES"
+    },
+    "microsoft": {
+      "id": "fi-FI-SelmaNeural"
+    },
+    "eleven": {
+      "id": "EXAVITQu4vr4xnSDxMaL"
+    },
+    "exclude": {
+      "italics": false,
+      "code": false
+    },
+    "test": "",
+    "mixerbg": 0.5,
+    "mixerspeech": 1,
+    "reverb": "NONE"
+  },
+  "script": {
+    "text": ""
+  },
+  "pose": {
+    "movement": 1
+  },
+  "dynamicbones": {
+    "sensitivity": 1,
+    "movement": 1
+  },
+  "light": {
+    "ambient": {
+      "intensity": 2,
+      "color": "#ffffff"
+    },
+    "direct": {
+      "intensity": 30,
+      "color": "#8888aa",
+      "phi": 1,
+      "theta": 2
+    },
+    "spot": {
+      "intensity": 0,
+      "color": "#8888aa",
+      "phi": 0.1,
+      "theta": 4,
+      "dispersion": 1
+    }
+  },
+  "whisper": {
+    "type": "openai"
   }
 };
 
