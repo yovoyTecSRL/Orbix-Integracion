@@ -78,3 +78,5 @@ logs/
 ssl/
 .env6
 .env7
+.env
+.env.*
