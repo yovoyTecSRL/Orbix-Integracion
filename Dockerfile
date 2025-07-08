@@ -1,5 +1,5 @@
 # 🧠 Orbix AI Platform - Dockerfile
-FROM python:3.11-slim-bookworm
+FROM python:3.11-slim
 
 # Metadatos
 LABEL maintainer="Orbix Team"
