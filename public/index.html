@@ -7,8 +7,6 @@
   <link rel="stylesheet" href="/styles.css" />
   <link rel="stylesheet" href="/css/talkinghead-avatar.css" />
   <link rel="stylesheet" href="/css/avatar-settings.css" />
-</head>
-<body>
   <style>
     body {
   font-family: 'Segoe UI', sans-serif;
@@ -113,6 +111,26 @@ footer a {
   text-decoration: none;
 }
 
+.avatar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+        .avatar-preview {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 3px solid #4F46E5;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 300px;
+        }
   </style>
   <header>
     <h1>🧠 Orbix Systems</h1>
@@ -151,6 +169,16 @@ footer a {
       <h2>🚀 La nueva era Orbix</h2>
       <p>Automatización, inteligencia artificial y seguridad para todo tipo de empresas.</p>
     </section>
+
+    <div class="avatar-container">
+        <h1>Orbix AI Systems</h1>
+        <img id="avatarPreview" class="avatar-preview" src="/api/avatar/default" alt="Avatar">
+        
+        <form class="upload-form" id="avatarForm" enctype="multipart/form-data">
+            <input type="file" id="avatarInput" name="avatar" accept="image/*" required>
+            <button type="submit">Subir Avatar</button>
+        </form>
+    </div>
   </main>
 
   <footer>
@@ -166,5 +194,32 @@ footer a {
   <script src="/js/avatar-config.js"></script>
   <script src="/js/talkinghead-avatar.js"></script>
   <script src="/js/avatar-settings.js"></script>
+  <script>
+        document.getElementById('avatarForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            const fileInput = document.getElementById('avatarInput');
+            formData.append('avatar', fileInput.files[0]);
+            
+            try {
+                const response = await fetch('/upload-avatar', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('avatarPreview').src = result.avatarUrl;
+                    alert('Avatar subido exitosamente');
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Error al subir el avatar');
+            }
+        });
+    </script>
 </body>
 </html>
