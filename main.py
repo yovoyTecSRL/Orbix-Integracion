@@ -125,7 +125,7 @@ async def get_avatar_models():
 
 @app.get("/health")
 async def health():
-    return {"status": "ok", "service": "validacion-financiera"}
+    return {"status": "ok", "service": "orbix-ai-systems", "port": 8000}
 
 @app.get("/validaciones.html")
 async def validaciones():
@@ -143,6 +143,46 @@ async def sentinel():
 async def validate_credit(data: dict):
     return {"result": "approved", "score": 85, "data": data}
 
+@app.on_event("startup")
+async def startup_event():
+    print("🚀 Iniciando ORBIX AI Systems...")
+    print("📁 Verificando estructura de archivos...")
+    
+    # Crear directorios necesarios
+    directories = [
+        "public/avatars",
+        "public/avatars/previews", 
+        "public/css",
+        "public/js",
+        "js",
+        "css"
+    ]
+    
+    for directory in directories:
+        Path(directory).mkdir(parents=True, exist_ok=True)
+    
+    # Verificar archivos principales
+    files_to_check = [
+        "public/index.html",
+        "index.html",
+        "styles.css",
+        "public/styles.css",
+        "public/css/talkinghead-avatar.css",
+        "public/css/avatar-settings.css",
+        "public/js/avatar-manager.js",
+        "public/js/avatar-settings.js",
+        "js/main.js"
+    ]
+    
+    for file_path in files_to_check:
+        if Path(file_path).exists():
+            print(f"✅ {file_path}")
+        else:
+            print(f"⚠️  {file_path} no encontrado")
+    
+    print("🎭 Sistema de avatares listo para funcionar")
+
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    print("🌐 Servidor iniciando en puerto 8000...")
+    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
