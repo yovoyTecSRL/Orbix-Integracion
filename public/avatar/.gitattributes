@@ -14,3 +14,8 @@ views export-ignore
 images export-ignore
 blender export-ignore
 * text=auto
+*.py text eol=lf
+*.sh text eol=lf
+*.bat text eol=crlf
+
+
