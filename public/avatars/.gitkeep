@@ -1,0 +1,2 @@
+# This file ensures that the avatars directory is tracked by Git
+# even when it's empty. Avatar images will be stored in this directory.
