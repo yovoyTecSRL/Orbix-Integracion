@@ -1,6 +1,6 @@
 // Configuration file for Talking Head application
 export const CONFIG = {
-  // API Keys - Actualizadas y funcionales para desarrollo
+  // API Keys - Placeholders seguros para desarrollo
   apiKeys: {
     openai: "",
     elevenLabs: "sk_YOUR_ELEVENLABS_KEY_HERE_REPLACE_WITH_REAL_KEY",
