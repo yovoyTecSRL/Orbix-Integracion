@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  orbix-ai:
+    build: .
+    container_name: orbix-ai-platform
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - PYTHONUNBUFFERED=1
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - orbix-network
+
+  # Nginx para HTTPS y load balancing (opcional)
+  nginx:
+    image: nginx:alpine
+    container_name: orbix-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - orbix-ai
+    restart: unless-stopped
+    networks:
+      - orbix-network
+
+networks:
+  orbix-network:
+    driver: bridge
+
+volumes:
+  logs:
+    driver: local
