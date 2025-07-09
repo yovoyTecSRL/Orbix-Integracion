@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Three.js Modules</title>
+</head>
+<body>
+    <h1>Testing Three.js Modules</h1>
+    <div id="status">Loading...</div>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "/static/libs/three/three.module.js",
+            "three/addons/": "/static/libs/three/addons/"
+        }
+    }
+    </script>
+
+    <script type="module">
+        try {
+            console.log('🔄 Testing Three.js imports...');
+            
+            const THREE = await import('three');
+            console.log('✅ Three.js loaded:', THREE);
+            
+            const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+            console.log('✅ GLTFLoader loaded:', GLTFLoader);
+            
+            const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+            console.log('✅ OrbitControls loaded:', OrbitControls);
+            
+            document.getElementById('status').textContent = '✅ All modules loaded successfully!';
+            
+        } catch (error) {
+            console.error('❌ Error loading modules:', error);
+            document.getElementById('status').textContent = '❌ Error: ' + error.message;
+        }
+    </script>
+</body>
+</html>

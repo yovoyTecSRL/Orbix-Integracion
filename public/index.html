@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles.css">
-    <link rel="icon" type="image/jpg" href="/static/avatar/favicon.jpg">
+    <link rel="icon" type="image/jpg" href="/avatar/favicon.jpg">
 <style>
 
   
@@ -894,7 +894,7 @@ body {
                     <div class="avatar-section">
                         <div class="avatar-container">
                             <iframe id="avatar-frame" 
-                                    src="/static/avatar/index.html" 
+                                    src="/avatar/index.html" 
                                     width="400" 
                                     height="400"
                                     frameborder="0"
@@ -1097,7 +1097,17 @@ body {
         </div>
     </footer>
 
-    <script src="/static/js/avatar-manager.js"></script>
+    <!-- Three.js Local Modules -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "/static/libs/three/three.module.js",
+            "three/addons/": "/static/libs/three/addons/"
+        }
+    }
+    </script>
+    
+    <script type="module" src="/static/js/avatar-manager.js"></script>
     <script src="/static/js/main.js"></script>
 </body>
 </html>

@@ -18,9 +18,9 @@ app.add_middleware(
 
 # Servir archivos estáticos - MEJORADO
 app.mount("/static", StaticFiles(directory="public"), name="static")
-app.mount("/js", StaticFiles(directory="js"), name="js")
-app.mount("/css", StaticFiles(directory="css"), name="css")
-app.mount("/avatars", StaticFiles(directory="public/avatars"), name="avatars")
+app.mount("/js", StaticFiles(directory="public/js"), name="js")
+app.mount("/css", StaticFiles(directory="public/css"), name="css")
+app.mount("/avatar", StaticFiles(directory="public/avatar"), name="avatars")
 
 @app.get("/")
 async def root():

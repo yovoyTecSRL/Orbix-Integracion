@@ -631,9 +631,135 @@ footer a {
         </div>
         <canvas id="geographicChart"></canvas>
         <div class="chart-stats">
-          <span>Países: <strong id="countries-count">0</strong></span>
-          <span>IPs Únicas: <strong id="unique-ips">0</strong></span>
-          <span>Sospechosas: <strong id="suspicious-ips">0</strong></span>
+          <span>Países: <strong id="countries-count">5</strong></span>
+          <span>IPs Únicas: <strong id="unique-ips">344</strong></span>
+          <span>Sospechosas: <strong id="suspicious-ips">12</strong></span>
+        </div>
+      </div>
+
+      <!-- Network Traffic Analysis -->
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3>📊 Análisis de Tráfico de Red</h3>
+          <div class="chart-controls">
+            <button class="filter-btn active" data-traffic="24h">24h</button>
+            <button class="filter-btn" data-traffic="7d">7d</button>
+            <button class="filter-btn" data-traffic="30d">30d</button>
+          </div>
+        </div>
+        <canvas id="networkTrafficChart"></canvas>
+        <div class="chart-stats">
+          <span>Pico: <strong id="traffic-peak">2.3 GB/s</strong></span>
+          <span>Promedio: <strong id="traffic-avg">1.2 GB/s</strong></span>
+          <span>Total: <strong id="traffic-total">156.7 TB</strong></span>
+        </div>
+      </div>
+
+      <!-- Security Threats Timeline -->
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3>🚨 Timeline de Amenazas de Seguridad</h3>
+          <div class="chart-controls">
+            <button class="filter-btn active" data-threats="all">Todas</button>
+            <button class="filter-btn" data-threats="critical">Críticas</button>
+            <button class="filter-btn" data-threats="blocked">Bloqueadas</button>
+          </div>
+        </div>
+        <canvas id="threatsTimelineChart"></canvas>
+        <div class="chart-stats">
+          <span>Detectadas: <strong id="threats-detected">89</strong></span>
+          <span>Bloqueadas: <strong id="threats-blocked-stat">76</strong></span>
+          <span>Críticas: <strong id="threats-critical">13</strong></span>
+        </div>
+      </div>
+
+      <!-- System Performance Metrics -->
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3>⚡ Métricas de Rendimiento del Sistema</h3>
+          <div class="chart-controls">
+            <button class="filter-btn active" data-perf="cpu">CPU</button>
+            <button class="filter-btn" data-perf="memory">RAM</button>
+            <button class="filter-btn" data-perf="disk">Disco</button>
+          </div>
+        </div>
+        <canvas id="performanceChart"></canvas>
+        <div class="chart-stats">
+          <span>CPU: <strong id="cpu-usage">68%</strong></span>
+          <span>RAM: <strong id="memory-usage">4.2/16 GB</strong></span>
+          <span>Disco: <strong id="disk-usage">78%</strong></span>
+        </div>
+      </div>
+
+      <!-- API Response Times -->
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3>🚀 Tiempos de Respuesta de APIs</h3>
+          <div class="chart-controls">
+            <button class="filter-btn active" data-api="all">Todas</button>
+            <button class="filter-btn" data-api="slow">Lentas</button>
+            <button class="filter-btn" data-api="errors">Errores</button>
+          </div>
+        </div>
+        <canvas id="apiResponseChart"></canvas>
+        <div class="chart-stats">
+          <span>Promedio: <strong id="api-avg-response">145ms</strong></span>
+          <span>P95: <strong id="api-p95">298ms</strong></span>
+          <span>Errores: <strong id="api-errors">2.1%</strong></span>
+        </div>
+      </div>
+
+      <!-- User Activity Heatmap -->
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3>🔥 Mapa de Calor de Actividad de Usuarios</h3>
+          <div class="chart-controls">
+            <button class="filter-btn active" data-heatmap="hourly">Por Hora</button>
+            <button class="filter-btn" data-heatmap="daily">Diario</button>
+            <button class="filter-btn" data-heatmap="weekly">Semanal</button>
+          </div>
+        </div>
+        <canvas id="userActivityHeatmap"></canvas>
+        <div class="chart-stats">
+          <span>Usuarios Activos: <strong id="active-users">1,247</strong></span>
+          <span>Pico de Actividad: <strong id="activity-peak">14:30</strong></span>
+          <span>Sessiones: <strong id="total-sessions">3,892</strong></span>
+        </div>
+      </div>
+
+      <!-- Database Performance -->
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3>🗄️ Rendimiento de Base de Datos</h3>
+          <div class="chart-controls">
+            <button class="filter-btn active" data-db="queries">Consultas</button>
+            <button class="filter-btn" data-db="connections">Conexiones</button>
+            <button class="filter-btn" data-db="locks">Bloqueos</button>
+          </div>
+        </div>
+        <canvas id="databaseChart"></canvas>
+        <div class="chart-stats">
+          <span>QPS: <strong id="queries-per-second">234</strong></span>
+          <span>Conexiones: <strong id="db-connections">45/100</strong></span>
+          <span>Tiempo Avg: <strong id="db-avg-time">23ms</strong></span>
+        </div>
+      </div>
+
+      <!-- AI/ML Model Performance -->
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3>🤖 Rendimiento de Modelos IA/ML</h3>
+          <div class="chart-controls">
+            <button class="filter-btn active" data-ai="accuracy">Precisión</button>
+            <button class="filter-btn" data-ai="latency">Latencia</button>
+            <button class="filter-btn" data-ai="throughput">Rendimiento</button>
+          </div>
+        </div>
+        <canvas id="aiModelChart"></canvas>
+        <div class="chart-stats">
+          <span>Precisión: <strong id="model-accuracy">94.7%</strong></span>
+          <span>Latencia: <strong id="model-latency">89ms</strong></span>
+          <span>Predicciones/min: <strong id="model-predictions">1,567</strong></span>
         </div>
       </div>
     </section>

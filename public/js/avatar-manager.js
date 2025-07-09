@@ -3,9 +3,9 @@
  * Sistema completo de gestión de avatares con Three.js
  */
 
-import * as THREE from 'https://cdn.skypack.dev/three@0.140.0';
-import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.140.0/examples/jsm/loaders/GLTFLoader.js';
-import { OrbitControls } from 'https://cdn.skypack.dev/three@0.140.0/examples/jsm/controls/OrbitControls.js';
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 class AvatarManager {
     constructor() {
@@ -426,17 +426,22 @@ class AvatarManager {
     }
 }
 
-// Instancia global
+// Crear instancia global para compatibilidad
 window.avatarManager = new AvatarManager();
 
 // Auto-inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
-    window.avatarManager.init();
+    if (window.avatarManager && typeof window.avatarManager.init === 'function') {
+        window.avatarManager.init();
+    }
 });
 
 // Manejar redimensionado
 window.addEventListener('resize', () => {
-    window.avatarManager.resize();
+    if (window.avatarManager && typeof window.avatarManager.resize === 'function') {
+        window.avatarManager.resize();
+    }
 });
 
+// Export para uso como módulo ES6
 export default AvatarManager;

@@ -1,11 +1,181 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Document</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orbix AI - Asistente Virtual Corporativo</title>
+    <meta name="description" content="Sistema de avatar IA corporativo Orbix - Asistente virtual inteligente">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpg" href="/static/avatar/favicon.jpg">
+    
+    <!-- CSS Corporativo Orbix -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/avatar-settings.css">
+    <link rel="stylesheet" href="/static/css/talkinghead-avatar.css">
+    <link rel="stylesheet" href="/static/css/orbix-ui-overlays.css">
+    
+    <!-- Three.js y GLTFLoader desde CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.155.0/examples/js/loaders/GLTFLoader.js"></script>
+    
+    <!-- Microsoft Cognitive Services Speech SDK -->
+    <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
 </head>
 <body>
-	
+    <!-- Header Corporativo -->
+    <header class="orbix-header">
+        <div class="container">
+            <div class="logo-section">
+                <h1 class="orbix-logo">ORBIX AI</h1>
+                <span class="version-badge">v2.1.0</span>
+            </div>
+            <nav class="main-nav">
+                <a href="#dashboard" class="nav-link active">Dashboard</a>
+                <a href="#avatar" class="nav-link">Avatar</a>
+                <a href="#analytics" class="nav-link">Analytics</a>
+                <a href="#settings" class="nav-link">Configuración</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contenedor Principal -->
+    <main class="main-container">
+        <!-- Panel de Control del Avatar -->
+        <section id="avatar-control-panel" class="control-panel">
+            <div class="panel-header">
+                <h2>Control del Avatar IA</h2>
+                <button id="toggle-avatar" class="btn-primary">Activar Avatar</button>
+            </div>
+            
+            <div class="panel-content">
+                <!-- Configuración de Avatar -->
+                <div class="config-section">
+                    <h3>Configuración del Avatar</h3>
+                    <form id="avatar-settings-form" class="settings-form">
+                        <div class="form-group">
+                            <label for="avatar-model">Modelo de Avatar:</label>
+                            <select id="avatar-model" name="avatarModel" class="form-control">
+                                <option value="brunette">Brunette (Femenino)</option>
+                                <option value="male">Masculino</option>
+                                <option value="neutral">Neutral</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="voice-type">Tipo de Voz:</label>
+                            <select id="voice-type" name="voiceType" class="form-control">
+                                <option value="es-ES-ElviraNeural">Elvira (Español)</option>
+                                <option value="es-ES-AlvaroNeural">Álvaro (Español)</option>
+                                <option value="en-US-JennyNeural">Jenny (Inglés)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="speech-rate">Velocidad de Habla:</label>
+                            <input type="range" id="speech-rate" name="speechRate" min="0.5" max="2" step="0.1" value="1" class="form-range">
+                            <span class="range-value">1.0x</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="avatar-mood">Estado de Ánimo:</label>
+                            <select id="avatar-mood" name="avatarMood" class="form-control">
+                                <option value="neutral">Neutral</option>
+                                <option value="happy">Feliz</option>
+                                <option value="professional">Profesional</option>
+                                <option value="empathetic">Empático</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">Aplicar Configuración</button>
+                    </form>
+                </div>
+                
+                <!-- Control de Conversación -->
+                <div class="conversation-section">
+                    <h3>Conversación</h3>
+                    <div class="chat-container">
+                        <div id="chat-messages" class="chat-messages"></div>
+                        <div class="chat-input-container">
+                            <input type="text" id="chat-input" placeholder="Escribe tu mensaje aquí..." class="chat-input">
+                            <button id="send-message" class="btn-send">Enviar</button>
+                            <button id="voice-input" class="btn-voice">🎤</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Área del Avatar 3D -->
+        <section id="avatar-display" class="avatar-display">
+            <div class="avatar-container">
+                <canvas id="avatar-canvas" class="avatar-canvas"></canvas>
+                <div class="avatar-status">
+                    <span id="status-indicator" class="status-indicator offline">Desconectado</span>
+                    <span id="loading-text" class="loading-text hidden">Cargando avatar...</span>
+                </div>
+            </div>
+            
+            <!-- Controles de Cámara -->
+            <div class="camera-controls">
+                <button id="reset-camera" class="btn-control">Resetear Vista</button>
+                <button id="fullscreen-avatar" class="btn-control">Pantalla Completa</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="orbix-footer">
+        <div class="container">
+            <p>&copy; 2025 Orbix AI Systems. Todos los derechos reservados.</p>
+            <div class="footer-links">
+                <a href="#privacy">Privacidad</a>
+                <a href="#terms">Términos</a>
+                <a href="#support">Soporte</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts de la Aplicación -->
+    <script src="/static/js/dom-safety.js"></script>
+    <script src="/static/js/orbix-modules.js"></script>
+    <script src="/static/js/orbix-patches.js"></script>
+    <script src="/static/js/talkinghead-avatar.js"></script>
+    <script src="/static/js/avatar-config.js"></script>
+    <script src="/static/js/avatar-settings.js"></script>
+    <script src="/static/js/orbix-ui-controls.js"></script>
+    
+    <!-- Script de Inicialización -->
+    <script>
+        // Inicialización del sistema Orbix AI
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Orbix AI System Loading...');
+            
+            // Verificar dependencias
+            if (typeof THREE === 'undefined') {
+                console.error('❌ THREE.js no está cargado');
+                return;
+            }
+            
+            if (typeof SpeechSDK === 'undefined') {
+                console.warn('⚠️ Speech SDK no está disponible');
+            }
+            
+            // Inicializar módulos
+            try {
+                if (window.OrbixUI) {
+                    window.OrbixUI.init();
+                }
+                
+                if (window.AvatarManager) {
+                    window.AvatarManager.init();
+                }
+                
+                console.log('✅ Orbix AI System Ready');
+            } catch (error) {
+                console.error('❌ Error inicializando Orbix AI:', error);
+            }
+        });
+    </script>
 </body>
 </html>

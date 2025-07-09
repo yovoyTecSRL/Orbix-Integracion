@@ -5,7 +5,7 @@
 
   <meta charset="utf-8">
   <meta content="width=device-width, height=device-height, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, user-scalable=no, interactive-widget=resizes-content" name="viewport">
-  <link rel="icon" type="image/jpg" href="favicon.jpg">
+  <link rel="icon" type="image/jpg" href="/static/avatar/favicon.jpg">
 
   <style>
 
@@ -328,27 +328,27 @@
   /* Fonts */
   @font-face {
     font-family:"SansRegular";
-    src: url("./fonts/FiraSansCondensed-Regular.ttf") format('truetype');
+    src: url("/static/avatar/fonts/FiraSansCondensed-Regular.ttf") format('truetype');
   }
   @font-face {
     font-family:"SansItalic";
-    src: url("./fonts/FiraSansCondensed-Italic.ttf") format('truetype');
+    src: url("/static/avatar/fonts/FiraSansCondensed-Italic.ttf") format('truetype');
   }
   @font-face {
     font-family:"SansBold";
-    src: url("./fonts/FiraSansCondensed-Bold.ttf") format('truetype');
+    src: url("/static/avatar/fonts/FiraSansCondensed-Bold.ttf") format('truetype');
   }
   @font-face {
     font-family:"SansBoldItalic";
-    src: url("./fonts/FiraSansCondensed-BoldItalic.ttf") format('truetype');
+    src: url("/static/avatar/fonts/FiraSansCondensed-BoldItalic.ttf") format('truetype');
   }
   @font-face {
     font-family:"SansRegularCondensed";
-    src: url("./fonts/FiraSansExtraCondensed-Regular.ttf") format('truetype');
+    src: url("/static/avatar/fonts/FiraSansExtraCondensed-Regular.ttf") format('truetype');
   }
   @font-face {
     font-family:"SansBoldCondensed";
-    src: url("./fonts/FiraSansExtraCondensed-Bold.ttf") format('truetype');
+    src: url("/static/avatar/fonts/FiraSansExtraCondensed-Bold.ttf") format('truetype');
   }
 
   /* Layouts */
@@ -403,8 +403,8 @@
 <script src="https://cdn.jsdelivr.net/npm/microsoft-cognitiveservices-speech-sdk@latest/distrib/browser/microsoft.cognitiveservices.speech.sdk.bundle-min.js"></script>
 
 <script type="module">
-import { site } from './siteconfig.js'
-import { TalkingHead } from "./modules/talkinghead.mjs";
+import { site } from '/static/avatar/siteconfig.js'
+import { TalkingHead } from "/static/avatar/modules/talkinghead.mjs";
 import dompurify from 'dompurify';
 import { marked } from 'marked';
 
