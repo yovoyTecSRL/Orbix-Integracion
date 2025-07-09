@@ -76,3 +76,7 @@ Sistemas-Orbix-SA-Dev-Orbix/
 .env.production
 logs/
 ssl/
+.env6
+.env7
+.env
+.env.*

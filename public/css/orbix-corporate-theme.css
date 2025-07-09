@@ -1,0 +1,487 @@
+/**
+ * 🏢 ORBIX CORPORATE THEME 2025
+ * Tema corporativo completo para la plataforma Orbix AI
+ * Diseño profesional, moderno y escalable
+ */
+
+/* === VARIABLES DE DISEÑO CORPORATIVO === */
+:root {
+    /* Paleta de colores corporativos */
+    --orbix-primary: #0066cc;
+    --orbix-primary-light: #3399ff;
+    --orbix-primary-dark: #004499;
+    --orbix-secondary: #00f7ff;
+    --orbix-accent: #ff6b35;
+    --orbix-success: #22c55e;
+    --orbix-warning: #f59e0b;
+    --orbix-error: #ef4444;
+    
+    /* Colores de fondo */
+    --orbix-bg-primary: #ffffff;
+    --orbix-bg-secondary: #f8fafc;
+    --orbix-bg-tertiary: #e2e8f0;
+    --orbix-bg-dark: #1e293b;
+    --orbix-bg-darker: #0f172a;
+    
+    /* Colores de texto */
+    --orbix-text-primary: #1e293b;
+    --orbix-text-secondary: #64748b;
+    --orbix-text-muted: #94a3b8;
+    --orbix-text-inverse: #ffffff;
+    
+    /* Bordes y líneas */
+    --orbix-border-light: #e2e8f0;
+    --orbix-border-medium: #cbd5e1;
+    --orbix-border-dark: #475569;
+    
+    /* Sombras corporativas */
+    --orbix-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --orbix-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --orbix-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --orbix-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --orbix-shadow-glow: 0 0 20px rgba(0, 102, 204, 0.3);
+    
+    /* Tipografía corporativa */
+    --orbix-font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --orbix-font-heading: 'Orbitron', 'Inter', monospace;
+    --orbix-font-mono: 'Fira Code', 'JetBrains Mono', monospace;
+    
+    /* Espaciado */
+    --orbix-space-xs: 0.25rem;  /* 4px */
+    --orbix-space-sm: 0.5rem;   /* 8px */
+    --orbix-space-md: 1rem;     /* 16px */
+    --orbix-space-lg: 1.5rem;   /* 24px */
+    --orbix-space-xl: 2rem;     /* 32px */
+    --orbix-space-2xl: 3rem;    /* 48px */
+    --orbix-space-3xl: 4rem;    /* 64px */
+    
+    /* Radios de borde */
+    --orbix-radius-sm: 0.25rem;
+    --orbix-radius-md: 0.375rem;
+    --orbix-radius-lg: 0.5rem;
+    --orbix-radius-xl: 0.75rem;
+    --orbix-radius-2xl: 1rem;
+    --orbix-radius-full: 9999px;
+    
+    /* Transiciones */
+    --orbix-transition-fast: 150ms ease-in-out;
+    --orbix-transition-normal: 250ms ease-in-out;
+    --orbix-transition-slow: 350ms ease-in-out;
+}
+
+/* === RESET Y BASE === */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--orbix-font-primary);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--orbix-text-primary);
+    background-color: var(--orbix-bg-primary);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* === COMPONENTES BASE === */
+
+/* Contenedores */
+.orbix-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--orbix-space-md);
+}
+
+.orbix-container-fluid {
+    width: 100%;
+    padding: 0 var(--orbix-space-md);
+}
+
+/* Tarjetas corporativas */
+.orbix-card {
+    background: var(--orbix-bg-primary);
+    border: 1px solid var(--orbix-border-light);
+    border-radius: var(--orbix-radius-lg);
+    box-shadow: var(--orbix-shadow-md);
+    transition: all var(--orbix-transition-normal);
+}
+
+.orbix-card:hover {
+    box-shadow: var(--orbix-shadow-lg);
+    transform: translateY(-2px);
+}
+
+.orbix-card-header {
+    padding: var(--orbix-space-lg);
+    border-bottom: 1px solid var(--orbix-border-light);
+}
+
+.orbix-card-body {
+    padding: var(--orbix-space-lg);
+}
+
+.orbix-card-footer {
+    padding: var(--orbix-space-lg);
+    border-top: 1px solid var(--orbix-border-light);
+    background: var(--orbix-bg-secondary);
+}
+
+/* Botones corporativos */
+.orbix-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--orbix-space-sm);
+    padding: var(--orbix-space-sm) var(--orbix-space-lg);
+    font-family: var(--orbix-font-primary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.5;
+    text-decoration: none;
+    text-align: center;
+    border: 1px solid transparent;
+    border-radius: var(--orbix-radius-md);
+    cursor: pointer;
+    transition: all var(--orbix-transition-fast);
+    user-select: none;
+    white-space: nowrap;
+}
+
+.orbix-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Variantes de botones */
+.orbix-btn-primary {
+    color: var(--orbix-text-inverse);
+    background: linear-gradient(135deg, var(--orbix-primary), var(--orbix-primary-light));
+    border-color: var(--orbix-primary);
+    box-shadow: var(--orbix-shadow-sm);
+}
+
+.orbix-btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--orbix-primary-dark), var(--orbix-primary));
+    box-shadow: var(--orbix-shadow-md);
+    transform: translateY(-1px);
+}
+
+.orbix-btn-secondary {
+    color: var(--orbix-text-primary);
+    background: var(--orbix-bg-primary);
+    border-color: var(--orbix-border-medium);
+}
+
+.orbix-btn-secondary:hover:not(:disabled) {
+    background: var(--orbix-bg-secondary);
+    border-color: var(--orbix-primary);
+}
+
+.orbix-btn-accent {
+    color: var(--orbix-text-inverse);
+    background: linear-gradient(135deg, var(--orbix-secondary), #33aaff);
+    border-color: var(--orbix-secondary);
+    box-shadow: 0 0 15px rgba(0, 247, 255, 0.3);
+}
+
+.orbix-btn-accent:hover:not(:disabled) {
+    box-shadow: 0 0 25px rgba(0, 247, 255, 0.5);
+    transform: translateY(-1px);
+}
+
+.orbix-btn-success {
+    color: var(--orbix-text-inverse);
+    background: var(--orbix-success);
+    border-color: var(--orbix-success);
+}
+
+.orbix-btn-warning {
+    color: var(--orbix-text-inverse);
+    background: var(--orbix-warning);
+    border-color: var(--orbix-warning);
+}
+
+.orbix-btn-error {
+    color: var(--orbix-text-inverse);
+    background: var(--orbix-error);
+    border-color: var(--orbix-error);
+}
+
+/* Tamaños de botones */
+.orbix-btn-sm {
+    padding: var(--orbix-space-xs) var(--orbix-space-md);
+    font-size: 0.75rem;
+}
+
+.orbix-btn-lg {
+    padding: var(--orbix-space-md) var(--orbix-space-xl);
+    font-size: 1rem;
+}
+
+/* Formularios corporativos */
+.orbix-form-group {
+    margin-bottom: var(--orbix-space-lg);
+}
+
+.orbix-label {
+    display: block;
+    margin-bottom: var(--orbix-space-sm);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--orbix-text-primary);
+}
+
+.orbix-input,
+.orbix-select,
+.orbix-textarea {
+    width: 100%;
+    padding: var(--orbix-space-sm) var(--orbix-space-md);
+    font-family: var(--orbix-font-primary);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--orbix-text-primary);
+    background: var(--orbix-bg-primary);
+    border: 1px solid var(--orbix-border-medium);
+    border-radius: var(--orbix-radius-md);
+    transition: all var(--orbix-transition-fast);
+}
+
+.orbix-input:focus,
+.orbix-select:focus,
+.orbix-textarea:focus {
+    outline: none;
+    border-color: var(--orbix-primary);
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+.orbix-input:disabled,
+.orbix-select:disabled,
+.orbix-textarea:disabled {
+    background: var(--orbix-bg-secondary);
+    color: var(--orbix-text-muted);
+    cursor: not-allowed;
+}
+
+/* Switches y toggles */
+.orbix-switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 24px;
+}
+
+.orbix-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.orbix-switch-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--orbix-border-medium);
+    border-radius: var(--orbix-radius-full);
+    transition: var(--orbix-transition-fast);
+}
+
+.orbix-switch-slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 2px;
+    bottom: 2px;
+    background: var(--orbix-bg-primary);
+    border-radius: var(--orbix-radius-full);
+    transition: var(--orbix-transition-fast);
+}
+
+.orbix-switch input:checked + .orbix-switch-slider {
+    background: var(--orbix-primary);
+}
+
+.orbix-switch input:checked + .orbix-switch-slider:before {
+    transform: translateX(24px);
+}
+
+/* Alertas y notificaciones */
+.orbix-alert {
+    padding: var(--orbix-space-md);
+    border-radius: var(--orbix-radius-md);
+    border: 1px solid transparent;
+    margin-bottom: var(--orbix-space-md);
+}
+
+.orbix-alert-success {
+    color: #166534;
+    background: #dcfce7;
+    border-color: #22c55e;
+}
+
+.orbix-alert-warning {
+    color: #a16207;
+    background: #fef3c7;
+    border-color: #f59e0b;
+}
+
+.orbix-alert-error {
+    color: #991b1b;
+    background: #fee2e2;
+    border-color: #ef4444;
+}
+
+.orbix-alert-info {
+    color: #1e40af;
+    background: #dbeafe;
+    border-color: var(--orbix-primary);
+}
+
+/* Badges y etiquetas */
+.orbix-badge {
+    display: inline-block;
+    padding: var(--orbix-space-xs) var(--orbix-space-sm);
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    border-radius: var(--orbix-radius-sm);
+}
+
+.orbix-badge-primary {
+    color: var(--orbix-text-inverse);
+    background: var(--orbix-primary);
+}
+
+.orbix-badge-secondary {
+    color: var(--orbix-text-primary);
+    background: var(--orbix-bg-tertiary);
+}
+
+.orbix-badge-success {
+    color: var(--orbix-text-inverse);
+    background: var(--orbix-success);
+}
+
+/* Loader corporativo */
+.orbix-loader {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--orbix-border-light);
+    border-top: 2px solid var(--orbix-primary);
+    border-radius: var(--orbix-radius-full);
+    animation: orbix-spin 1s linear infinite;
+}
+
+@keyframes orbix-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Utilidades de espaciado */
+.orbix-m-0 { margin: 0; }
+.orbix-m-1 { margin: var(--orbix-space-xs); }
+.orbix-m-2 { margin: var(--orbix-space-sm); }
+.orbix-m-3 { margin: var(--orbix-space-md); }
+.orbix-m-4 { margin: var(--orbix-space-lg); }
+
+.orbix-p-0 { padding: 0; }
+.orbix-p-1 { padding: var(--orbix-space-xs); }
+.orbix-p-2 { padding: var(--orbix-space-sm); }
+.orbix-p-3 { padding: var(--orbix-space-md); }
+.orbix-p-4 { padding: var(--orbix-space-lg); }
+
+/* Utilidades de display */
+.orbix-flex { display: flex; }
+.orbix-inline-flex { display: inline-flex; }
+.orbix-grid { display: grid; }
+.orbix-hidden { display: none; }
+.orbix-block { display: block; }
+.orbix-inline { display: inline; }
+
+/* Utilidades de alineación */
+.orbix-items-center { align-items: center; }
+.orbix-items-start { align-items: flex-start; }
+.orbix-items-end { align-items: flex-end; }
+.orbix-justify-center { justify-content: center; }
+.orbix-justify-between { justify-content: space-between; }
+.orbix-justify-start { justify-content: flex-start; }
+.orbix-justify-end { justify-content: flex-end; }
+
+/* Utilidades de texto */
+.orbix-text-left { text-align: left; }
+.orbix-text-center { text-align: center; }
+.orbix-text-right { text-align: right; }
+.orbix-text-sm { font-size: 0.875rem; }
+.orbix-text-lg { font-size: 1.125rem; }
+.orbix-text-xl { font-size: 1.25rem; }
+.orbix-text-2xl { font-size: 1.5rem; }
+.orbix-text-3xl { font-size: 1.875rem; }
+
+/* === RESPONSIVIDAD === */
+@media (max-width: 768px) {
+    .orbix-container {
+        padding: 0 var(--orbix-space-sm);
+    }
+    
+    .orbix-card-header,
+    .orbix-card-body,
+    .orbix-card-footer {
+        padding: var(--orbix-space-md);
+    }
+    
+    .orbix-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .orbix-btn + .orbix-btn {
+        margin-top: var(--orbix-space-sm);
+    }
+}
+
+/* === MODO OSCURO === */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --orbix-bg-primary: #0f172a;
+        --orbix-bg-secondary: #1e293b;
+        --orbix-bg-tertiary: #334155;
+        --orbix-text-primary: #f1f5f9;
+        --orbix-text-secondary: #cbd5e1;
+        --orbix-text-muted: #94a3b8;
+        --orbix-border-light: #334155;
+        --orbix-border-medium: #475569;
+        --orbix-border-dark: #64748b;
+    }
+}
+
+/* === ACCESIBILIDAD === */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Focus visible para navegación por teclado */
+.orbix-btn:focus-visible,
+.orbix-input:focus-visible,
+.orbix-select:focus-visible {
+    outline: 2px solid var(--orbix-primary);
+    outline-offset: 2px;
+}

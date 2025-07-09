@@ -1,403 +1,409 @@
 /**
- * 🎛️ Avatar Settings Panel - Orbix AI Platform
- * Panel de configuraciones avanzadas para el TalkingHead Avatar
+ * ⚙️ Avatar Settings Panel - Orbix AI Platform
+ * Panel de configuración visual para el sistema de avatares
  */
 
-class AvatarSettingsPanel {
+class AvatarSettings {
     constructor() {
         this.isOpen = false;
-        this.settings = {
-            volume: 0.8,
-            speechSpeed: 1.0,
-            idleAnimation: true,
-            autoResponse: true,
-            language: 'es',
-            voiceType: 'female',
-            quality: 'high',
-            showSubtitles: false,
-            darkMode: true,
-            chatPosition: 'right'
-        };
-        
+        this.panel = null;
+        this.availableAvatars = [
+            { name: 'Zoile (Brunette)', file: '/avatars/brunette.glb', preview: '/avatars/previews/brunette.jpg' },
+            { name: 'Emma (Blonde)', file: '/avatars/emma.glb', preview: '/avatars/previews/emma.jpg' },
+            { name: 'Alex (Corporate)', file: '/avatars/alex.glb', preview: '/avatars/previews/alex.jpg' }
+        ];
         this.init();
     }
 
     init() {
-        this.loadSettings();
         this.createPanel();
-        this.bindEvents();
+        this.setupEventListeners();
+        this.loadCurrentSettings();
+        console.log('⚙️ Avatar Settings Panel inicializado');
     }
 
     createPanel() {
-        // Crear overlay
-        this.overlay = document.createElement('div');
-        this.overlay.className = 'settings-overlay';
-        this.overlay.style.display = 'none';
+        // Crear botón de configuración
+        const settingsBtn = document.createElement('button');
+        settingsBtn.id = 'avatar-settings-btn';
+        settingsBtn.className = 'settings-toggle-btn';
+        settingsBtn.innerHTML = '⚙️';
+        settingsBtn.title = 'Configurar Avatar (Ctrl + /)';
+        document.body.appendChild(settingsBtn);
 
-        // Crear panel
+        // Crear panel principal
         this.panel = document.createElement('div');
-        this.panel.className = 'settings-panel';
-        this.panel.innerHTML = this.generatePanelHTML();
+        this.panel.id = 'avatar-settings-panel';
+        this.panel.className = 'avatar-settings-panel';
+        this.panel.innerHTML = this.createPanelHTML();
+        document.body.appendChild(this.panel);
 
-        this.overlay.appendChild(this.panel);
-        document.body.appendChild(this.overlay);
+        // Crear overlay
+        const overlay = document.createElement('div');
+        overlay.id = 'settings-overlay';
+        overlay.className = 'settings-overlay';
+        document.body.appendChild(overlay);
     }
 
-    generatePanelHTML() {
+    createPanelHTML() {
         return `
             <div class="settings-header">
-                <h2>⚙️ Configuración del Avatar</h2>
+                <h3>🎭 Configuración del Avatar</h3>
                 <button class="close-btn" id="close-settings">✕</button>
             </div>
             
             <div class="settings-content">
+                <!-- Información del Avatar -->
                 <div class="settings-section">
-                    <h3>🔊 Audio</h3>
-                    <div class="setting-item">
-                        <label for="volume-slider">Volumen:</label>
-                        <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="${this.settings.volume}">
-                        <span class="value-display">${Math.round(this.settings.volume * 100)}%</span>
-                    </div>
-                    
-                    <div class="setting-item">
-                        <label for="speech-speed">Velocidad de voz:</label>
-                        <input type="range" id="speech-speed" min="0.5" max="2" step="0.1" value="${this.settings.speechSpeed}">
-                        <span class="value-display">${this.settings.speechSpeed}x</span>
-                    </div>
-                    
-                    <div class="setting-item">
-                        <label for="voice-type">Tipo de voz:</label>
-                        <select id="voice-type">
-                            <option value="female" ${this.settings.voiceType === 'female' ? 'selected' : ''}>Femenina</option>
-                            <option value="male" ${this.settings.voiceType === 'male' ? 'selected' : ''}>Masculina</option>
-                            <option value="neutral" ${this.settings.voiceType === 'neutral' ? 'selected' : ''}>Neutral</option>
-                        </select>
+                    <h4>📋 Información</h4>
+                    <div class="input-group">
+                        <label for="avatar-name">Nombre del Avatar:</label>
+                        <input type="text" id="avatar-name" value="Zoile" maxlength="20">
                     </div>
                 </div>
 
+                <!-- Selección de Modelo -->
                 <div class="settings-section">
-                    <h3>🎭 Apariencia</h3>
-                    <div class="setting-item">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="idle-animation" ${this.settings.idleAnimation ? 'checked' : ''}>
-                            <span class="checkmark"></span>
-                            Animación en reposo
-                        </label>
-                    </div>
-                    
-                    <div class="setting-item">
-                        <label for="quality-select">Calidad visual:</label>
-                        <select id="quality-select">
-                            <option value="low" ${this.settings.quality === 'low' ? 'selected' : ''}>Baja (mejor rendimiento)</option>
-                            <option value="medium" ${this.settings.quality === 'medium' ? 'selected' : ''}>Media</option>
-                            <option value="high" ${this.settings.quality === 'high' ? 'selected' : ''}>Alta</option>
-                            <option value="ultra" ${this.settings.quality === 'ultra' ? 'selected' : ''}>Ultra (mejor calidad)</option>
-                        </select>
-                    </div>
-                    
-                    <div class="setting-item">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="dark-mode" ${this.settings.darkMode ? 'checked' : ''}>
-                            <span class="checkmark"></span>
-                            Modo oscuro
-                        </label>
+                    <h4>🎨 Modelo 3D</h4>
+                    <div class="avatar-gallery">
+                        ${this.availableAvatars.map(avatar => `
+                            <div class="avatar-option" data-file="${avatar.file}">
+                                <div class="avatar-preview" style="background-image: url('${avatar.preview}')"></div>
+                                <span class="avatar-label">${avatar.name}</span>
+                                <div class="avatar-radio">
+                                    <input type="radio" name="avatar-model" value="${avatar.file}" id="model-${avatar.file.split('/').pop()}">
+                                </div>
+                            </div>
+                        `).join('')}
                     </div>
                 </div>
 
+                <!-- Configuración de Animaciones -->
                 <div class="settings-section">
-                    <h3>💬 Chat</h3>
-                    <div class="setting-item">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="auto-response" ${this.settings.autoResponse ? 'checked' : ''}>
-                            <span class="checkmark"></span>
-                            Respuestas automáticas
-                        </label>
-                    </div>
-                    
-                    <div class="setting-item">
-                        <label class="checkbox-label">
-                            <input type="checkbox" id="show-subtitles" ${this.settings.showSubtitles ? 'checked' : ''}>
-                            <span class="checkmark"></span>
-                            Mostrar subtítulos
-                        </label>
-                    </div>
-                    
-                    <div class="setting-item">
-                        <label for="chat-position">Posición del chat:</label>
-                        <select id="chat-position">
-                            <option value="right" ${this.settings.chatPosition === 'right' ? 'selected' : ''}>Derecha</option>
-                            <option value="left" ${this.settings.chatPosition === 'left' ? 'selected' : ''}>Izquierda</option>
-                            <option value="bottom" ${this.settings.chatPosition === 'bottom' ? 'selected' : ''}>Abajo</option>
-                        </select>
-                    </div>
-                    
-                    <div class="setting-item">
-                        <label for="language-select">Idioma:</label>
-                        <select id="language-select">
-                            <option value="es" ${this.settings.language === 'es' ? 'selected' : ''}>Español</option>
-                            <option value="en" ${this.settings.language === 'en' ? 'selected' : ''}>English</option>
-                            <option value="fr" ${this.settings.language === 'fr' ? 'selected' : ''}>Français</option>
-                            <option value="pt" ${this.settings.language === 'pt' ? 'selected' : ''}>Português</option>
-                        </select>
+                    <h4>🎬 Animaciones</h4>
+                    <div class="toggle-group">
+                        <div class="toggle-item">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="enable-movement" checked>
+                                <span class="slider"></span>
+                            </label>
+                            <span class="toggle-label">Movimiento Natural</span>
+                        </div>
+                        
+                        <div class="toggle-item">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="enable-blinking" checked>
+                                <span class="slider"></span>
+                            </label>
+                            <span class="toggle-label">Parpadeo Automático</span>
+                        </div>
+                        
+                        <div class="toggle-item">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="enable-breathing" checked>
+                                <span class="slider"></span>
+                            </label>
+                            <span class="toggle-label">Respiración Sutil</span>
+                        </div>
+                        
+                        <div class="toggle-item">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="enable-lipsync" checked>
+                                <span class="slider"></span>
+                            </label>
+                            <span class="toggle-label">Sincronización Labial</span>
+                        </div>
                     </div>
                 </div>
 
+                <!-- Configuración Avanzada -->
                 <div class="settings-section">
-                    <h3>🔧 Avanzado</h3>
-                    <div class="setting-item">
-                        <button id="reset-avatar" class="action-btn secondary">🔄 Reiniciar Avatar</button>
+                    <h4>🔧 Avanzado</h4>
+                    <div class="input-group">
+                        <label for="animation-speed">Velocidad de Animación:</label>
+                        <div class="range-container">
+                            <input type="range" id="animation-speed" min="0.1" max="2" step="0.1" value="1">
+                            <span class="range-value">1.0x</span>
+                        </div>
                     </div>
-                    
-                    <div class="setting-item">
-                        <button id="export-settings" class="action-btn secondary">📤 Exportar Configuración</button>
-                    </div>
-                    
-                    <div class="setting-item">
-                        <input type="file" id="import-settings" accept=".json" style="display: none;">
-                        <button id="import-settings-btn" class="action-btn secondary">📥 Importar Configuración</button>
-                    </div>
-                    
-                    <div class="setting-item">
-                        <button id="clear-chat" class="action-btn danger">🗑️ Limpiar Chat</button>
+                </div>
+
+                <!-- Vista Previa -->
+                <div class="settings-section">
+                    <h4>👁️ Pruebas</h4>
+                    <div class="test-buttons">
+                        <button class="test-btn" id="test-blink">💫 Parpadear</button>
+                        <button class="test-btn" id="test-talk">🗣️ Hablar</button>
+                        <button class="test-btn" id="test-reset">🔄 Reset</button>
                     </div>
                 </div>
             </div>
 
             <div class="settings-footer">
-                <button id="save-settings" class="action-btn primary">💾 Guardar Cambios</button>
-                <button id="cancel-settings" class="action-btn secondary">❌ Cancelar</button>
+                <button class="btn-secondary" id="restore-defaults">Restaurar</button>
+                <button class="btn-primary" id="save-settings">💾 Guardar Cambios</button>
             </div>
         `;
     }
 
-    bindEvents() {
-        // Evento global para abrir el panel
-        window.addEventListener('openAvatarSettings', () => this.open());
-
-        // Overlay click para cerrar
-        this.overlay.addEventListener('click', (e) => {
-            if (e.target === this.overlay) {
-                this.close();
-            }
+    setupEventListeners() {
+        // Botón de abrir/cerrar
+        document.getElementById('avatar-settings-btn').addEventListener('click', () => {
+            this.toggle();
         });
 
-        // Botón cerrar
-        this.panel.addEventListener('click', (e) => {
-            if (e.target.id === 'close-settings' || e.target.id === 'cancel-settings') {
-                this.close();
-            }
+        // Cerrar panel
+        document.getElementById('close-settings').addEventListener('click', () => {
+            this.close();
         });
 
-        // Botón guardar
-        this.panel.addEventListener('click', (e) => {
-            if (e.target.id === 'save-settings') {
-                this.saveSettings();
-            }
+        // Overlay para cerrar
+        document.getElementById('settings-overlay').addEventListener('click', () => {
+            this.close();
         });
 
-        // Sliders con actualización en tiempo real
-        this.panel.addEventListener('input', (e) => {
-            if (e.target.type === 'range') {
-                this.updateValueDisplay(e.target);
-                this.previewSetting(e.target);
-            }
-        });
-
-        // Checkboxes y selects
-        this.panel.addEventListener('change', (e) => {
-            if (e.target.type === 'checkbox' || e.target.tagName === 'SELECT') {
-                this.previewSetting(e.target);
-            }
-        });
-
-        // Botones de acción
-        this.panel.addEventListener('click', (e) => {
-            switch (e.target.id) {
-                case 'reset-avatar':
-                    this.resetAvatar();
-                    break;
-                case 'export-settings':
-                    this.exportSettings();
-                    break;
-                case 'import-settings-btn':
-                    this.triggerImport();
-                    break;
-                case 'clear-chat':
-                    this.clearChat();
-                    break;
-            }
-        });
-
-        // Import de configuración
-        this.panel.addEventListener('change', (e) => {
-            if (e.target.id === 'import-settings') {
-                this.importSettings(e.target.files[0]);
-            }
-        });
-
-        // Tecla ESC para cerrar
+        // Teclas de acceso rápido
         document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === '/') {
+                e.preventDefault();
+                this.toggle();
+            }
             if (e.key === 'Escape' && this.isOpen) {
                 this.close();
             }
         });
-    }
 
-    open() {
-        this.isOpen = true;
-        this.overlay.style.display = 'flex';
-        this.panel.classList.add('slide-in');
-        document.body.style.overflow = 'hidden';
-        
-        // Focus en el primer elemento
-        const firstInput = this.panel.querySelector('input, select, button');
-        if (firstInput) {
-            firstInput.focus();
-        }
-    }
+        // Configuración en tiempo real
+        this.setupRealtimeControls();
 
-    close() {
-        this.isOpen = false;
-        this.panel.classList.remove('slide-in');
-        
-        setTimeout(() => {
-            this.overlay.style.display = 'none';
-            document.body.style.overflow = '';
-        }, 300);
-    }
+        // Botones de acción
+        document.getElementById('save-settings').addEventListener('click', () => {
+            this.saveSettings();
+        });
 
-    updateValueDisplay(slider) {
-        const valueDisplay = slider.parentElement.querySelector('.value-display');
-        if (valueDisplay) {
-            if (slider.id === 'volume-slider') {
-                valueDisplay.textContent = Math.round(slider.value * 100) + '%';
-            } else if (slider.id === 'speech-speed') {
-                valueDisplay.textContent = slider.value + 'x';
+        document.getElementById('restore-defaults').addEventListener('click', () => {
+            this.restoreDefaults();
+        });
+
+        // Botones de prueba
+        document.getElementById('test-blink').addEventListener('click', () => {
+            if (window.avatarManager) {
+                window.avatarManager.blink();
             }
-        }
+        });
+
+        document.getElementById('test-talk').addEventListener('click', () => {
+            if (window.avatarManager) {
+                window.avatarManager.startTalking();
+                setTimeout(() => window.avatarManager.stopTalking(), 3000);
+            }
+        });
+
+        document.getElementById('test-reset').addEventListener('click', () => {
+            if (window.avatarManager) {
+                window.avatarManager.stopTalking();
+            }
+        });
     }
 
-    previewSetting(element) {
-        // Aplicar configuración en tiempo real para preview
-        const settingName = this.getSettingName(element.id);
-        const value = this.getElementValue(element);
+    setupRealtimeControls() {
+        // Nombre del avatar
+        document.getElementById('avatar-name').addEventListener('input', (e) => {
+            if (window.avatarManager) {
+                window.avatarManager.updateConfig('name', e.target.value);
+            }
+        });
+
+        // Selección de modelo
+        document.querySelectorAll('input[name="avatar-model"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                if (e.target.checked && window.avatarManager) {
+                    window.avatarManager.updateConfig('model', e.target.value);
+                }
+            });
+        });
+
+        // Toggles de animación
+        document.getElementById('enable-movement').addEventListener('change', (e) => {
+            if (window.avatarManager) {
+                window.avatarManager.updateConfig('enableMovement', e.target.checked);
+            }
+        });
+
+        document.getElementById('enable-blinking').addEventListener('change', (e) => {
+            if (window.avatarManager) {
+                window.avatarManager.updateConfig('enableBlinking', e.target.checked);
+            }
+        });
+
+        document.getElementById('enable-breathing').addEventListener('change', (e) => {
+            if (window.avatarManager) {
+                window.avatarManager.updateConfig('enableBreathing', e.target.checked);
+            }
+        });
+
+        document.getElementById('enable-lipsync').addEventListener('change', (e) => {
+            if (window.avatarManager) {
+                window.avatarManager.updateConfig('enableLipSync', e.target.checked);
+            }
+        });
+
+        // Velocidad de animación
+        const speedSlider = document.getElementById('animation-speed');
+        const speedValue = document.querySelector('.range-value');
         
-        // Aplicar cambio temporalmente
-        this.applySettingPreview(settingName, value);
-    }
-
-    getSettingName(elementId) {
-        const mapping = {
-            'volume-slider': 'volume',
-            'speech-speed': 'speechSpeed',
-            'voice-type': 'voiceType',
-            'idle-animation': 'idleAnimation',
-            'quality-select': 'quality',
-            'dark-mode': 'darkMode',
-            'auto-response': 'autoResponse',
-            'show-subtitles': 'showSubtitles',
-            'chat-position': 'chatPosition',
-            'language-select': 'language'
-        };
-        return mapping[elementId];
-    }
-
-    getElementValue(element) {
-        if (element.type === 'checkbox') {
-            return element.checked;
-        } else if (element.type === 'range') {
-            return parseFloat(element.value);
-        } else {
-            return element.value;
-        }
-    }
-
-    applySettingPreview(settingName, value) {
-        switch (settingName) {
-            case 'darkMode':
-                document.body.classList.toggle('dark-mode', value);
-                break;
-            case 'chatPosition':
-                this.updateChatPosition(value);
-                break;
-            case 'quality':
-                this.updateRenderQuality(value);
-                break;
-            // Agregar más previews según sea necesario
-        }
-    }
-
-    updateChatPosition(position) {
-        const chatContainer = document.querySelector('.orbix-chat-container');
-        if (chatContainer) {
-            chatContainer.className = `orbix-chat-container position-${position}`;
-        }
-    }
-
-    updateRenderQuality(quality) {
-        if (window.orbixAvatar && window.orbixAvatar.renderer) {
-            const pixelRatio = {
-                'low': 0.5,
-                'medium': 1,
-                'high': Math.min(window.devicePixelRatio, 2),
-                'ultra': window.devicePixelRatio
-            }[quality] || 1;
+        speedSlider.addEventListener('input', (e) => {
+            const value = parseFloat(e.target.value);
+            speedValue.textContent = `${value.toFixed(1)}x`;
             
-            window.orbixAvatar.renderer.setPixelRatio(pixelRatio);
+            if (window.avatarManager) {
+                window.avatarManager.updateConfig('animationSpeed', value);
+            }
+        });
+    }
+
+    loadCurrentSettings() {
+        if (!window.avatarManager) return;
+
+        const config = window.avatarManager.config;
+
+        // Cargar valores actuales
+        document.getElementById('avatar-name').value = config.name || 'Zoile';
+        document.getElementById('enable-movement').checked = config.enableMovement;
+        document.getElementById('enable-blinking').checked = config.enableBlinking;
+        document.getElementById('enable-breathing').checked = config.enableBreathing;
+        document.getElementById('enable-lipsync').checked = config.enableLipSync;
+        document.getElementById('animation-speed').value = config.animationSpeed;
+        document.querySelector('.range-value').textContent = `${config.animationSpeed.toFixed(1)}x`;
+
+        // Marcar modelo seleccionado
+        const modelRadio = document.querySelector(`input[value="${config.model}"]`);
+        if (modelRadio) {
+            modelRadio.checked = true;
         }
     }
 
     saveSettings() {
-        // Recopilar todos los valores
-        const newSettings = {};
+        const settings = this.getCurrentSettings();
         
-        Object.keys(this.settings).forEach(key => {
-            const element = this.findElementForSetting(key);
-            if (element) {
-                newSettings[key] = this.getElementValue(element);
+        // Guardar en el avatar manager
+        Object.entries(settings).forEach(([key, value]) => {
+            if (window.avatarManager) {
+                window.avatarManager.updateConfig(key, value);
             }
         });
-
-        // Guardar en localStorage
-        this.settings = { ...this.settings, ...newSettings };
-        localStorage.setItem('orbix-avatar-settings', JSON.stringify(this.settings));
-
-        // Aplicar configuraciones al avatar
-        this.applySettings();
 
         // Mostrar confirmación
         this.showNotification('✅ Configuración guardada correctamente', 'success');
         
-        // Cerrar panel
+        // Cerrar panel después de guardar
         setTimeout(() => this.close(), 1000);
     }
 
-    findElementForSetting(settingKey) {
-        const elementMapping = {
-            'volume': 'volume-slider',
-            'speechSpeed': 'speech-speed',
-            'voiceType': 'voice-type',
-            'idleAnimation': 'idle-animation',
-            'quality': 'quality-select',
-            'darkMode': 'dark-mode',
-            'autoResponse': 'auto-response',
-            'showSubtitles': 'show-subtitles',
-            'chatPosition': 'chat-position',
-            'language': 'language-select'
+    getCurrentSettings() {
+        return {
+            name: document.getElementById('avatar-name').value,
+            model: document.querySelector('input[name="avatar-model"]:checked')?.value || '/avatars/brunette.glb',
+            enableMovement: document.getElementById('enable-movement').checked,
+            enableBlinking: document.getElementById('enable-blinking').checked,
+            enableBreathing: document.getElementById('enable-breathing').checked,
+            enableLipSync: document.getElementById('enable-lipsync').checked,
+            animationSpeed: parseFloat(document.getElementById('animation-speed').value)
         };
-        
-        const elementId = elementMapping[settingKey];
-        return elementId ? this.panel.querySelector(`#${elementId}`) : null;
     }
 
-    applySettings() {
-        if (window.orbixAvatar) {
-            // Aplicar configuraciones al avatar
-            window.orbixAvatar.updateSettings(this.settings);
+    restoreDefaults() {
+        const defaults = {
+            name: 'Zoile',
+            model: '/avatars/brunette.glb',
+            enableMovement: true,
+            enableBlinking: true,
+            enableBreathing: true,
+            enableLipSync: true,
+            animationSpeed: 1.0
+        };
+
+        // Aplicar valores por defecto a la UI
+        document.getElementById('avatar-name').value = defaults.name;
+        document.getElementById('enable-movement').checked = defaults.enableMovement;
+        document.getElementById('enable-blinking').checked = defaults.enableBlinking;
+        document.getElementById('enable-breathing').checked = defaults.enableBreathing;
+        document.getElementById('enable-lipsync').checked = defaults.enableLipSync;
+        document.getElementById('animation-speed').value = defaults.animationSpeed;
+        document.querySelector('.range-value').textContent = `${defaults.animationSpeed.toFixed(1)}x`;
+
+        const defaultModelRadio = document.querySelector(`input[value="${defaults.model}"]`);
+        if (defaultModelRadio) {
+            defaultModelRadio.checked = true;
         }
 
-        // Aplicar configuraciones globales
-        this.applyGlobalSettings();
+        this.showNotification('🔄 Configuración restaurada por defecto', 'info');
+    }
+
+    open() {
+        if (this.isOpen) return;
+        
+        this.isOpen = true;
+        this.panel.classList.add('active');
+        document.getElementById('settings-overlay').classList.add('active');
+        document.body.classList.add('settings-open');
+        
+        // Cargar configuración actual
+        this.loadCurrentSettings();
+        
+        // Focus en el primer input
+        setTimeout(() => {
+            document.getElementById('avatar-name').focus();
+        }, 300);
+    }
+
+    close() {
+        if (!this.isOpen) return;
+        
+        this.isOpen = false;
+        this.panel.classList.remove('active');
+        document.getElementById('settings-overlay').classList.remove('active');
+        document.body.classList.remove('settings-open');
+    }
+
+    toggle() {
+        if (this.isOpen) {
+            this.close();
+        } else {
+            this.open();
+        }
+    }
+
+    showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `settings-notification ${type}`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        // Animar entrada
+        setTimeout(() => notification.classList.add('show'), 100);
+        
+        // Auto-remover
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+}
+
+// Inicializar cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', () => {
+    window.avatarSettings = new AvatarSettings();
+});
+
+export default AvatarSettings;
+
+class AvatarSettingsPanel {
+    constructor() {
+        this.settings = {};
+        this.panel = null;
+        this.overlay = null;
     }
 
     applyGlobalSettings() {

@@ -1,4 +1,5 @@
-/* ===== VARIABLES CSS ===== */
+
+  /* ===== VARIABLES CSS ===== */
 :root {
     /* Colores principales */
     --primary-color: #00ffcc;
@@ -844,3 +845,4 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--accent-color);
 }
+
