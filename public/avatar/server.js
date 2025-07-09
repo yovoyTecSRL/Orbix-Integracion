@@ -9,7 +9,7 @@ require("dotenv").config();
 
 const app = express();
 const port = 3000;
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "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";
 
 app.use(bodyParser.json());
 app.use(express.static("public")); // sirve index.html y otros assets
@@ -27,6 +27,27 @@ app.get("/jwt/get", (req, res) => {
 app.get("/app/jwt/get", (req, res) => {
   res.json({ token: "token_orbix_2025" }); // o un JWT real si lo usás
 });
+
+
+app.post('/completions', async (req, res) => {
+  try {
+    const response = await axios.post(
+      'https://api.openai.com/v1/chat/completions',
+      req.body,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    res.json(response.data);
+  } catch (err) {
+    console.error('❌ Error en completions:', err.response?.data || err.message);
+    res.status(err.response?.status || 500).json({ error: err.message });
+  }
+});
+
 
 // GTTS simulado (voz)
 app.post("/gtts/", (req, res) => {

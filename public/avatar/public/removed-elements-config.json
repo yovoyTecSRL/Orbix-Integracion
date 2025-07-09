@@ -1,0 +1,14 @@
+{
+  "removedElements": {
+    "jsonInput": {
+      "id": "json",
+      "type": "text",
+      "placeholder": "JSON",
+      "label": "JSON",
+      "dataI18nText": "JSON"
+    }
+  },
+  "description": "Configuración de elementos removidos del index.html",
+  "location": "Eliminado de la línea ~4904 del archivo index.html",
+  "usage": "Este input JSON fue removido y sus valores se mantienen aquí como referencia de configuración"
+}

@@ -1,6 +1,12 @@
 // Site configuration
 export const site = {
 
+  // Default application configuration
+  defaultConfig: {
+    configFile: './app-config.json',
+    description: 'Default application settings and preferences'
+  },
+
   // Preset avatars
   avatars: {
     'Brunette': {
@@ -10,6 +16,7 @@ export const site = {
       fi: 'Brunetti'
     }
   },
+  
 
   // Google voices
   googleVoices: {

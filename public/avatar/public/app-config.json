@@ -1,0 +1,152 @@
+{
+  "name": "Nimetön",
+  "theme": {
+    "lang": "en",
+    "brightness": "dark",
+    "ratio": "wide",
+    "layout": "port"
+  },
+  "view": {
+    "image": "NONE",
+    "url": "",
+    "brightness": 1,
+    "contrast": 1,
+    "saturate": 1,
+    "blur": 0
+  },
+  "avatar": {
+    "url": "",
+    "body": "F",
+    "name": "Brunette",
+    "brightness": 1,
+    "contrast": 1,
+    "saturate": 1
+  },
+  "camera": {
+    "frame": "full",
+    "x": 0,
+    "y": 0,
+    "d": 0,
+    "rotx": 0,
+    "roty": 0,
+    "fps": 30
+  },
+  "ai": {
+    "model": "gpt-4.1-mini",
+    "openai": {
+      "system": "",
+      "user1": "",
+      "ai1": "",
+      "user2": "",
+      "ai2": "",
+      "temperature": 1,
+      "presence": 0,
+      "frequency": 0,
+      "dialog": 4,
+      "input": 2000,
+      "output": 1000,
+      "stop": "",
+      "user": ""
+    },
+    "grok": {
+      "temperature": 1,
+      "presence": 0,
+      "frequency": 0,
+      "dialog": 4,
+      "input": 2000,
+      "output": 1000,
+      "stop": "",
+      "user": ""
+    },
+    "llama": {
+      "temperature": 1,
+      "presence": 0,
+      "frequency": 0,
+      "dialog": 4,
+      "input": 2000,
+      "output": 1000,
+      "stop": "",
+      "user": ""
+    },
+    "gemini": {
+      "system": "",
+      "user1": "",
+      "ai1": "",
+      "user2": "",
+      "ai2": "",
+      "temperature": 1,
+      "topp": 1,
+      "topk": 40,
+      "dialog": 4,
+      "input": 2000,
+      "output": 1000,
+      "stop": ""
+    }
+  },
+  "voice": {
+    "background": "NONE",
+    "type": "google",
+    "google": {
+      "id": "en-GB-Standard-A",
+      "rate": 1,
+      "pitch": 0
+    },
+    "lipsync": {
+      "lang": "en"
+    },
+    "microsoft": {
+      "id": "fi-FI-SelmaNeural"
+    },
+    "eleven": {
+      "id": "EXAVITQu4vr4xnSDxMaL"
+    },
+    "exclude": {
+      "italics": false,
+      "code": false
+    },
+    "test": "",
+    "mixerbg": 0.5,
+    "mixerspeech": 1,
+    "reverb": "NONE"
+  },
+  "script": {
+    "text": ""
+  },
+  "pose": {
+    "movement": 1
+  },
+  "dynamicbones": {
+    "sensitivity": 1,
+    "movement": 1
+  },
+  "light": {
+    "ambient": {
+      "intensity": 2,
+      "color": "#ffffff"
+    },
+    "direct": {
+      "intensity": 30,
+      "color": "#8888aa",
+      "phi": 1,
+      "theta": 2
+    },
+    "spot": {
+      "intensity": 0,
+      "color": "#8888aa",
+      "phi": 0.1,
+      "theta": 4,
+      "dispersion": 1
+    }
+  },
+  "whisper": {
+    "type": "openai"
+  },
+  "apiKeys": {
+    "openai": "API key not specified; using proxy/JWT",
+    "gtts": "API key not specified; using proxy/JWT",
+    "gemini": "API key not specified; using proxy/JWT", 
+    "grok": "API key not specified; using proxy/JWT",
+    "microsoft": "API key not specified; using proxy/JWT",
+    "eleven": "API key not specified; using proxy/JWT"
+  }
+}
