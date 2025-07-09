@@ -9,7 +9,7 @@ require("dotenv").config();
 
 const app = express();
 const port = 3000;
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "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";
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
 
 // Configurar CORS y headers
 app.use((req, res, next) => {
