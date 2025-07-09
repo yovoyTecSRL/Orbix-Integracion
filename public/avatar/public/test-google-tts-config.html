@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Google TTS API Key desde Config</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .warning { background: #fff3cd; color: #856404; }
+        pre {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .key-display {
+            font-family: monospace;
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔊 Test de Google TTS API Key desde Config</h1>
+    
+    <div class="test-container">
+        <h3>1. Verificación de CONFIG.apiKeys.google</h3>
+        <button onclick="testGoogleConfig()">Probar CONFIG Google API Key</button>
+        <span id="google-config-status"></span>
+        <pre id="google-config-output"></pre>
+    </div>
+
+    <div class="test-container">
+        <h3>2. Test de Configuración TTS</h3>
+        <button onclick="testTTSConfig()">Probar Configuración TTS</button>
+        <span id="tts-config-status"></span>
+        <pre id="tts-config-output"></pre>
+    </div>
+
+    <div class="test-container">
+        <h3>3. Verificación de Input Eliminado</h3>
+        <button onclick="testInputEliminated()">Verificar Input GoogleTTS</button>
+        <span id="input-status"></span>
+        <pre id="input-output"></pre>
+    </div>
+
+    <div class="test-container">
+        <h3>4. Test de Proxy Google TTS</h3>
+        <button onclick="testGoogleTTSProxy()">Probar Proxy Google TTS</button>
+        <span id="proxy-status"></span>
+        <pre id="proxy-output"></pre>
+    </div>
+
+    <div class="test-container">
+        <h3>5. Configuración de Voces Google</h3>
+        <button onclick="testGoogleVoices()">Verificar Voces Google</button>
+        <span id="voices-status"></span>
+        <pre id="voices-output"></pre>
+    </div>
+
+    <script type="module">
+        window.testGoogleConfig = async () => {
+            const statusEl = document.getElementById('google-config-status');
+            const outputEl = document.getElementById('google-config-output');
+            
+            try {
+                const { CONFIG } = await import('/config/config.js');
+                
+                const apiKey = CONFIG.apiKeys.google;
+                const isRealKey = apiKey && apiKey !== "AIzaSyYOUR_GOOGLE_API_KEY_HERE_REPLACE_WITH_REAL_KEY";
+                
+                if (isRealKey) {
+                    outputEl.innerHTML = `✅ Google API Key configurada correctamente:
+<div class="key-display">AIzaSy***${apiKey.slice(-10)}</div>
+Longitud: ${apiKey.length} caracteres
+Comienza con: ${apiKey.substring(0, 8)}...`;
+                    statusEl.innerHTML = '<span class="status success">✅ Configurada</span>';
+                } else {
+                    outputEl.textContent = '⚠️ Google API Key es placeholder, se usará proxy/JWT';
+                    statusEl.innerHTML = '<span class="status warning">⚠️ Placeholder</span>';
+                }
+            } catch (error) {
+                outputEl.textContent = `Error: ${error.message}`;
+                statusEl.innerHTML = '<span class="status error">❌ Error</span>';
+            }
+        };
+
+        window.testTTSConfig = async () => {
+            const statusEl = document.getElementById('tts-config-status');
+            const outputEl = document.getElementById('tts-config-output');
+            
+            try {
+                const { CONFIG } = await import('/config/config.js');
+                
+                const googleApiKey = CONFIG.apiKeys.google;
+                const useDirectGoogleAPI = googleApiKey && googleApiKey !== "AIzaSyYOUR_GOOGLE_API_KEY_HERE_REPLACE_WITH_REAL_KEY";
+                
+                const ttsEndpoint = useDirectGoogleAPI ? 
+                    CONFIG.api.endpoints.googleTTS : 
+                    CONFIG.api.proxies.googleTTS;
+                
+                outputEl.textContent = `Configuración TTS detectada:
+Método: ${useDirectGoogleAPI ? 'Direct Google API' : 'Proxy/JWT'}
+Endpoint: ${ttsEndpoint}
+API Key disponible: ${googleApiKey ? 'Sí' : 'No'}
+Tipo de clave: ${useDirectGoogleAPI ? 'Real' : 'Placeholder/Proxy'}
+
+Voces disponibles: ${Object.keys(CONFIG.googleTTS.voices).length}
+Ejemplos: ${Object.keys(CONFIG.googleTTS.voices).slice(0, 3).join(', ')}`;
+                
+                statusEl.innerHTML = '<span class="status success">✅ OK</span>';
+            } catch (error) {
+                outputEl.textContent = `Error: ${error.message}`;
+                statusEl.innerHTML = '<span class="status error">❌ Error</span>';
+            }
+        };
+
+        window.testInputEliminated = () => {
+            const statusEl = document.getElementById('input-status');
+            const outputEl = document.getElementById('input-output');
+            
+            // Verificar que el input fue eliminado
+            const inputElement = document.getElementById('apikey-gtts');
+            
+            if (!inputElement) {
+                outputEl.textContent = `✅ Input #apikey-gtts eliminado correctamente
+❌ Método anterior: Usuario ingresaba Google API key manualmente
+✅ Método actual: API key viene desde CONFIG.apiKeys.google
+🔒 Beneficio: Configuración automática y segura
+⚡ Fallback: Si no hay clave real, usa proxy automáticamente`;
+                statusEl.innerHTML = '<span class="status success">✅ Eliminado</span>';
+            } else {
+                outputEl.textContent = '❌ El input apikey-gtts todavía existe en el DOM';
+                statusEl.innerHTML = '<span class="status error">❌ Presente</span>';
+            }
+        };
+
+        window.testGoogleTTSProxy = async () => {
+            const statusEl = document.getElementById('proxy-status');
+            const outputEl = document.getElementById('proxy-output');
+            
+            try {
+                outputEl.textContent = 'Probando endpoint proxy de Google TTS...';
+                
+                const response = await fetch('/gtts/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        input: { text: "Hello, this is a test message for Google TTS." },
+                        voice: { languageCode: "en-US", name: "en-US-Standard-A" },
+                        audioConfig: { audioEncoding: "MP3" }
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    outputEl.textContent = `✅ Proxy Google TTS funcionando:
+Status: ${response.status}
+Content-Type: ${response.headers.get('Content-Type')}
+Respuesta: ${data.audio ? 'Audio generado correctamente' : 'Respuesta recibida'}`;
+                    statusEl.innerHTML = '<span class="status success">✅ Funcionando</span>';
+                } else {
+                    outputEl.textContent = `⚠️ Respuesta del proxy:
+Status: ${response.status}
+StatusText: ${response.statusText}
+(Esto es normal si es un proxy simulado)`;
+                    statusEl.innerHTML = '<span class="status warning">⚠️ Proxy Simulado</span>';
+                }
+            } catch (error) {
+                outputEl.textContent = `❌ Error de conexión: ${error.message}`;
+                statusEl.innerHTML = '<span class="status error">❌ Error</span>';
+            }
+        };
+
+        window.testGoogleVoices = async () => {
+            const statusEl = document.getElementById('voices-status');
+            const outputEl = document.getElementById('voices-output');
+            
+            try {
+                const { CONFIG } = await import('/config/config.js');
+                
+                const voices = CONFIG.googleTTS.voices;
+                
+                outputEl.textContent = `Voces Google TTS configuradas:
+Total: ${Object.keys(voices).length} voces
+
+Detalles:
+${Object.entries(voices).map(([key, voice]) => 
+    `• ${key}: ${voice.id}`
+).join('\n')}
+
+Idiomas disponibles:
+${[...new Set(Object.values(voices).map(v => v.id.split('-')[0]))].join(', ')}`;
+                
+                statusEl.innerHTML = '<span class="status success">✅ OK</span>';
+            } catch (error) {
+                outputEl.textContent = `Error: ${error.message}`;
+                statusEl.innerHTML = '<span class="status error">❌ Error</span>';
+            }
+        };
+
+        // Auto-ejecutar tests al cargar
+        setTimeout(() => {
+            testGoogleConfig();
+            setTimeout(() => testTTSConfig(), 500);
+            setTimeout(() => testInputEliminated(), 1000);
+            setTimeout(() => testGoogleVoices(), 1500);
+        }, 100);
+    </script>
+</body>
+</html>

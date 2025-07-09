@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Errores Solucionados</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .warning { background: #fff3cd; color: #856404; }
+        #log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Test de Errores Solucionados</h1>
+    
+    <div class="test-container">
+        <h3>1. Test de Configuración</h3>
+        <button onclick="testConfig()">Probar CONFIG</button>
+        <span id="config-status"></span>
+    </div>
+
+    <div class="test-container">
+        <h3>2. Test de Fuentes</h3>
+        <button onclick="testFonts()">Probar Fuentes</button>
+        <span id="fonts-status"></span>
+    </div>
+
+    <div class="test-container">
+        <h3>3. Test de API OpenAI</h3>
+        <button onclick="testOpenAI()">Probar OpenAI</button>
+        <span id="openai-status"></span>
+    </div>
+
+    <div class="test-container">
+        <h3>4. Test de Módulos</h3>
+        <button onclick="testModules()">Probar Módulos</button>
+        <span id="modules-status"></span>
+    </div>
+
+    <div class="test-container">
+        <h3>5. Test de AudioContext</h3>
+        <button onclick="testAudio()">Probar Audio</button>
+        <span id="audio-status"></span>
+    </div>
+
+    <div class="test-container">
+        <h3>📝 Log de Pruebas</h3>
+        <button onclick="clearLog()">Limpiar Log</button>
+        <div id="log"></div>
+    </div>
+
+    <script type="module">
+        let logElement = document.getElementById('log');
+        
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : 'ℹ️';
+            logElement.textContent += `[${timestamp}] ${prefix} ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        window.clearLog = () => {
+            logElement.textContent = '';
+        };
+
+        window.testConfig = async () => {
+            const statusEl = document.getElementById('config-status');
+            try {
+                addLog('Probando importación de CONFIG...');
+                const { CONFIG, I18N } = await import('/config/config.js');
+                addLog('CONFIG importado correctamente', 'success');
+                addLog(`API Keys disponibles: ${Object.keys(CONFIG.apiKeys).join(', ')}`);
+                statusEl.innerHTML = '<span class="status success">✅ OK</span>';
+            } catch (error) {
+                addLog(`Error importando CONFIG: ${error.message}`, 'error');
+                statusEl.innerHTML = '<span class="status error">❌ Error</span>';
+            }
+        };
+
+        window.testFonts = async () => {
+            const statusEl = document.getElementById('fonts-status');
+            try {
+                addLog('Probando acceso a fuentes...');
+                const response = await fetch('/fonts/FiraSansExtraCondensed-Regular.ttf');
+                if (response.ok) {
+                    addLog('Fuente FiraSansExtraCondensed-Regular.ttf accesible', 'success');
+                    statusEl.innerHTML = '<span class="status success">✅ OK</span>';
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                addLog(`Error accediendo a fuentes: ${error.message}`, 'error');
+                statusEl.innerHTML = '<span class="status error">❌ Error</span>';
+            }
+        };
+
+        window.testOpenAI = async () => {
+            const statusEl = document.getElementById('openai-status');
+            try {
+                addLog('Probando endpoint de OpenAI...');
+                const response = await fetch('/openai/v1/moderations', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        input: "test message"
+                    })
+                });
+                
+                const data = await response.json();
+                if (response.ok) {
+                    addLog('OpenAI moderations endpoint funciona', 'success');
+                    statusEl.innerHTML = '<span class="status success">✅ OK</span>';
+                } else {
+                    addLog(`OpenAI error: ${data.error}`, 'error');
+                    statusEl.innerHTML = '<span class="status warning">⚠️ API Error</span>';
+                }
+            } catch (error) {
+                addLog(`Error conectando con OpenAI: ${error.message}`, 'error');
+                statusEl.innerHTML = '<span class="status error">❌ Error</span>';
+            }
+        };
+
+        window.testModules = async () => {
+            const statusEl = document.getElementById('modules-status');
+            try {
+                addLog('Probando módulos del avatar...');
+                const { TalkingHead } = await import('./modules/talkinghead.mjs');
+                addLog('TalkingHead module importado correctamente', 'success');
+                statusEl.innerHTML = '<span class="status success">✅ OK</span>';
+            } catch (error) {
+                addLog(`Error importando TalkingHead: ${error.message}`, 'error');
+                statusEl.innerHTML = '<span class="status error">❌ Error</span>';
+            }
+        };
+
+        window.testAudio = () => {
+            const statusEl = document.getElementById('audio-status');
+            try {
+                addLog('Probando AudioContext...');
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                addLog(`AudioContext creado: ${audioContext.state}`, 'success');
+                statusEl.innerHTML = '<span class="status success">✅ OK</span>';
+            } catch (error) {
+                addLog(`Error creando AudioContext: ${error.message}`, 'error');
+                statusEl.innerHTML = '<span class="status error">❌ Error</span>';
+            }
+        };
+
+        // Auto-ejecutar algunos tests al cargar la página
+        addLog('Página cargada, iniciando tests automáticos...');
+        setTimeout(() => {
+            testConfig();
+            setTimeout(() => testFonts(), 500);
+            setTimeout(() => testModules(), 1000);
+            setTimeout(() => testAudio(), 1500);
+        }, 100);
+    </script>
+</body>
+</html>

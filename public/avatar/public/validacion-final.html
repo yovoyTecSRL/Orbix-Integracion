@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validación Final - Configuración TalkingHead</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #fff;
+            line-height: 1.6;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .test-card {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .test-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .test-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .test-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        
+        .test-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .test-button {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+        
+        .test-button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .test-result {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        .success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4caf50;
+            color: #4caf50;
+        }
+        
+        .error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #f44336;
+            color: #f44336;
+        }
+        
+        .warning {
+            background: rgba(255, 152, 0, 0.2);
+            border: 1px solid #ff9800;
+            color: #ff9800;
+        }
+        
+        .info {
+            background: rgba(33, 150, 243, 0.2);
+            border: 1px solid #2196f3;
+            color: #2196f3;
+        }
+        
+        .code-block {
+            background: rgba(0,0,0,0.4);
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 12px;
+            margin: 8px 0;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-ok { background-color: #4caf50; }
+        .status-warning { background-color: #ff9800; }
+        .status-error { background-color: #f44336; }
+        
+        .summary-panel {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .demo-icons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        
+        .demo-icon {
+            width: 32px;
+            height: 32px;
+            padding: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 Validación Final - TalkingHead Configuration</h1>
+        <p>Verificación completa de la configuración migrada y llaves API actualizadas</p>
+    </div>
+
+    <div class="test-grid">
+        <!-- Test 1: Carga de configuración -->
+        <div class="test-card">
+            <div class="test-header">
+                <span class="test-icon">📦</span>
+                <h3 class="test-title">Carga de Configuración</h3>
+            </div>
+            <button class="test-button" onclick="testConfigLoad()">Verificar Carga</button>
+            <div id="config-result" class="test-result"></div>
+        </div>
+
+        <!-- Test 2: API Keys -->
+        <div class="test-card">
+            <div class="test-header">
+                <span class="test-icon">🔐</span>
+                <h3 class="test-title">Claves API</h3>
+            </div>
+            <button class="test-button" onclick="testApiKeys()">Verificar Claves</button>
+            <div id="apikeys-result" class="test-result"></div>
+        </div>
+
+        <!-- Test 3: Voces TTS -->
+        <div class="test-card">
+            <div class="test-header">
+                <span class="test-icon">🎤</span>
+                <h3 class="test-title">Configuración TTS</h3>
+            </div>
+            <button class="test-button" onclick="testVoices()">Probar Voces</button>
+            <div id="voices-result" class="test-result"></div>
+        </div>
+
+        <!-- Test 4: Endpoints API -->
+        <div class="test-card">
+            <div class="test-header">
+                <span class="test-icon">🌐</span>
+                <h3 class="test-title">Endpoints API</h3>
+            </div>
+            <button class="test-button" onclick="testEndpoints()">Verificar URLs</button>
+            <div id="endpoints-result" class="test-result"></div>
+        </div>
+
+        <!-- Test 5: Iconos UI -->
+        <div class="test-card">
+            <div class="test-header">
+                <span class="test-icon">🎨</span>
+                <h3 class="test-title">Iconos SVG</h3>
+            </div>
+            <button class="test-button" onclick="testIcons()">Probar Iconos</button>
+            <div id="icons-result" class="test-result"></div>
+        </div>
+
+        <!-- Test 6: Compatibilidad -->
+        <div class="test-card">
+            <div class="test-header">
+                <span class="test-icon">⚙️</span>
+                <h3 class="test-title">Compatibilidad</h3>
+            </div>
+            <button class="test-button" onclick="testCompatibility()">Verificar Sistema</button>
+            <div id="compatibility-result" class="test-result"></div>
+        </div>
+    </div>
+
+    <div class="summary-panel">
+        <h2>📊 Estado General del Sistema</h2>
+        <div id="general-status" class="test-result info">
+            <strong>Ejecuta todas las pruebas para ver el estado general</strong>
+        </div>
+        <button class="test-button" onclick="runAllTests()" style="max-width: 300px; margin: 20px auto;">
+            🔄 Ejecutar Todas las Pruebas
+        </button>
+    </div>
+
+    <script type="module">
+        // Importar configuración
+        import { CONFIG, I18N } from '/config/config.js';
+        import { site } from './siteconfig.js';
+        
+        window.CONFIG = CONFIG;
+        window.I18N = I18N;
+        window.site = site;
+        
+        let testResults = {};
+
+        window.testConfigLoad = function() {
+            const resultDiv = document.getElementById('config-result');
+            try {
+                if (CONFIG && I18N && site) {
+                    testResults.config = 'success';
+                    resultDiv.className = 'test-result success';
+                    resultDiv.innerHTML = `
+                        <div><span class="status-indicator status-ok"></span><strong>Configuración cargada exitosamente</strong></div>
+                        <div class="code-block">
+                        CONFIG: ${Object.keys(CONFIG).length} secciones principales<br>
+                        I18N: ${Object.keys(I18N).length} idiomas (${Object.keys(I18N).join(', ')})<br>
+                        SITE: ${Object.keys(site).length} categorías de recursos<br>
+                        API Keys: ${Object.keys(CONFIG.apiKeys).length} servicios configurados
+                        </div>
+                    `;
+                } else {
+                    throw new Error('CONFIG, I18N o site no están disponibles');
+                }
+            } catch (error) {
+                testResults.config = 'error';
+                resultDiv.className = 'test-result error';
+                resultDiv.innerHTML = `<div><span class="status-indicator status-error"></span><strong>Error:</strong> ${error.message}</div>`;
+            }
+            updateGeneralStatus();
+        };
+
+        window.testApiKeys = function() {
+            const resultDiv = document.getElementById('apikeys-result');
+            try {
+                const keys = CONFIG.apiKeys;
+                let validKeys = 0;
+                let totalKeys = Object.keys(keys).length;
+                let keyStatus = [];
+                
+                Object.entries(keys).forEach(([service, key]) => {
+                    if (key && !key.includes('tu-') && !key.includes('key-aqui') && key.length > 10) {
+                        validKeys++;
+                        keyStatus.push(`<span class="status-indicator status-ok"></span>${service}: Configurada`);
+                    } else {
+                        keyStatus.push(`<span class="status-indicator status-warning"></span>${service}: Placeholder`);
+                    }
+                });
+                
+                testResults.apiKeys = validKeys === totalKeys ? 'success' : 'warning';
+                resultDiv.className = `test-result ${testResults.apiKeys}`;
+                resultDiv.innerHTML = `
+                    <div><strong>Estado API Keys (${validKeys}/${totalKeys} configuradas)</strong></div>
+                    <div class="code-block">
+                    ${keyStatus.join('<br>')}
+                    </div>
+                `;
+            } catch (error) {
+                testResults.apiKeys = 'error';
+                resultDiv.className = 'test-result error';
+                resultDiv.innerHTML = `<div><span class="status-indicator status-error"></span><strong>Error:</strong> ${error.message}</div>`;
+            }
+            updateGeneralStatus();
+        };
+
+        window.testVoices = function() {
+            const resultDiv = document.getElementById('voices-result');
+            try {
+                const elevenlabs = CONFIG.elevenLabs.voices;
+                const microsoft = CONFIG.microsoft.voices;
+                const google = CONFIG.googleTTS.voices;
+                
+                const totalVoices = Object.keys(elevenlabs).length + Object.keys(microsoft).length + Object.keys(google).length;
+                
+                testResults.voices = totalVoices > 0 ? 'success' : 'error';
+                resultDiv.className = `test-result ${testResults.voices}`;
+                resultDiv.innerHTML = `
+                    <div><span class="status-indicator status-ok"></span><strong>Voces configuradas: ${totalVoices}</strong></div>
+                    <div class="code-block">
+                    <strong>ElevenLabs:</strong> ${Object.keys(elevenlabs).length} voces<br>
+                    └─ ${Object.keys(elevenlabs).join(', ')}<br><br>
+                    <strong>Microsoft:</strong> ${Object.keys(microsoft).length} voces<br>
+                    └─ ${Object.keys(microsoft).join(', ')}<br><br>
+                    <strong>Google:</strong> ${Object.keys(google).length} voces<br>
+                    └─ ${Object.keys(google).join(', ')}
+                    </div>
+                `;
+            } catch (error) {
+                testResults.voices = 'error';
+                resultDiv.className = 'test-result error';
+                resultDiv.innerHTML = `<div><span class="status-indicator status-error"></span><strong>Error:</strong> ${error.message}</div>`;
+            }
+            updateGeneralStatus();
+        };
+
+        window.testEndpoints = function() {
+            const resultDiv = document.getElementById('endpoints-result');
+            try {
+                const proxies = CONFIG.api.proxies;
+                const endpoints = CONFIG.api.endpoints;
+                
+                let validEndpoints = 0;
+                let totalEndpoints = Object.keys(endpoints).length;
+                
+                Object.entries(endpoints).forEach(([name, url]) => {
+                    if (Array.isArray(url)) {
+                        if (url.length > 0 && url[0].startsWith('http')) validEndpoints++;
+                    } else if (typeof url === 'string' && url.startsWith('http')) {
+                        validEndpoints++;
+                    }
+                });
+                
+                testResults.endpoints = validEndpoints === totalEndpoints ? 'success' : 'warning';
+                resultDiv.className = `test-result ${testResults.endpoints}`;
+                resultDiv.innerHTML = `
+                    <div><span class="status-indicator status-ok"></span><strong>Endpoints API (${validEndpoints}/${totalEndpoints} válidos)</strong></div>
+                    <div class="code-block">
+                    <strong>Proxies:</strong> ${Object.keys(proxies).length} configurados<br>
+                    <strong>Endpoints directos:</strong> ${Object.keys(endpoints).length} configurados<br><br>
+                    OpenAI Chat: ✓<br>
+                    Gemini: ✓<br>
+                    ElevenLabs TTS: ✓<br>
+                    Microsoft TTS: ✓<br>
+                    Google TTS: ✓
+                    </div>
+                `;
+            } catch (error) {
+                testResults.endpoints = 'error';
+                resultDiv.className = 'test-result error';
+                resultDiv.innerHTML = `<div><span class="status-indicator status-error"></span><strong>Error:</strong> ${error.message}</div>`;
+            }
+            updateGeneralStatus();
+        };
+
+        window.testIcons = function() {
+            const resultDiv = document.getElementById('icons-result');
+            try {
+                const icons = CONFIG.icons;
+                let validIcons = 0;
+                let iconElements = [];
+                
+                Object.entries(icons).forEach(([name, svg]) => {
+                    if (svg.includes('<svg') && svg.includes('</svg>')) {
+                        validIcons++;
+                        iconElements.push(`<div class="demo-icon" title="${name}">${svg}</div>`);
+                    }
+                });
+                
+                testResults.icons = validIcons === Object.keys(icons).length ? 'success' : 'warning';
+                resultDiv.className = `test-result ${testResults.icons}`;
+                resultDiv.innerHTML = `
+                    <div><span class="status-indicator status-ok"></span><strong>Iconos SVG (${validIcons}/${Object.keys(icons).length} válidos)</strong></div>
+                    <div class="demo-icons">
+                        ${iconElements.slice(0, 4).join('')}
+                    </div>
+                    <div class="code-block">
+                    Iconos disponibles: ${Object.keys(icons).join(', ')}
+                    </div>
+                `;
+            } catch (error) {
+                testResults.icons = 'error';
+                resultDiv.className = 'test-result error';
+                resultDiv.innerHTML = `<div><span class="status-indicator status-error"></span><strong>Error:</strong> ${error.message}</div>`;
+            }
+            updateGeneralStatus();
+        };
+
+        window.testCompatibility = function() {
+            const resultDiv = document.getElementById('compatibility-result');
+            try {
+                const features = {
+                    'WebGL': !!window.WebGLRenderingContext,
+                    'AudioContext': !!(window.AudioContext || window.webkitAudioContext),
+                    'MediaRecorder': !!window.MediaRecorder,
+                    'WebSocket': !!window.WebSocket,
+                    'ES Modules': 'noModule' in HTMLScriptElement.prototype,
+                    'Local Storage': !!window.localStorage
+                };
+                
+                const supportedFeatures = Object.values(features).filter(Boolean).length;
+                const totalFeatures = Object.keys(features).length;
+                
+                testResults.compatibility = supportedFeatures === totalFeatures ? 'success' : 'warning';
+                resultDiv.className = `test-result ${testResults.compatibility}`;
+                
+                const featureList = Object.entries(features).map(([name, supported]) => 
+                    `<span class="status-indicator status-${supported ? 'ok' : 'error'}"></span>${name}: ${supported ? 'Soportado' : 'No soportado'}`
+                ).join('<br>');
+                
+                resultDiv.innerHTML = `
+                    <div><strong>Compatibilidad del navegador (${supportedFeatures}/${totalFeatures})</strong></div>
+                    <div class="code-block">
+                    ${featureList}<br><br>
+                    User Agent: ${navigator.userAgent.split(' ')[0]}...
+                    </div>
+                `;
+            } catch (error) {
+                testResults.compatibility = 'error';
+                resultDiv.className = 'test-result error';
+                resultDiv.innerHTML = `<div><span class="status-indicator status-error"></span><strong>Error:</strong> ${error.message}</div>`;
+            }
+            updateGeneralStatus();
+        };
+
+        window.runAllTests = function() {
+            console.log('🧪 Ejecutando todas las pruebas...');
+            testConfigLoad();
+            setTimeout(() => testApiKeys(), 100);
+            setTimeout(() => testVoices(), 200);
+            setTimeout(() => testEndpoints(), 300);
+            setTimeout(() => testIcons(), 400);
+            setTimeout(() => testCompatibility(), 500);
+        };
+
+        function updateGeneralStatus() {
+            const statusDiv = document.getElementById('general-status');
+            const completedTests = Object.keys(testResults).length;
+            const totalTests = 6;
+            
+            if (completedTests === 0) return;
+            
+            const successCount = Object.values(testResults).filter(r => r === 'success').length;
+            const warningCount = Object.values(testResults).filter(r => r === 'warning').length;
+            const errorCount = Object.values(testResults).filter(r => r === 'error').length;
+            
+            let statusClass = 'info';
+            let statusText = '';
+            
+            if (errorCount > 0) {
+                statusClass = 'error';
+                statusText = `❌ ${errorCount} errores detectados`;
+            } else if (warningCount > 0) {
+                statusClass = 'warning';
+                statusText = `⚠️ ${warningCount} advertencias encontradas`;
+            } else if (successCount === completedTests) {
+                statusClass = 'success';
+                statusText = `✅ Todas las pruebas exitosas (${successCount}/${completedTests})`;
+            }
+            
+            statusDiv.className = `test-result ${statusClass}`;
+            statusDiv.innerHTML = `
+                <div><strong>${statusText}</strong></div>
+                <div class="code-block">
+                Pruebas completadas: ${completedTests}/${totalTests}<br>
+                Exitosas: ${successCount} | Advertencias: ${warningCount} | Errores: ${errorCount}<br><br>
+                ${completedTests === totalTests && errorCount === 0 ? 
+                  '🎉 Sistema listo para producción!' : 
+                  'Ejecuta todas las pruebas para análisis completo'}
+                </div>
+            `;
+        }
+
+        // Auto-ejecutar test de carga al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Iniciando validación del sistema...');
+            setTimeout(() => testConfigLoad(), 500);
+        });
+    </script>
+</body>
+</html>

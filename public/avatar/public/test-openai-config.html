@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de API Key OpenAI desde Config</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .warning { background: #fff3cd; color: #856404; }
+        pre {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .key-display {
+            font-family: monospace;
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔑 Test de API Key OpenAI desde Config</h1>
+    
+    <div class="test-container">
+        <h3>1. Verificación de CONFIG.apiKeys.openai</h3>
+        <button onclick="testOpenAIConfig()">Probar CONFIG API Key</button>
+        <span id="config-status"></span>
+        <pre id="config-output"></pre>
+    </div>
+
+    <div class="test-container">
+        <h3>2. Test de Autenticación OpenAI</h3>
+        <button onclick="testOpenAIAuth()">Probar Autenticación</button>
+        <span id="auth-status"></span>
+        <pre id="auth-output"></pre>
+    </div>
+
+    <div class="test-container">
+        <h3>3. Comparación: Config vs Input (eliminado)</h3>
+        <button onclick="testInputComparison()">Verificar Input Eliminado</button>
+        <span id="input-status"></span>
+        <pre id="input-output"></pre>
+    </div>
+
+    <div class="test-container">
+        <h3>4. Test de API OpenAI Moderations</h3>
+        <button onclick="testOpenAIModerations()">Probar Moderations API</button>
+        <span id="moderations-status"></span>
+        <pre id="moderations-output"></pre>
+    </div>
+
+    <script type="module">
+        window.testOpenAIConfig = async () => {
+            const statusEl = document.getElementById('config-status');
+            const outputEl = document.getElementById('config-output');
+            
+            try {
+                const { CONFIG } = await import('/config/config.js');
+                
+                const apiKey = CONFIG.apiKeys.openai;
+                const isRealKey = apiKey && apiKey !== "sk_YOUR_OPENAI_KEY_HERE_REPLACE_WITH_REAL_KEY";
+                
+                if (isRealKey) {
+                    outputEl.innerHTML = `✅ API Key configurada correctamente:
+<div class="key-display">sk-proj-***${apiKey.slice(-10)}</div>
+Longitud: ${apiKey.length} caracteres
+Comienza con: ${apiKey.substring(0, 8)}...`;
+                    statusEl.innerHTML = '<span class="status success">✅ Configurada</span>';
+                } else {
+                    outputEl.textContent = '⚠️ API Key es placeholder, necesita ser reemplazada con una clave real';
+                    statusEl.innerHTML = '<span class="status warning">⚠️ Placeholder</span>';
+                }
+            } catch (error) {
+                outputEl.textContent = `Error: ${error.message}`;
+                statusEl.innerHTML = '<span class="status error">❌ Error</span>';
+            }
+        };
+
+        window.testOpenAIAuth = async () => {
+            const statusEl = document.getElementById('auth-status');
+            const outputEl = document.getElementById('auth-output');
+            
+            try {
+                const { CONFIG } = await import('/config/config.js');
+                
+                const apikey = CONFIG.apiKeys.openai;
+                
+                // Simular la lógica que usa la aplicación para decidir endpoint
+                let url, authType;
+                if (apikey && apikey !== "sk_YOUR_OPENAI_KEY_HERE_REPLACE_WITH_REAL_KEY") {
+                    url = "https://api.openai.com/v1/moderations"; // endpoint directo
+                    authType = "Direct API";
+                } else {
+                    url = "/openai/v1/moderations"; // proxy
+                    authType = "Proxy/JWT";
+                }
+                
+                outputEl.textContent = `Método de autenticación: ${authType}
+URL que se usará: ${url}
+API Key disponible: ${apikey ? 'Sí' : 'No'}
+Tipo de clave: ${apikey && apikey !== "sk_YOUR_OPENAI_KEY_HERE_REPLACE_WITH_REAL_KEY" ? 'Real' : 'Placeholder'}`;
+                
+                statusEl.innerHTML = '<span class="status success">✅ OK</span>';
+            } catch (error) {
+                outputEl.textContent = `Error: ${error.message}`;
+                statusEl.innerHTML = '<span class="status error">❌ Error</span>';
+            }
+        };
+
+        window.testInputComparison = () => {
+            const statusEl = document.getElementById('input-status');
+            const outputEl = document.getElementById('input-output');
+            
+            // Verificar que el input fue eliminado
+            const inputElement = document.getElementById('apikey-openai');
+            
+            if (!inputElement) {
+                outputEl.textContent = `✅ Input #apikey-openai eliminado correctamente
+❌ Método anterior: Usuario ingresaba API key manualmente
+✅ Método actual: API key viene desde CONFIG.apiKeys.openai
+🔒 Beneficio: Mayor seguridad, sin exposición en UI`;
+                statusEl.innerHTML = '<span class="status success">✅ Eliminado</span>';
+            } else {
+                outputEl.textContent = '❌ El input apikey-openai todavía existe en el DOM';
+                statusEl.innerHTML = '<span class="status error">❌ Presente</span>';
+            }
+        };
+
+        window.testOpenAIModerations = async () => {
+            const statusEl = document.getElementById('moderations-status');
+            const outputEl = document.getElementById('moderations-output');
+            
+            try {
+                outputEl.textContent = 'Probando endpoint de moderations...';
+                
+                const response = await fetch('/openai/v1/moderations', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        input: "Hello, this is a test message for OpenAI moderation."
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    outputEl.textContent = `✅ API OpenAI funcionando correctamente:
+Status: ${response.status}
+Model: ${data.model || 'N/A'}
+Resultado: ${data.results?.[0]?.flagged ? 'Flagged' : 'Clean'}
+ID: ${data.id || 'N/A'}`;
+                    statusEl.innerHTML = '<span class="status success">✅ Funcionando</span>';
+                } else {
+                    outputEl.textContent = `⚠️ Error de API:
+Status: ${response.status}
+Error: ${data.error || 'Desconocido'}
+Code: ${data.code || 'N/A'}`;
+                    statusEl.innerHTML = '<span class="status warning">⚠️ Error API</span>';
+                }
+            } catch (error) {
+                outputEl.textContent = `❌ Error de conexión: ${error.message}`;
+                statusEl.innerHTML = '<span class="status error">❌ Error</span>';
+            }
+        };
+
+        // Auto-ejecutar tests al cargar
+        setTimeout(() => {
+            testOpenAIConfig();
+            setTimeout(() => testOpenAIAuth(), 500);
+            setTimeout(() => testInputComparison(), 1000);
+        }, 100);
+    </script>
+</body>
+</html>

@@ -10,8 +10,8 @@ export const site = {
   // Preset avatars
   avatars: {
     'Brunette': {
-      url: './avatars/brunette.glb',
-      body: 'F',
+      url: 'https://models.readyplayer.me/686cc9eb0bc8b521c1946107.glb',
+      body: 'M',
       avatarMood: 'neutral',
       fi: 'Brunetti'
     }

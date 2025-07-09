@@ -5,8 +5,13 @@
 
   <meta charset="utf-8">
   <meta content="width=device-width, height=device-height, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, user-scalable=no, interactive-widget=resizes-content" name="viewport">
+<<<<<<< HEAD
   <link rel="icon" type="image/jpg" href="favicon.jpg">
   <link rel="stylesheet" type="text/css" href="css/main.css">
+=======
+  <link rel="icon" type="image/jpg" href="../favicon.jpg">
+  <link rel="stylesheet" href="css/main.css">
+>>>>>>> 6afb1c903eecf2d0bb09305d79e5031fb56787a2
 
 <script nomodule>alert("You browser doesn't seem to support modules. Use a modern browser to run Enterprise.");</script>
 <script src="https://d3js.org/d3.v6.min.js"></script>
@@ -27,88 +32,45 @@
 <script type="module">
 import { site } from './siteconfig.js'
 import { TalkingHead } from "./modules/talkinghead.mjs";
+import { CONFIG, I18N, DEFAULT_CONFIG } from "/config/config.js";
 import dompurify from 'dompurify';
 import { marked } from 'marked';
 
-// API proxys
-const jwtEndpoint = "/app/jwt/get"; // Get JSON Web Token for Single Sign-On
-const openaiChatCompletionsProxy = "/openai/v1/chat/completions";
-const openaiModerationsProxy = "/openai/v1/moderations";
-const openaiAudioTranscriptionsProxy = "/openai/v1/audio/transcriptions";
-const geminiProxy = "/gemini/";
-const googleTTSProxy = "/gtts/";
-const elevenTTSProxy = [
-  "wss://" + window.location.host + "/elevenlabs/",
-  "/v1/text-to-speech/",
-  "/stream-input?model_id=eleven_turbo_v2_5&output_format=pcm_22050"
-];
-const microsoftTTSProxy = [
-  "wss://" + window.location.host + "/mstts/",
-  "/cognitiveservices/websocket/v1"
-];
-const grokChatCompletionsProxy = "/grok/v1/chat/completions"; // Grok-beta
-const llamaChatCompletionsProxy = "/llama/v1/chat/completions"; // Local llama.cpp server proxy
-const localWhisperCppProxy = "/whisper/"; // Local whisper.cpp server proxy
+// API proxies (from config)
+const jwtEndpoint = CONFIG.api.proxies.jwt;
+const openaiChatCompletionsProxy = CONFIG.api.proxies.openaiChatCompletions;
+const openaiModerationsProxy = CONFIG.api.proxies.openaiModerations;
+const openaiAudioTranscriptionsProxy = CONFIG.api.proxies.openaiAudioTranscriptions;
+const geminiProxy = CONFIG.api.proxies.gemini;
+const googleTTSProxy = CONFIG.api.proxies.googleTTS;
+const elevenTTSProxy = CONFIG.api.proxies.elevenTTS;
+const microsoftTTSProxy = CONFIG.api.proxies.microsoftTTS;
+const grokChatCompletionsProxy = CONFIG.api.proxies.grokChatCompletions;
+const llamaChatCompletionsProxy = CONFIG.api.proxies.llamaChatCompletions;
+const localWhisperCppProxy = CONFIG.api.proxies.localWhisperCpp;
 
+// Direct API endpoints (from config)
+const openaiChatCompletionsEndpoint = CONFIG.api.endpoints.openaiChatCompletions;
+const openaiModerationsEndpoint = CONFIG.api.endpoints.openaiModerations;
+const openaiAudioTranscriptionsEndpoint = CONFIG.api.endpoints.openaiAudioTranscriptions;
+const geminiEndpoint = CONFIG.api.endpoints.gemini;
+const googleTTSEndpoint = CONFIG.api.endpoints.googleTTS;
+const elevenTTSEndpoint = CONFIG.api.endpoints.elevenTTS;
+const microsoftTTSEndpoint = CONFIG.api.endpoints.microsoftTTS;
+const grokChatCompletionsEndpoint = CONFIG.api.endpoints.grokChatCompletions;
 
-// Direct API endpoints
-const openaiChatCompletionsEndpoint = "https://api.openai.com/v1/chat/completions";
-const openaiModerationsEndpoint = "https://api.openai.com/v1/moderations";
-const openaiAudioTranscriptionsEndpoint = "https://api.openai.com/v1/audio/transcriptions";
-const geminiEndpoint = "https://generativelanguage.googleapis.com/v1beta/models/";
-const googleTTSEndpoint = "https://eu-texttospeech.googleapis.com/v1beta1/text:synthesize";
-const elevenTTSEndpoint = [
-  "wss://api.elevenlabs.io/v1/text-to-speech/",
-  "/stream-input?model_id=eleven_turbo_v2_5&output_format=pcm_22050"
-];
-const microsoftTTSEndpoint = "wss://northeurope.tts.speech.microsoft.com/cognitiveservices/websocket/v1";
-const grokChatCompletionsEndpoint = "https://api.x.ai/v1/chat/completions";
+// Configuration objects (from config)
+const i18n = I18N;
+const markedOptions = CONFIG.markdown.options;
+const elevenBOS = CONFIG.elevenLabs.bos;
+const recordingMediaTypes = CONFIG.recording.mediaTypes;
+const recordingBeep = CONFIG.recording.beep;
 
-
-// I18n internationalization
-const i18n = {
-
-  'fi': {
-    'Avatar': 'Hahmo', 'Camera': 'Kamera', 'Audio': 'Ääni', 'Manuscript': 'Käsikirjoitus',
-    'Emotion': 'Tunne', 'Neutral': 'Perus', 'Happy': 'Ilo', 'Angry': 'Viha', 'Sad': 'Suru',
-    'Fear': 'Pelko', 'Disgust': 'Inho', 'Love': 'Rakkaus', 'Sleep': 'Uni', 'Pose': 'Asento',
-    'Action': 'Toiminta', 'Frame': 'Rajaus', 'Full': 'Kokovartalo', 'Upper': 'Yläosa',
-    'Head': 'Pää', 'Director': 'Ohjaus', 'Pause': 'Pysäytyskuva', 'Panning': 'Panorointi',
-    'Slow-motion': 'Hidastus', 'Ambience': 'Ambienssi', 'Silence': 'Hiljaisuus',
-    'Session': 'Sessio', 'Theme': 'Teema', 'Location': 'Paikka', 'Voice': 'Istuva',
-    'AI': 'Tekoäly', 'Emoji': 'Emojit', 'Title': 'Otsikko', 'System': 'Ohjeistus',
-    'ai-system': 'Järjestelmäviesti.', 'ai-user1': 'Käyttäjän syöte #1',
-    'ai-ai1': 'Tekoälyn vaste #1', 'ai-user2': 'Käyttäjän syöte #2',
-    'ai-ai2': 'Tekoälyn vaste #2', 'Example1': 'Esim #1', 'Example2': 'Esim #2',
-    'Dark': 'Tumma', 'Light': 'Vaalea', 'theme-wide': 'Laajakuva', 'theme-43': '4:3',
-    'theme-landscape': 'Vaaka', 'theme-portrait': 'Pysty', 'Empty': 'Tyhjä',
-    'Adjust': 'Säätö', 'Speech': 'Puhe', 'Silence': 'Hiljaisuus', 'Framing': 'Rajaus',
-    'Mixer': 'Mikseri', 'Space': 'Tila', 'Dry': 'Suora', 'voice-test': 'Äänitesti',
-    'Limits': 'Rajat', 'ai-stop': 'Stop', 'ai-stopword': 'Avainsana', 'ai-user': 'Käyttäjä',
-    'ai-username': 'Nimi', 'input': 'Kirjoita viesti.', 'Name': 'Nimi', 'Language': 'Kieli',
-    'en': 'English', 'fi': 'Finnish', 'words': 'sanaa', 'dialogs': 'sanomaa',
-    'Manuscript': 'Käsikirjoitus', 'Exclude': 'Ohita', 'Italics': 'Kursiivi',
-    'Code': 'Koodi', 'Light': 'Valo', 'LightAmbient': 'Ambientti',
-    'LightDirect': 'Suunnattu', 'LightSpot': 'Spotti', 'theme-full': "Täysi",
-    'lt': 'Liettua', 'test-sentence': "Kirjoita tähän testilause.", 'Mid': 'Keskiosa',
-    'Gesture': 'Ele', 'PoseMovement': 'Liike', 'Visible': 'Näytä',
-    'Helper': 'Apuri', 'Edit': 'Muokkaa', 'Script': 'Skripti'
-  },
-
-  'en': {
-    'ai-system': 'System message.', 'ai-user1': 'User example #1',
-    'ai-ai1': 'AI response #1', 'ai-user2': 'User example #2',
-    'ai-ai2': 'AI response #2', 'Example1': 'Example-1', 'Example2': 'Example-2',
-    'theme-wide': 'Widescreen', 'theme-43': '4:3', 'theme-landscape': 'Landscape',
-    'theme-portrait': 'Portrait', 'voice-test': 'Speak', 'ai-stop': 'Stop',
-    'ai-user': 'User', 'input': 'Message.', 'en': 'English', 'fi': 'Finnish',
-    'ai-stopword': 'Word', 'ai-username': 'Name', 'LightAmbient': 'Ambient',
-    'LightDirect': 'Direct', 'LightSpot': 'Spot', 'theme-full': "Fullscreen",
-    'lt': 'Lithuanian', 'test-sentence': "Write your test sentence.",
-    'PoseMovement': 'Movement'
-  }
-
-}
+// SVG Icons (from config)
+const svgSelect = CONFIG.icons.select;
+const svgSpeak = CONFIG.icons.speak;
+const svgStop = CONFIG.icons.stop;
+const svgRepost = CONFIG.icons.repost;
 
 // i18n
 // Default UI language is English
@@ -153,20 +115,12 @@ function i18nTranslate(l) {
   });
 }
 
-// Markdown configuration
-const markedOptions = { gfm: true, breaks: true };
+// Markdown configuration (from config)
 
 // Open AI configuration
 let aiController = null;
 
-// ElevenLabs configuration
-const elevenBOS = {
-  "text": " ",
-  "voice_settings": { "stability": 0.8, "similarity_boost": true },
-  "generation_config": {
-    "chunk_length_schedule": [500,500,500,500]
-  }
-};
+// ElevenLabs configuration (from config)
 let elevenSocket = null;
 let elevenInputMsgs = null;
 let elevenOutputMsg = null;
@@ -403,15 +357,8 @@ async function microsoftProcessQueue() {
         config.setProperty(window.SpeechSDK.PropertyId.SpeechServiceResponse_RequestSentenceBoundary, "true");
         microsoftSynthesizer = new window.SpeechSDK.SpeechSynthesizer(config,null);
 
-        // Viseme conversion from Microsoft to Oculus
-        // TODO: Check this conversion again!
-        const visemeMap = [
-          "sil", 'aa', 'aa', 'O', 'E', // 0 - 4
-          'E', 'I', 'U', 'O', 'aa', // 5 - 9
-          'O', 'I', 'kk', 'RR', 'nn', // 10 - 14
-          'SS', 'SS', 'TH', 'FF', 'DD', // 15 - 19
-          'kk', 'PP' // 20 - 21
-        ];
+        // Viseme conversion from Microsoft to Oculus (from config)
+        const visemeMap = CONFIG.microsoft.visemeMap;
 
         // Process visemes
         microsoftSynthesizer.visemeReceived = function(s, e) {
@@ -504,17 +451,18 @@ async function whisperLoadMP3(file) {
 
       const form = new FormData();
       form.append("file", file);
-      form.append("model", "whisper-1");
-      form.append("response_format", "verbose_json" );
-      form.append("prompt","[The following is a full verbatim transcription without additional details, comments or emojis:]");
-      form.append("timestamp_granularities[]", "word" );
-      form.append("timestamp_granularities[]", "segment" );
+      form.append("model", CONFIG.whisper.model);
+      form.append("response_format", CONFIG.whisper.responseFormat);
+      form.append("prompt", CONFIG.whisper.prompt);
+      CONFIG.whisper.timestampGranularities.forEach(granularity => {
+        form.append("timestamp_granularities[]", granularity);
+      });
 
       // Endpoint/proxy and authentication
       let url;
       let headers = {};
-      const apikey = d3.select("#apikey-openai").property("value");
-      if ( apikey ) {
+      const apikey = CONFIG.apiKeys.openai;
+      if ( apikey && apikey !== "sk_YOUR_OPENAI_KEY_HERE_REPLACE_WITH_REAL_KEY" ) {
         url = openaiAudioTranscriptionsEndpoint;
         headers["Authorization"] = "Bearer " + apikey;
       } else {
@@ -691,10 +639,6 @@ let recordingMediaRecorder = null;
 let recordingAnalyzer = null;
 let recordingIgnoreData = false;
 let recordingChunks = [];
-const recordingMediaTypes = [
-  { type: "audio/webm", ext: "webm" },
-  { type: "video/mp4", ext: "mp4" }
-];
 let recordingMediaType = {};
 for( let i=0; i<recordingMediaTypes.length; i++ ) {
   if ( MediaRecorder.isTypeSupported(recordingMediaTypes[i].type) ) {
@@ -702,7 +646,6 @@ for( let i=0; i<recordingMediaTypes.length; i++ ) {
     break;
   }
 }
-const recordingBeep = "data:audio/wav;base64,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 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////VEFHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU291bmRib3kuZGUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMjAwNGh0dHA6Ly93d3cuc291bmRib3kuZGUAAAAAAAAAACU=";
 const recordingPlaySound = (function beep() {
   const snd = new Audio(recordingBeep);
   return function() { snd.play(); }
@@ -735,7 +678,7 @@ async function recordingRecord() {
 
           if ( cfg("whisper-type") === "openai" ) {
 
-            form.append("model", "whisper-1");
+            form.append("model", CONFIG.whisper.model);
             const lang = cfg('theme-lang') || 'en';
             form.append("language", lang);
             const response = await fetch( openaiAudioTranscriptionsProxy , {
@@ -873,37 +816,8 @@ function nWords(str) {
   return str ? str.trim().split(/\s+/).length : 0;
 }
 
-// Default settings
-let CFG = {
-  session: 0,
-  sessions : [
-    {
-      name: "Nimetön",
-      theme: { lang: 'en', brightness:"dark", ratio:"wide", layout:"port" },
-      view: { image: 'NONE' },
-      avatar: {},
-      camera: { frame: 'full' },
-      ai: {},
-      voice: { background: "NONE", type: "google", google:{ id: "en-GB-Standard-A"}, lipsync:{ lang: 'en' } }
-    },
-    {
-      name: "Nimetön 2",
-
-      theme: { lang: 'en', brightness: "dark", ratio: "wide", layout: "land" },
-      view: { image: 'NONE' },
-      avatar: {},
-      camera: { frame: 'upper' },
-      ai: {},
-      voice: { background: "NONE", type: "google", google:{ id: "en-GB-Standard-A"}, lipsync:{ lang: 'en' } }
-    },
-  ]
-};
-
-// Dynamically created icons
-const svgSelect = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10.5858 13.4142L7.75735 10.5858L6.34314 12L10.5858 16.2427L17.6568 9.1716L16.2426 7.75739L10.5858 13.4142Z" fill="currentColor" /></svg>';
-const svgSpeak = '<svg viewBox="-2 -2 28 28" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 18.939C14.2091 18.939 16 17.1482 16 14.939C16 12.7299 14.2091 10.939 12 10.939C9.79086 10.939 8 12.7299 8 14.939C8 17.1482 9.79086 18.939 12 18.939ZM12 16.939C13.1046 16.939 14 16.0436 14 14.939C14 13.8345 13.1046 12.939 12 12.939C10.8954 12.939 10 13.8345 10 14.939C10 16.0436 10.8954 16.939 12 16.939Z" fill="currentColor" /><path d="M12 9.04401C13.1046 9.04401 14 8.14858 14 7.04401C14 5.93944 13.1046 5.04401 12 5.04401C10.8954 5.04401 10 5.93944 10 7.04401C10 8.14858 10.8954 9.04401 12 9.04401Z" fill="currentColor" /><path fill-rule="evenodd" clip-rule="evenodd" d="M7 1C5.34315 1 4 2.34315 4 4V20C4 21.6569 5.34315 23 7 23H17C18.6569 23 20 21.6569 20 20V4C20 2.34315 18.6569 1 17 1H7ZM17 3H7C6.44772 3 6 3.44772 6 4V20C6 20.5523 6.44772 21 7 21H17C17.5523 21 18 20.5523 18 20V4C18 3.44772 17.5523 3 17 3Z" fill="currentColor" /></svg>'
-const svgStop = '<svg viewBox="-2 -2 28 28" xmlns="http://www.w3.org/2000/svg"><path d="M6.2253 4.81108C5.83477 4.42056 5.20161 4.42056 4.81108 4.81108C4.42056 5.20161 4.42056 5.83477 4.81108 6.2253L10.5858 12L4.81114 17.7747C4.42062 18.1652 4.42062 18.7984 4.81114 19.1889C5.20167 19.5794 5.83483 19.5794 6.22535 19.1889L12 13.4142L17.7747 19.1889C18.1652 19.5794 18.7984 19.5794 19.1889 19.1889C19.5794 18.7984 19.5794 18.1652 19.1889 17.7747L13.4142 12L19.189 6.2253C19.5795 5.83477 19.5795 5.20161 19.189 4.81108C18.7985 4.42056 18.1653 4.42056 17.7748 4.81108L12 10.5858L6.2253 4.81108Z" fill="currentColor" /></svg>';
-const svgRepost = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13.1459 11.0499L12.9716 9.05752L15.3462 8.84977C14.4471 7.98322 13.2242 7.4503 11.8769 7.4503C9.11547 7.4503 6.87689 9.68888 6.87689 12.4503C6.87689 15.2117 9.11547 17.4503 11.8769 17.4503C13.6977 17.4503 15.2911 16.4771 16.1654 15.0224L18.1682 15.5231C17.0301 17.8487 14.6405 19.4503 11.8769 19.4503C8.0109 19.4503 4.87689 16.3163 4.87689 12.4503C4.87689 8.58431 8.0109 5.4503 11.8769 5.4503C13.8233 5.4503 15.5842 6.24474 16.853 7.52706L16.6078 4.72412L18.6002 4.5498L19.1231 10.527L13.1459 11.0499Z" fill="currentColor" /></svg>';
+// Default settings (from config)
+let CFG = DEFAULT_CONFIG;
 
 // Get/set config value for the current session
 function cfg(key,value) {
@@ -936,8 +850,6 @@ function saveConfig() {
   if ( !loadingConfig ) {
     let json = JSON.stringify(CFG);
     localStorage.setItem("talkinghead", json);
-    json = JSON.stringify( cfg() );
-    d3.select("#json").property("value", json );
   }
 }
 
@@ -1063,8 +975,6 @@ function loadConfig(session = null) {
         d3.select("[data-item='avatar-name']").classed("selected",true).dispatch('click');
       }
       scriptInit();
-      json = JSON.stringify( cfg() );
-      d3.select("#json").property("value",json);
     }
   } catch(error) {
     alert("Invalid JSON settings");
@@ -1215,8 +1125,8 @@ async function openaiModerateMessage(msgs) {
   // Endpoint/proxy and authentication
   let url;
   let headers = { "Content-Type": "application/json" };
-  const apikey = d3.select("#apikey-openai").property("value");
-  if ( apikey ) {
+  const apikey = CONFIG.apiKeys.openai;
+  if ( apikey && apikey !== "sk_YOUR_OPENAI_KEY_HERE_REPLACE_WITH_REAL_KEY" ) {
     url = openaiModerationsEndpoint;
     headers["Authorization"] = "Bearer " + apikey;
   } else {
@@ -1280,8 +1190,8 @@ async function openaiSendMessage(node,msgs) {
   // Endpoint/proxy and authentication
   let url;
   let headers = { "Content-Type": "application/json" };
-  const apikey = d3.select("#apikey-openai").property("value");
-  if ( apikey ) {
+  const apikey = CONFIG.apiKeys.openai;
+  if ( apikey && apikey !== "sk_YOUR_OPENAI_KEY_HERE_REPLACE_WITH_REAL_KEY" ) {
     url = openaiChatCompletionsEndpoint;
     headers["Authorization"] = "Bearer " + apikey;
   } else {
@@ -3331,9 +3241,15 @@ document.addEventListener('DOMContentLoaded', async function(e) {
 
   // Create the talking head avatar
   const nodeAvatar = document.getElementById('avatar');
+  
+  // Configure Google TTS endpoint based on API key availability
+  const googleApiKey = CONFIG.apiKeys.google;
+  const useDirectGoogleAPI = googleApiKey && googleApiKey !== "AIzaSyYOUR_GOOGLE_API_KEY_HERE_REPLACE_WITH_REAL_KEY";
+  
   head = new TalkingHead( nodeAvatar, {
     jwtGet: jwtGet,
-    ttsEndpoint: googleTTSProxy,
+    ttsEndpoint: useDirectGoogleAPI ? googleTTSEndpoint : googleTTSProxy,
+    ttsApikey: useDirectGoogleAPI ? googleApiKey : null,
     cameraZoomEnable: true,
     cameraPanEnable: true,
     cameraView: 'full',
@@ -4158,20 +4074,6 @@ document.addEventListener('DOMContentLoaded', async function(e) {
     d3.selectAll("textarea").dispatch("keyup");
   });
 
-  d3.selectAll("#json").on("blur", function(ev) {
-    let e = d3.select(this);
-    const json = e.property("value");
-    try {
-      const c = JSON.parse( json );
-      CFG.sessions[CFG.session] = c;
-      saveConfig();
-      loadConfig();
-      i18nTranslate();
-    } catch(error) {
-      console.error(error);
-    }
-  });
-
   // Motion (experimental)
   d3.selectAll("#motion").on("click", function(ev) {
     const e = d3.select(this);
@@ -4229,23 +4131,6 @@ document.addEventListener('DOMContentLoaded', async function(e) {
       }
     } else {
       head.stop();
-    }
-  });
-
-  // API keys
-  d3.select("#apikey-gtts").on('input change keyup paste', function (ev) {
-    const e = d3.select(this);
-    const apikey = e.property("value");
-
-    // Change the API key
-    if ( apikey ) {
-      head.opt.ttsEndpoint = googleTTSEndpoint;
-      head.opt.ttsApikey = apikey;
-      head.opt.jwtGet = null;
-    } else {
-      head.opt.ttsEndpoint = googleTTSProxy;
-      head.opt.ttsApikey = null;
-      head.opt.jwtGet = jwtGet;
     }
   });
 
@@ -4328,6 +4213,7 @@ document.addEventListener('DOMContentLoaded', async function(e) {
 
           <div class="filler"></div>
 
+<<<<<<< HEAD
           <div class="command starttransparent" data-i18n-title="Manuscript" data-show="right-ai">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path d="M7 18H17V16H7V18Z" fill="currentColor" />
@@ -4337,6 +4223,8 @@ document.addEventListener('DOMContentLoaded', async function(e) {
             </svg>
           </div>
 
+=======
+>>>>>>> 6afb1c903eecf2d0bb09305d79e5031fb56787a2
         </div>
 
         <div id="right-ai" class="page noselect nodrag hidden">
@@ -4849,7 +4737,91 @@ document.addEventListener('DOMContentLoaded', async function(e) {
 
         </div>
 
+<<<<<<< HEAD
 
+=======
+        <div id="right-view" class="page noselect nodrag hidden">
+
+          <div class="vbar"></div>
+
+          <div class="row">
+            <div class="text label" data-i18n-text="Location"></div>
+            <div class="column">
+              <div id="views" class="rowWrap">
+                <label for="view-image-file" class="command" data-view-image="FILE">
+                  <svg viewBox="-2 -2 28 28" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M4 1.5C2.89543 1.5 2 2.39543 2 3.5V4.5C2 4.55666 2.00236 4.61278 2.00698 4.66825C0.838141 5.07811 0 6.19118 0 7.5V19.5C0 21.1569 1.34315 22.5 3 22.5H21C22.6569 22.5 24 21.1569 24 19.5V7.5C24 5.84315 22.6569 4.5 21 4.5H11.874C11.4299 2.77477 9.86384 1.5 8 1.5H4ZM9.73244 4.5C9.38663 3.9022 8.74028 3.5 8 3.5H4V4.5H9.73244ZM3 6.5C2.44772 6.5 2 6.94772 2 7.5V19.5C2 20.0523 2.44772 20.5 3 20.5H21C21.5523 20.5 22 20.0523 22 19.5V7.5C22 6.94772 21.5523 6.5 21 6.5H3Z" fill="currentColor" />
+                  </svg>
+                </label>
+                <input type="file" id="view-image-file" accept="image/*,video/*" style="display:none">
+                <div class="command selected" data-i18n-text="Empty" data-item="view-image" data-type="option" data-view-image="NONE"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="text label"></div>
+            <div class="row fill">
+              <div class="command" data-item="view-image" data-type="option" data-view-image="URL">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M14.8284 12L16.2426 13.4142L19.071 10.5858C20.6331 9.02365 20.6331 6.49099 19.071 4.9289C17.509 3.3668 14.9763 3.3668 13.4142 4.9289L10.5858 7.75732L12 9.17154L14.8284 6.34311C15.6095 5.56206 16.8758 5.56206 17.6568 6.34311C18.4379 7.12416 18.4379 8.39049 17.6568 9.17154L14.8284 12Z" fill="currentColor" />
+                  <path d="M12 14.8285L13.4142 16.2427L10.5858 19.0711C9.02372 20.6332 6.49106 20.6332 4.92896 19.0711C3.36686 17.509 3.36686 14.9764 4.92896 13.4143L7.75739 10.5858L9.1716 12L6.34317 14.8285C5.56212 15.6095 5.56212 16.8758 6.34317 17.6569C7.12422 18.4379 8.39055 18.4379 9.1716 17.6569L12 14.8285Z" fill="currentColor" />
+                  <path d="M14.8285 10.5857C15.219 10.1952 15.219 9.56199 14.8285 9.17147C14.4379 8.78094 13.8048 8.78094 13.4142 9.17147L9.1716 13.4141C8.78107 13.8046 8.78107 14.4378 9.1716 14.8283C9.56212 15.2188 10.1953 15.2188 10.5858 14.8283L14.8285 10.5857Z" fill="currentColor" />
+                </svg>
+              </div>
+              <input class="fill" type="text" placeholder="URL" data-item="view-url" data-type="value">
+            </div>
+          </div>
+
+          <div class="vbar"></div>
+
+          <div class="row">
+            <div class="text label" data-i18n-text="Adjust"></div>
+            <div class="column">
+              <div class="row">
+                <div class="command" data-target="view-brightness" data-range-reset="1">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16ZM12 18C15.3137 18 18 15.3137 18 12C18 8.68629 15.3137 6 12 6C8.68629 6 6 8.68629 6 12C6 15.3137 8.68629 18 12 18Z" fill="currentColor" />
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M11 0H13V4.06189C12.6724 4.02104 12.3387 4 12 4C11.6613 4 11.3276 4.02104 11 4.06189V0ZM7.0943 5.68018L4.22173 2.80761L2.80752 4.22183L5.6801 7.09441C6.09071 6.56618 6.56608 6.0908 7.0943 5.68018ZM4.06189 11H0V13H4.06189C4.02104 12.6724 4 12.3387 4 12C4 11.6613 4.02104 11.3276 4.06189 11ZM5.6801 16.9056L2.80751 19.7782L4.22173 21.1924L7.0943 18.3198C6.56608 17.9092 6.09071 17.4338 5.6801 16.9056ZM11 19.9381V24H13V19.9381C12.6724 19.979 12.3387 20 12 20C11.6613 20 11.3276 19.979 11 19.9381ZM16.9056 18.3199L19.7781 21.1924L21.1923 19.7782L18.3198 16.9057C17.9092 17.4339 17.4338 17.9093 16.9056 18.3199ZM19.9381 13H24V11H19.9381C19.979 11.3276 20 11.6613 20 12C20 12.3387 19.979 12.6724 19.9381 13ZM18.3198 7.0943L21.1923 4.22183L19.7781 2.80762L16.9056 5.6801C17.4338 6.09071 17.9092 6.56608 18.3198 7.0943Z" fill="currentColor" />
+                  </svg>
+                </div>
+                <input type="range" min="0" max="2" step="0.05" value="1" data-item="view-brightness" data-type="value" data-range="percentage" data-view-brightness="brightness">
+                <div class="text">100%</div>
+              </div>
+              <div class="row">
+                <div class="command" data-target="view-contrast" data-range-reset="1">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 18C10.4633 18 9.06151 17.4223 8 16.4722C6.7725 15.3736 6 13.777 6 12C6 10.223 6.7725 8.62643 8 7.52779C9.06151 6.57771 10.4633 6 12 6V18Z" fill="currentColor" />
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12ZM12 20C7.58172 20 4 16.4183 4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12C20 16.4183 16.4183 20 12 20Z" fill="currentColor" />
+                  </svg>
+                </div>
+                <input type="range" min="0" max="2" step="0.05" value="1" data-item="view-contrast" data-type="value" data-range="percentage" data-view-contrast="contrast">
+                <div class="text">100%</div>
+              </div>
+              <div class="row">
+                <div class="command" data-target="view-saturate" data-range-reset="1">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M8.20348 2.00378C9.46407 2.00378 10.5067 3.10742 10.6786 4.54241L19.1622 13.0259L11.384 20.8041C10.2124 21.9757 8.31291 21.9757 7.14134 20.8041L2.8987 16.5615C1.72713 15.3899 1.72713 13.4904 2.8987 12.3188L5.70348 9.51404V4.96099C5.70348 3.32777 6.82277 2.00378 8.20348 2.00378ZM8.70348 4.96099V6.51404L7.70348 7.51404V4.96099C7.70348 4.63435 7.92734 4.36955 8.20348 4.36955C8.47963 4.36955 8.70348 4.63435 8.70348 4.96099ZM8.70348 10.8754V9.34247L4.31291 13.733C3.92239 14.1236 3.92239 14.7567 4.31291 15.1473L8.55555 19.3899C8.94608 19.7804 9.57924 19.7804 9.96977 19.3899L16.3337 13.0259L10.7035 7.39569V10.8754C10.7035 10.9184 10.7027 10.9612 10.7012 11.0038H8.69168C8.69941 10.9625 8.70348 10.9195 8.70348 10.8754Z" fill="currentColor" />
+                    <path d="M16.8586 16.8749C15.687 18.0465 15.687 19.946 16.8586 21.1175C18.0302 22.2891 19.9297 22.2891 21.1013 21.1175C22.2728 19.946 22.2728 18.0465 21.1013 16.8749L18.9799 14.7536L16.8586 16.8749Z" fill="currentColor" />
+                  </svg>
+                </div>
+                <input type="range" min="0" max="2" step="0.05" value="1" data-item="view-saturate" data-type="value" data-range="percentage" data-view-saturate="saturate">
+                <div class="text">100%</div>
+              </div>
+              <div class="row">
+                <div class="command" data-target="view-blur" data-range-reset="0">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M4.70834 15.4397C5.92663 16.2928 7.3222 16.7038 8.70461 16.7063C9.17977 18.0045 10.0433 19.1753 11.2616 20.0284C14.4284 22.2458 18.7932 21.4762 21.0107 18.3093C23.2281 15.1425 22.4585 10.7777 19.2916 8.56024C18.0734 7.70719 16.6778 7.29621 15.2954 7.29371C14.8202 5.99552 13.9567 4.82467 12.7384 3.97161C9.57158 1.75417 5.20676 2.52381 2.98931 5.69064C0.771871 8.85748 1.54151 13.2223 4.70834 15.4397ZM5.8555 13.8014C6.6016 14.3239 7.44081 14.6142 8.28736 14.6875C8.20112 13.1725 8.60464 11.6187 9.54254 10.2793C10.4804 8.9398 11.8025 8.0292 13.2556 7.59209C12.8972 6.82166 12.3374 6.13235 11.5913 5.60992C9.32924 4.02603 6.21151 4.57577 4.62762 6.8378C3.04373 9.09982 3.59347 12.2176 5.8555 13.8014ZM18.1445 10.1985C17.3984 9.67611 16.5592 9.38581 15.7126 9.31251C15.7989 10.8275 15.3953 12.3813 14.4574 13.7207C13.5195 15.0602 12.1975 15.9708 10.7444 16.4079C11.1028 17.1783 11.6626 17.8676 12.4087 18.3901C14.6707 19.9739 17.7885 19.4242 19.3724 17.1622C20.9562 14.9002 20.4065 11.7824 18.1445 10.1985Z" fill="currentColor" />
+                  </svg>
+                </div>
+                <input type="range" min="0" max="4" step="0.2" value="0" data-item="view-blur" data-type="value" data-range="px" data-view-blur="blur">
+                <div class="text">0 px</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+>>>>>>> 6afb1c903eecf2d0bb09305d79e5031fb56787a2
         <div id="right-sessions" class="page">
           <div id="sessions">
             <div id="session-0" class="session selected"></div>
@@ -4858,10 +4830,14 @@ document.addEventListener('DOMContentLoaded', async function(e) {
         </div>
 <div id="right-session" class="page noselect nodrag">
 
-          <div class="vbar"></div>
 
+<<<<<<< HEAD
           <div class="row">
             <div class="text label" data-i18n-text="Session">Session</div>
+=======
+          <div class="row hidden">
+            <div class="text label" data-i18n-text="Session"></div>
+>>>>>>> 6afb1c903eecf2d0bb09305d79e5031fb56787a2
             <div id="directory" class="column fill">
               <div id="entry-0" class="entry row">
                 <div class="command fill selected" data-session="0">Nimetön</div>
@@ -4879,6 +4855,7 @@ document.addEventListener('DOMContentLoaded', async function(e) {
             </div>
           </div>
 
+<<<<<<< HEAD
           
 
           
@@ -4909,6 +4886,14 @@ document.addEventListener('DOMContentLoaded', async function(e) {
 
           
 
+=======
+
+
+
+          <div class="row">
+            <div class="text">Note: API keys are not stored for security reasons.</div>
+          </div>
+>>>>>>> 6afb1c903eecf2d0bb09305d79e5031fb56787a2
         </div>
       </div>
 
