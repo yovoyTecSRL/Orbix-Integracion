@@ -16,6 +16,12 @@ parts/
 sdist/
 var/
 wheels/
+node_modules/
+pip-wheel-metadata/
+public/node_modules/
+/TalkingHead/node_modules/
+.installed.cfg
+pip-log.txt
 pip-wheel-metadata/
 share/python-wheels/
 *.egg-info/
@@ -63,3 +69,11 @@ Thumbs.db
 
 # Carpetas no deseadas del proyecto anterior
 Sistemas-Orbix-SA-Dev-Orbix/
+
+# Docker y secretos
+.env
+.env.local
+.env.production
+.env.*
+logs/
+ssl/

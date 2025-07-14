@@ -1,0 +1,70 @@
+{
+  "version": "1.0",
+  "defaultConfig": {
+    "name": "EVA",
+    "model": "brunette",
+    "customUrl": "",
+    "voice": "es-ES-ElviraNeural",
+    "animations": {
+      "blink": true,
+      "breathing": true,
+      "headMovement": true,
+      "lipSync": true
+    },
+    "appearance": {
+      "backgroundColor": "#0a0a0a",
+      "borderColor": "#00ffcc",
+      "glowEffect": true
+    },
+    "behavior": {
+      "autoGreeting": true,
+      "voiceResponses": true,
+      "gestureSync": true
+    }
+  },
+  "availableModels": [
+    {
+      "id": "brunette",
+      "name": "Brunette",
+      "description": "Modelo femenino con cabello castaño",
+      "path": "avatars/brunette.glb",
+      "preview": "images/brunette-preview.jpg"
+    }
+  ],
+  "availableVoices": [
+    {
+      "id": "es-ES-ElviraNeural",
+      "name": "Elvira",
+      "language": "Español (España)",
+      "gender": "female",
+      "description": "Voz femenina natural y profesional"
+    },
+    {
+      "id": "es-ES-AlvaroNeural", 
+      "name": "Alvaro",
+      "language": "Español (España)",
+      "gender": "male",
+      "description": "Voz masculina clara y confiable"
+    },
+    {
+      "id": "en-US-AriaNeural",
+      "name": "Aria", 
+      "language": "English (US)",
+      "gender": "female",
+      "description": "Professional female voice"
+    },
+    {
+      "id": "en-US-GuyNeural",
+      "name": "Guy",
+      "language": "English (US)", 
+      "gender": "male",
+      "description": "Clear and confident male voice"
+    }
+  ],
+  "greetings": [
+    "¡Hola! Soy {name}, tu asistente de Orbix AI Systems. ¿En qué puedo ayudarte hoy?",
+    "Bienvenido a Orbix AI. Soy {name} y estoy aquí para asistirte.",
+    "¡Saludos! Soy {name}, tu compañera de inteligencia artificial. ¿Cómo puedo ayudarte?",
+    "Hola, mi nombre es {name}. Estoy aquí para resolver tus consultas sobre nuestros sistemas."
+  ]
+}
