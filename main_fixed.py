@@ -37,6 +37,10 @@ async def calculadora():
 async def sentinel():
     return FileResponse('sentinel.html')
 
+@app.get("/welcome.html")
+async def welcome():
+    return FileResponse('welcome.html')
+
 @app.post("/validate")
 async def validate_credit(data: dict):
     return {"result": "approved", "score": 85, "data": data}
