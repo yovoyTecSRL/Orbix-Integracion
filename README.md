@@ -49,3 +49,12 @@ http://localhost:8000/docs
 - Listo para HTTPS con NGINX
 - Escalable con Docker Compose
 - Pensado para servidores como Hetzner
+
+---
+
+## 💻 Desarrollo con GitHub Copilot
+Si tienes problemas para activar GitHub Copilot Pro en VS Code:
+- 📖 **[Guía Rápida](./GUIA-RAPIDA-COPILOT.md)** - Solución en 5 minutos
+- 📚 **[Guía Completa](./COPILOT-PRO-VSCODE.md)** - Solución de problemas detallada
+
+El proyecto incluye configuración optimizada de VS Code en `.vscode/settings.json` para mejor experiencia con Copilot.
