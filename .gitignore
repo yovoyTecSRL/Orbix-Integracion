@@ -37,7 +37,7 @@ env.bak/
 venv.bak/
 
 # VS Code
-.vscode/
+# .vscode/ - Uncommented to share Copilot configuration with team
 *.code-workspace
 
 # IDEs
